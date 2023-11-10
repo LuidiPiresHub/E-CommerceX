@@ -1,21 +1,98 @@
 .card {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  gap: 1rem;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 80vw;
   padding: 0.5rem;
+  width: 100%;
+}
+
+.cardWrapper {
+  cursor: pointer;
+  max-width: 250px;
 }
 
 .cardItem {
-  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 0 5px 1px #ccc;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.cardImage {
+  aspect-ratio: 1;
+  border-radius: 5px 5px 0 0;
+  object-fit: cover;
+}
+
+.cardInfo {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   padding: 0.5rem;
 }
 
-.cardImage {
-  border-radius: 5px;
-  height: 160px;
-  object-fit: cover;
-  width: 160px;
+.cardTitle {
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  font-size: 16px;
+  font-weight: 500;
+  height: 65px;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+.cardPrice {
+  color: rgb(0 150 0);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.cardInstallments {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.cardBuy {
+  align-items: center;
+  background-color: rgb(0 160 0);
+  border: none;
+  border-radius: 0 0 5px 5px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  gap: 0.5rem;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  transition: 200ms ease-in-out;
+  visibility: hidden;
+  width: 100%;
+}
+
+.cardBuy:hover {
+  background-color: rgb(0 200 0);
+  color: black;
+}
+
+.cardWrapper:hover {
+  .cardItem {
+    border-radius: 5px 5px 0 0;
+  }
+
+  .cardBuy {
+    visibility: visible;
+  }
+}
+
+
+@media (width <= 1440px) {
+  .card {
+    max-width: 90vw;
+  }
 }
