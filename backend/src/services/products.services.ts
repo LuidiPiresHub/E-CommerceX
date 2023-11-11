@@ -5,9 +5,11 @@ const createProduct = async (product: IProduct) => {
   return await Product.create({ ...product });
 };
 
-const getProducts = async (): Promise<IService> => {
-  const data = await Product.findAll();
+const getProducts = async (query: string | undefined): Promise<IService> => {
+  const config = query ? { productName: query } : undefined;
+  const data = await Product.findAll({ where: config });
   const products = data.map(({ dataValues }) => dataValues);
+  console.log(products);
   if (!products.length) return { type: 'NOT_FOUND', message: 'Products not found' };
   return { type: 'OK', message: products };
 };

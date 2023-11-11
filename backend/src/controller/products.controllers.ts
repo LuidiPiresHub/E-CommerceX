@@ -7,8 +7,9 @@ const createProduct = async (req: Request, res: Response) => {
   return res.status(201).json({ message: product });
 };
 
-const getProducts = async (_req: Request, res: Response) => {
-  const { type, message } = await productsServices.getProducts();
+const getProducts = async (req: Request, res: Response) => {
+  const query = req.query.q as string | undefined;
+  const { type, message } = await productsServices.getProducts(query);
   return res.status(mapStatus(type)).json({ message });
 };
 
