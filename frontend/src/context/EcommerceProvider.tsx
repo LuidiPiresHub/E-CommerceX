@@ -1,12 +1,13 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import EcommerceContext from './EcommerceContext';
 import IProduct from '../interfaces/products.interface';
 
 export default function EcommerceProvider({ children }: { children: ReactNode }) {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [error, setError] = useState<null | string>(null);
+  const [cartAmount, setCartAmount] = useState<number>(0);
 
-  console.log('provider', products);
+  // console.log('provider', products);
 
   const fetchData = async (query?: string): Promise<void> => {
     try {
@@ -19,10 +20,17 @@ export default function EcommerceProvider({ children }: { children: ReactNode })
     }
   };
 
+  useEffect(() => {
+    const cartItens = JSON.parse(localStorage.getItem('cart')!) || [];
+    setCartAmount(cartItens.length);
+  }, []);
+
   const globalContent = {
     fetchData,
     products,
     error,
+    cartAmount,
+    setCartAmount,
   };
 
   return (

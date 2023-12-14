@@ -1,16 +1,19 @@
 import { useState, FormEvent, useContext } from 'react';
-import { FaSearch, FaShoppingCart } from 'react-icons/fa';
+import { FaSearch, FaShoppingCart, FaUser } from 'react-icons/fa';
 import styles from './Header.module.css';
 import EcommerceContext from '../../context/EcommerceContext';
+import { Link } from 'react-router-dom';
 
 export default function Header() {
   const [search, setSearch] = useState('');
-  const { fetchData } = useContext(EcommerceContext);
-  
+  const { fetchData, cartAmount } = useContext(EcommerceContext);
+
   const getProductByQuery = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     fetchData(search);
   };
+
+  const hasLogin = true;
 
   return (
     <header className={styles.header}>
@@ -25,10 +28,16 @@ export default function Header() {
           <FaSearch />
         </button>
       </form>
-      <div className={styles.cart}>
-        <span className={styles.cartAmount}>0</span>
-        <FaShoppingCart className={styles.cartIcon} />
-      </div>
+      <section className={styles.sectionWrapper}>
+        <div className={styles.userContainer}>
+          {hasLogin ? <img src='https://images.pexels.com/photos/4050297/pexels-photo-4050297.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940' className={styles.userPhoto} /> : <FaUser className={styles.userIcon} />}
+          <span className={styles.user}>{hasLogin ? 'Olá Usuario123' : 'Fazer Login'}</span>
+        </div>
+        <Link to='/cart' className={styles.cart}>
+          <span className={styles.cartAmount}>{cartAmount}</span>
+          <FaShoppingCart className={styles.cartIcon} />
+        </Link>
+      </section>
     </header>
   );
 }
