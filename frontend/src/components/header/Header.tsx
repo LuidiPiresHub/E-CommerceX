@@ -6,11 +6,15 @@ import { Link } from 'react-router-dom';
 
 export default function Header() {
   const [search, setSearch] = useState('');
-  const { fetchData, cartAmount } = useContext(EcommerceContext);
+  const { getProductByName, cartAmount, getAllProducts } = useContext(EcommerceContext);
 
   const getProductByQuery = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    fetchData(search);
+    if (search.trim() !== '') {
+      getProductByName(search);
+    } else {
+      getAllProducts();
+    }
   };
 
   const hasLogin = true;

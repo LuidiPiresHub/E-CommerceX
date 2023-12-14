@@ -1,16 +1,22 @@
 import Product from '../database/models/products.models';
 import { IProduct, IService } from '../interfaces/products.interface';
+import { Op } from 'sequelize';
 
 const createProduct = async (product: IProduct) => {
   return await Product.create({ ...product });
 };
 
-const getProducts = async (query: string | undefined): Promise<IService> => {
-  const config = query ? { productName: query } : undefined;
-  const data = await Product.findAll({ where: config });
+const getAllProducts = async (): Promise<IService> => {
+  const data = await Product.findAll();
   const products = data.map(({ dataValues }) => dataValues);
-  console.log(products);
   if (!products.length) return { type: 'NOT_FOUND', message: 'Products not found' };
+  return { type: 'OK', message: products };
+};
+
+const getProductByName = async (name: string): Promise<IService> => {
+  const data = await Product.findAll({ where: { productName: { [Op.like]: `%${name}%` } } });
+  const products = data.map(({ dataValues }) => dataValues);
+  if (!products.length) return { type: 'NOT_FOUND', message: 'Product not found' };
   return { type: 'OK', message: products };
 };
 
@@ -22,6 +28,7 @@ const getProductById = async (id: number): Promise<IService> => {
 
 export default {
   createProduct,
-  getProducts,
+  getAllProducts,
+  getProductByName,
   getProductById,
 };
