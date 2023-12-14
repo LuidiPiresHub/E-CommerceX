@@ -1,0 +1,124 @@
+.main {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 100vh;
+  padding: 10px;
+}
+
+.productCard {
+  align-items: center;
+  border-radius: 5px;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  max-width: 800px;
+  width: 100%;
+}
+
+.productImage {
+  border-radius: 5px;
+  height: 80px;
+  max-width: 80px;
+  object-fit: cover;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.detailsWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.productName {
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  font-size: 16px;
+  -webkit-line-clamp: 2;
+  overflow-y: hidden;
+}
+
+.wrapper {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
+}
+
+.btnWrapper {
+  align-items: center;
+  display: flex;
+}
+
+.btn {
+  align-items: center;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  font-weight: 700;
+  height: 30px;
+  justify-content: center;
+  transition: all 0.3s ease;
+  width: 30px;
+}
+
+.increase {
+  border: 2px solid green;
+  color: green;
+}
+
+.productQuantity {
+  align-items: center;
+  border-radius: 5px;
+  display: flex;
+  font-size: 16px;
+  font-weight: 700;
+  height: 30px;
+  justify-content: center;
+  min-width: 30px;
+}
+
+.decrease {
+  border: 2px solid red;
+  color: red;
+}
+
+.totalWrapper {
+  align-items: center;
+  background-color: rgb(235 235 235);
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 800px;
+  padding: 2rem 10px;
+  position: fixed;
+  width: 100%;
+}
+
+.totalPrice {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.btnCheckout {
+  align-items: center;
+  background-color: #f0c040;
+  border-radius: 5px;
+  color: #000;
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  font-weight: 700;
+  height: 30px;
+  justify-content: center;
+  transition: all 0.3s ease;
+  width: 100%;
+}
