@@ -1,6 +1,9 @@
 import { ReactNode, useEffect, useState } from 'react';
 import EcommerceContext from './EcommerceContext';
 import IProduct from '../interfaces/products.interface';
+import api from '../axios/api';
+import handleAxiosError from '../axios/handleAxiosError';
+import { AxiosError } from 'axios';
 
 export default function EcommerceProvider({ children }: { children: ReactNode }) {
   const [cartAmount, setCartAmount] = useState<number>(0);
@@ -12,31 +15,15 @@ export default function EcommerceProvider({ children }: { children: ReactNode })
     setCartAmount(cartItens.length);
   }, []);
 
-  const getAllProducts = async (): Promise<void> => {
+  const getAllProducts = async (productName?: string): Promise<void> => {
     try {
-      const API_URL = import.meta.env.VITE_API_URL;
-      const response = await fetch(`${API_URL}/products`);
-      const { message } = await response.json();
-      if (!response.ok) throw new Error(message);
+      const url = productName ? `/products?name=${productName}` : '/products';
+      const { data: { message } } = await api.get(url);
       setProducts(message);
       setError(null);
     } catch (error) {
-      setError((error as Error).message);
       setProducts([]);
-    }
-  };
-
-  const getProductByName = async (name: string): Promise<void> => {
-    try {
-      const API_URL = import.meta.env.VITE_API_URL;
-      const response = await fetch(`${API_URL}/products/search?name=${name}`);
-      const { message } = await response.json();
-      if (!response.ok) throw new Error(message);
-      setProducts(message);
-      setError(null);
-    } catch (error) {
-      setError((error as Error).message);
-      setProducts([]);
+      handleAxiosError(error as AxiosError, setError);
     }
   };
 
@@ -46,7 +33,6 @@ export default function EcommerceProvider({ children }: { children: ReactNode })
     products,
     error,
     getAllProducts,
-    getProductByName,
   };
 
   return (

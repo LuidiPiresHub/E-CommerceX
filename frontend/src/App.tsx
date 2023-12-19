@@ -1,8 +1,8 @@
 import { Routes, Route } from 'react-router-dom';
 import EcommerceProvider from './context/EcommerceProvider';
 import Products from './pages/products/Products';
-import ProductDetail from './pages/ProductDetail';
-import NotFound from './pages/NotFound';
+import ProductDetail from './pages/productDetails/ProductDetails';
+import NotFound from './pages/notFound/NotFound';
 import Cart from './pages/cart/Cart';
 
 export default function App() {

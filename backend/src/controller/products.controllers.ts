@@ -8,13 +8,9 @@ const createProduct = async (req: Request, res: Response) => {
 };
 
 const getAllProducts = async (req: Request, res: Response) => {
-  const { type, message } = await productsServices.getAllProducts();
-  return res.status(mapStatus(type)).json({ message });
-};
-
-const getProductByName = async (req: Request, res: Response) => {
-  const productName = String(req.query.name);
-  const { type, message } = await productsServices.getProductByName(productName);
+  const productName = req.query.name as string | undefined;
+  const formattedName = productName?.trim();
+  const { type, message } = await productsServices.getAllProducts(formattedName);
   return res.status(mapStatus(type)).json({ message });
 };
 
@@ -24,10 +20,8 @@ const getProductById = async (req: Request, res: Response) => {
   return res.status(mapStatus(type)).json({ message });
 };
 
-
 export default {
   createProduct,
   getAllProducts,
-  getProductByName,
   getProductById,
 };

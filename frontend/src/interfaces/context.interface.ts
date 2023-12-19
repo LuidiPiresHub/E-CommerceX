@@ -5,8 +5,7 @@ interface IContext {
   setCartAmount: React.Dispatch<React.SetStateAction<number>>;
   products: IProduct[];
   error: string | null;
-  getProductByName: (name: string) => Promise<void>;
-  getAllProducts: () => Promise<void>;
+  getAllProducts: (productName?: string) => Promise<void>;
 }
 
 export default IContext;
