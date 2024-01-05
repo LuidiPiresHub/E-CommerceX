@@ -22,6 +22,7 @@ export default function Header() {
         <input
           type="search"
           className={styles.searchBar}
+          placeholder='Buscar produtos'
           onChange={({ target: { value } }) => setSearch(value)}
         />
         <button type="submit" className={styles.searchButton}>
