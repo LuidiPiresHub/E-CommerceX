@@ -15,6 +15,6 @@ module.exports = {
       { allowConstantExport: true },
     ],
     'semi': ['error', 'always'],
-    'eol-last': ["error", "always"]
+    'eol-last': ['error', 'always']
   },
 }

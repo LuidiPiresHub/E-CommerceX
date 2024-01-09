@@ -5,7 +5,7 @@
   display: flex;
   gap: 2rem;
   height: 4rem;
-  padding-inline: 1rem;
+  padding-inline: 2rem;
 }
 
 .title {
@@ -95,7 +95,11 @@
 }
 
 @media (width < 768px) {
-  .title, .cart {
+  .title, .sectionWrapper {
     display: none;
+  }
+
+  .header {
+    justify-content: center;
   }
 }

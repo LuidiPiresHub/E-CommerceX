@@ -1,10 +1,9 @@
 interface IProduct {
-  id: number;
-  productName: string;
+  id: string;
+  title: string;
   price: number;
-  description: string;
-  productImage: string;
-  sellerId: number;
+  thumbnail: string;
+  quantity?: number;
 }
 
 export default IProduct;
