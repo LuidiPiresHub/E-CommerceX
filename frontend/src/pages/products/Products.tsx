@@ -1,7 +1,7 @@
 import styles from './Products.module.css';
 import { FaCartArrowDown } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { countCartItens, formartPrice } from '../../utils/functions';
+import { countCartItems, formartPrice } from '../../utils/functions';
 import EcommerceContext from '../../context/EcommerceContext';
 import { useContext, useEffect } from 'react';
 import Header from '../../components/header/Header';
@@ -20,7 +20,7 @@ export default function Product() {
       cartItens.push({ ...product, quantity: 1 });
     }
     localStorage.setItem('cart', JSON.stringify(cartItens));
-    setCartAmount(countCartItens(cartItens));
+    setCartAmount(countCartItems(cartItens));
   };
 
   useEffect(() => {

@@ -4,7 +4,7 @@ import IProduct from '../interfaces/products.interface';
 import axios, { AxiosError } from 'axios';
 import handleAxiosError from '../axios/handleAxiosError';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { countCartItens } from '../utils/functions';
+import { countCartItems } from '../utils/functions';
 
 export default function EcommerceProvider({ children }: { children: ReactNode }) {
   const maxOffset = 900;
@@ -39,7 +39,7 @@ export default function EcommerceProvider({ children }: { children: ReactNode })
 
   useEffect(() => {
     const cartItens = JSON.parse(localStorage.getItem('cart')!) || [];
-    setCartAmount(countCartItens(cartItens));
+    setCartAmount(countCartItems(cartItens));
   }, []);
 
   useEffect(() => {
