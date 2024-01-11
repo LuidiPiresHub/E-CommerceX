@@ -1,7 +1,7 @@
 import styles from './Products.module.css';
 import { FaCartArrowDown } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { countCartItems, formartPrice } from '../../utils/functions';
+import { countCartItems, formartPrice, getHightestQuality } from '../../utils/functions';
 import EcommerceContext from '../../context/EcommerceContext';
 import { useContext, useEffect } from 'react';
 import Header from '../../components/header/Header';
@@ -43,7 +43,7 @@ export default function Product() {
               {products.map((product) => (
                 <div key={product.id} className={styles.card}>
                   <Link to={`/product/${product.id}`} className={styles.cardItem}>
-                    <img src={product.thumbnail.replace(/\w\.jpg/gi, 'W.jpg')} alt={product.title} className={styles.cardImage} />
+                    <img src={getHightestQuality(product.thumbnail)} alt={product.title} className={styles.cardImage} />
                     <div className={styles.cardInfo}>
                       <h2 className={styles.cardTitle}>
                         {product.title}
