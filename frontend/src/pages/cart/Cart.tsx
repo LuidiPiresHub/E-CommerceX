@@ -1,72 +1,102 @@
 import { useContext, useEffect, useState } from 'react';
 import styles from './Cart.module.css';
-import { formartPrice } from '../../utils/functions';
+import { calcCartItemsPrice, countCartItems, formartPrice, getHightestQuality } from '../../utils/functions';
 import EcommerceContext from '../../context/EcommerceContext';
+import { useNavigate } from 'react-router-dom';
+import IProduct from '../../interfaces/products.interface';
+import { FaLongArrowAltLeft } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 export default function Cart() {
-  interface IProduct {
-    id: number;
-    productName: string;
-    price: number;
-    productImage: string;
-    quantity: number;
-  }
   const [cart, setCart] = useState<IProduct[]>([]);
   const { setCartAmount } = useContext(EcommerceContext);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     setCart(JSON.parse(localStorage.getItem('cart')!) || []);
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart));
+    if (cart.length) {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    } else {
+      localStorage.removeItem('cart');
+    }
   }, [cart]);
 
-  const decrementQuantity = (id: number): void => {
+  const decrementQuantity = (id: string): void => {
     setCartAmount((prevAmount) => prevAmount > 0 ? prevAmount - 1 : 0);
     setCart((prevProducts) => {
       const updatedProducts = prevProducts.map((product) => {
-        if (product.id === id && product.quantity > 0) {
-          return { ...product, quantity: product.quantity - 1 };
+        if (product.id === id && product.quantity! > 0) {
+          return { ...product, quantity: product.quantity! - 1 };
         }
         return product;
       });
-      return updatedProducts.filter((product) => product.quantity > 0);
+      return updatedProducts.filter((product) => product.quantity! > 0);
     });
   };
 
-  const incrementQuantity = (id: number): void => {
+  const incrementQuantity = (id: string): void => {
     setCartAmount((prevAmount) => prevAmount + 1);
     setCart((prevProducts) => prevProducts.map((product) => {
       if (product.id === id) {
-        return { ...product, quantity: product.quantity + 1 };
+        return { ...product, quantity: product.quantity! + 1 };
       }
       return product;
     }));
   };
 
+  const cartItemCount = countCartItems(cart);
+  const displayText = cartItemCount === 1 ? `${cartItemCount} item total` : `${cartItemCount} itens totais`;
+
   return (
     <main className={styles.main}>
-      {cart.map((product) => (
-        <article key={product.id} className={styles.productCard}>
-          <img src={product.productImage} alt={product.productName} className={styles.productImage} />
-          <div className={styles.detailsWrapper}>
-            <h2 className={styles.productName}>{product.productName}</h2>
-            <div className={styles.wrapper}>
-              <p>{formartPrice(product.price)}</p>
-              <div className={styles.btnWrapper}>
-                <button type='button' className={`${styles.btn} ${styles.decrease}`} onClick={() => decrementQuantity(product.id)}>-</button>
-                <span className={styles.productQuantity}>{product.quantity}</span>
-                <button type='button' className={`${styles.btn} ${styles.increase}`} onClick={() => incrementQuantity(product.id)}>+</button>
-              </div>
-            </div>
+      <div className={styles.productsContainer}>
+        <header className={styles.header}>
+          <Link to='/' className={styles.leaveCart}>
+            <FaLongArrowAltLeft />
+            Continuar Comprando
+          </Link>
+          <div className={styles.headerInfo}>
+            <h1 className={styles.headerTitle}>Shopping Cart</h1>
+            <span className={styles.cartAmount}>{`${cart.length} ${!cart.length ? 'Item' : 'Itens'}`}</span>
           </div>
-        </article>
-      ))}
-      <div className={styles.totalWrapper}>
-        <span className={styles.totalPrice}>{`Total: ${formartPrice(cart.reduce((acc, curr) => acc + curr.price * curr.quantity, 0))}`}</span>
-        <button type='button' className={styles.btnCheckout}>Finalizar Compra</button>
+        </header>
+        <section className={styles.productsOverflow}>
+          {cart.map((product) => (
+            <article key={product.id} className={styles.productCard}>
+              <Link to={`/product/${product.id}`} className={styles.productLink}>
+                <img src={getHightestQuality(product.thumbnail)} alt={product.title} className={styles.productImage} />
+              </Link>
+              <div className={styles.detailsWrapper}>
+                <h2 className={styles.productName}>{product.title}</h2>
+                <div className={styles.wrapper}>
+                  <p>{formartPrice(product.price)}</p>
+                  <div className={styles.btnWrapper}>
+                    <button type='button' className={styles.quantityBtn} onClick={() => decrementQuantity(product.id)}>-</button>
+                    <span className={styles.productQuantity}>{product.quantity}</span>
+                    <button type='button' className={styles.quantityBtn} onClick={() => incrementQuantity(product.id)}>+</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))}
+        </section>
       </div>
+      <aside className={styles.checkout}>
+        <h1 className={styles.cartTitle}>Finalizar Compra</h1>
+        <div className={styles.checkoutInfo}>
+          <span className={styles.checkoutAmount}>{displayText}</span>
+          <span className={styles.checkoutPrice}>{formartPrice(calcCartItemsPrice(cart))}</span>
+        </div>
+        <button type='button' className={`${styles.checkoutBtn} ${styles.cleanCartBtn}`}>Limpar Carrinho</button>
+        <div className={styles.finish}>
+          <span className={styles.totalPrice}>{`Total: ${formartPrice(calcCartItemsPrice(cart))}`}</span>
+          <button type='button' className={`${styles.checkoutBtn} ${styles.btnCheckout}`} onClick={() => navigate('/checkout')}>Continuar a Compra</button>
+        </div>
+      </aside>
     </main>
   );
 }
