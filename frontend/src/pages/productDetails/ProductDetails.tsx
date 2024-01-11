@@ -1,35 +1,41 @@
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import api from '../../axios/api';
+import { useContext, useEffect, useState } from 'react';
 import handleAxiosError from '../../axios/handleAxiosError';
-import { AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 import IProduct from '../../interfaces/products.interface';
+import EcommerceContext from '../../context/EcommerceContext';
 
 export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<IProduct | null>(null);
-  const [error, setError] = useState<null | string>(null);
+  const { error, setError, isLoading, setIsLoading } = useContext(EcommerceContext);
 
-  const getProductById = async (id: number): Promise<void> => {
-    try {
-      const { data: { message } } = await api.get(`/products/${id}`);
-      setProduct(message);
-      setError(null);
-    } catch (error) {
-      setProduct(null);
-      handleAxiosError(error as AxiosError, setError);
-    }
-  };
-
+  
   useEffect(() => {
-    getProductById(Number(id));
+    const getProductById = async (id: string): Promise<void> => {
+      try {
+        const { data } = await axios.get(`${import.meta.env.VITE_ML_ITEM_URL}/${id}`);
+        setProduct(data);
+        setError(null);
+        setIsLoading(false);
+      } catch (error) {
+        setProduct(null);
+        handleAxiosError(error as AxiosError, setError);
+      }
+    };
+
+    getProductById(id as string);
   }, [id]);
 
   return (
-    <section>
-      <h1>Product Detail</h1>
-      <p>{error}</p>
-      <p>{!error && JSON.stringify(product)}</p>
-    </section>
+    <main>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p>{error}</p>
+      ) : (
+        <p>{JSON.stringify(product)}</p>
+      )}
+    </main>
   );
 }
