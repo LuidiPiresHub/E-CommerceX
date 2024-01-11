@@ -15,6 +15,9 @@ export default function Header() {
 
   const hasLogin = true;
 
+  console.log(cartAmount);
+  
+
   return (
     <header className={styles.header}>
       <h1 className={styles.title}>E-CommerceX</h1>
@@ -37,9 +40,9 @@ export default function Header() {
           </span>
         </div>
         <Link to='/cart' className={styles.cart}>
-          <span className={styles.cartAmount}>
-            {cartAmount}
-          </span>
+          {cartAmount > 0 && (
+            <span className={styles.cartAmount}>{cartAmount}</span>
+          )}
           <FaShoppingCart className={styles.cartIcon} />
         </Link>
       </section>
