@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import IProduct from '../../interfaces/products.interface';
 import { FaLongArrowAltLeft } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import emptyCart from '../../assets/images/empty-cart.png';
 
 export default function Cart() {
   const [cart, setCart] = useState<IProduct[]>([]);
@@ -51,6 +52,8 @@ export default function Cart() {
   const cartItemCount = countCartItems(cart);
   const displayText = cartItemCount === 1 ? `${cartItemCount} item total` : `${cartItemCount} itens totais`;
 
+  const cartHeader = cart.length ? `${cart.length} ${cart.length === 1 ? 'Item' : 'Itens'}` : 'Seu carrinho está vazio';
+
   return (
     <main className={styles.main}>
       <div className={styles.productsContainer}>
@@ -61,28 +64,32 @@ export default function Cart() {
           </Link>
           <div className={styles.headerInfo}>
             <h1 className={styles.headerTitle}>Shopping Cart</h1>
-            <span className={styles.cartAmount}>{`${cart.length} ${!cart.length ? 'Item' : 'Itens'}`}</span>
+            <span className={styles.cartAmount}>{cartHeader}</span>
           </div>
         </header>
         <section className={styles.productsOverflow}>
-          {cart.map((product) => (
-            <article key={product.id} className={styles.productCard}>
-              <Link to={`/product/${product.id}`} className={styles.productLink}>
-                <img src={getHightestQuality(product.thumbnail)} alt={product.title} className={styles.productImage} />
-              </Link>
-              <div className={styles.detailsWrapper}>
-                <h2 className={styles.productName}>{product.title}</h2>
-                <div className={styles.wrapper}>
-                  <p>{formartPrice(product.price)}</p>
-                  <div className={styles.btnWrapper}>
-                    <button type='button' className={styles.quantityBtn} onClick={() => decrementQuantity(product.id)}>-</button>
-                    <span className={styles.productQuantity}>{product.quantity}</span>
-                    <button type='button' className={styles.quantityBtn} onClick={() => incrementQuantity(product.id)}>+</button>
+          {cart.length ? (
+            cart.map((product) => (
+              <article key={product.id} className={styles.productCard}>
+                <Link to={`/product/${product.id}`} className={styles.productLink}>
+                  <img src={getHightestQuality(product.thumbnail)} alt={product.title} className={styles.productImage} />
+                </Link>
+                <div className={styles.detailsWrapper}>
+                  <h2 className={styles.productName}>{product.title}</h2>
+                  <div className={styles.wrapper}>
+                    <p>{formartPrice(product.price)}</p>
+                    <div className={styles.btnWrapper}>
+                      <button type='button' className={styles.quantityBtn} onClick={() => decrementQuantity(product.id)}>-</button>
+                      <span className={styles.productQuantity}>{product.quantity}</span>
+                      <button type='button' className={styles.quantityBtn} onClick={() => incrementQuantity(product.id)}>+</button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </article>
-          ))}
+              </article>
+            ))
+          ) : (
+            <img src={emptyCart} alt="Carrinho vazio logo" className={styles.emptyCart} />
+          )}
         </section>
       </div>
       <aside className={styles.checkout}>

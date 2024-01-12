@@ -30,6 +30,12 @@
   background-color: grey;
 }
 
+.emptyCart {
+  margin: auto;
+  max-width: 800px;
+  width: 100%;
+}
+
 .header {
   border-bottom: 2px solid lightgray;
   display: flex;
