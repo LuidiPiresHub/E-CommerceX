@@ -95,8 +95,12 @@
 }
 
 @media (width < 768px) {
-  .title, .sectionWrapper {
+  .title, .userContainer {
     display: none;
+  }
+
+  .sectionWrapper {
+    flex: 0
   }
 
   .header {
