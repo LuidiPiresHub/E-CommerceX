@@ -28,8 +28,13 @@ export default function EcommerceProvider({ children }: { children: ReactNode })
     try {
       setIsLoading(true);
       const { data: { results, paging: { total } } } = await axios.get(`${import.meta.env.VITE_ML_SEARCH_URL}?q=${productName}&offset=${offset}&limit=${limit}`);
-      setProducts(results);
-      setPageCount(Math.ceil(Math.min(total / limit, maxOffset / limit)));
+      if (!results.length) {
+        setError('Nenhum produto encontrado');
+      } else {
+        setError(null);
+        setProducts(results);
+        setPageCount(Math.ceil(Math.min(total / limit, maxOffset / limit)));
+      }
     } catch (error) {
       handleAxiosError(error as AxiosError, setError);
     } finally {
