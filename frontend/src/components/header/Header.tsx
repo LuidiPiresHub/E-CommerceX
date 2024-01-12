@@ -15,9 +15,6 @@ export default function Header() {
 
   const hasLogin = true;
 
-  console.log(cartAmount);
-  
-
   return (
     <header className={styles.header}>
       <h1 className={styles.title}>E-CommerceX</h1>
