@@ -8,9 +8,11 @@ export default function Header() {
   const [search, setSearch] = useState('');
   const { cartAmount, getAllProductsByName } = useContext(EcommerceContext);
 
-  const getProductByQuery = (event: FormEvent<HTMLFormElement>) => {
+  const getProductByQuery = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    getAllProductsByName(search);
+    if (search.trim() !== '') {
+      getAllProductsByName(search.trim());
+    }
   };
 
   const hasLogin = true;

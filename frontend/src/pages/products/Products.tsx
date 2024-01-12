@@ -79,7 +79,7 @@ export default function Product() {
               activeLinkClassName={styles.active}
               breakLinkClassName={styles.break}
               disabledLinkClassName={styles.disabledLink}
-              forcePage={Math.floor(offset / limit)}
+              forcePage={pageCount === 0 ? -1 : Math.floor(offset / limit)}
             />
           </>
         )}
