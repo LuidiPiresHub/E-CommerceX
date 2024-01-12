@@ -52,7 +52,7 @@ export default function Cart() {
   const cartItemCount = countCartItems(cart);
   const displayText = cartItemCount === 1 ? `${cartItemCount} item total` : `${cartItemCount} itens totais`;
 
-  const cartHeader = cart.length ? `${cart.length} ${cart.length === 1 ? 'Item' : 'Itens'}` : 'Seu carrinho está vazio';
+  const cartHeader = cart.length ? `${cart.length} ${cart.length === 1 ? 'Item' : 'Itens'}` : 'Carrinho vazio';
 
   return (
     <main className={styles.main}>
