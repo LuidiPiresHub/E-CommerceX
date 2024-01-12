@@ -46,7 +46,7 @@ export default function EcommerceProvider({ children }: { children: ReactNode })
     const params = new URLSearchParams();
     params.set('offset', String(offset));
     navigate({ pathname: location.pathname, search: `?${params.toString()}` });
-  }, [offset, location.pathname, navigate]);
+  }, [offset]);
 
   const globalContent = {
     cartAmount,
