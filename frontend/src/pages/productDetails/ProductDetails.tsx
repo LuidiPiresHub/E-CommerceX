@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import handleAxiosError from '../../axios/handleAxiosError';
 import axios, { AxiosError } from 'axios';
@@ -79,7 +79,7 @@ export default function ProductDetails() {
               <h4>O que você precisa saber sobre este produto:</h4>
               <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, similique quisquam aperiam pariatur ratione necessitatibus eaque dolorem vero deleniti officiis, blanditiis eos! Rem dignissimos placeat autem aliquid numquam harum tempora.</p>
               <footer className={styles.buttonsContainer}>
-                <button type='button' className={`${styles.btn} ${styles.buyBtn}`}>Comprar agora</button>
+                <Link to='/checkout' className={`${styles.btn} ${styles.buyBtn}`}>Comprar agora</Link>
                 <button type='button' className={`${styles.btn} ${styles.addCartBtn}`}>Adicionar ao carrinho</button>
               </footer>
             </aside>

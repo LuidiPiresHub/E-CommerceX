@@ -110,11 +110,14 @@
 }
 
 .btn {
+  align-items: center;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  display: flex;
   font-size: 1rem;
   font-weight: 600;
+  justify-content: center;
   padding: 0.8rem;
   width: 100%;
 }
