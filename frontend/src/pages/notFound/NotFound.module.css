@@ -22,7 +22,9 @@
 
 .notFoundButton {
   animation: glitch 2s infinite;
+  border: none;
   color: black;
+  cursor: pointer;
   font-size: 30px;
   margin-top: 10px;
   text-decoration: none;
