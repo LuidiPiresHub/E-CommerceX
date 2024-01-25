@@ -1,10 +1,7 @@
+import { Dispatch, SetStateAction } from 'react';
 import { AxiosError } from 'axios';
-import React from 'react';
 
-const handleAxiosError = (
-  error: AxiosError,
-  setError: React.Dispatch<React.SetStateAction<string | null>>
-): void => {
+const handleAxiosError = (error: AxiosError, setError: Dispatch<SetStateAction<string | null>>): void => {
   if (error.response) {
     const { status, data } = error.response;
     if (status >= 400 && status < 500) {                          // Tratamento para erro de autenticação
@@ -14,7 +11,6 @@ const handleAxiosError = (
       setError('Ocorreu um problema interno. Tente novamente.'); 
     }                                                            
   } else if (error.request) {                                     // A requisição foi feita, mas não houve resposta do servidor
-    console.log(error.status);                                   
     setError('Sem resposta do servidor');                       
   } else {                                                        // Erro durante a configuração da requisição
     setError('Erro ao configurar a requisição');
