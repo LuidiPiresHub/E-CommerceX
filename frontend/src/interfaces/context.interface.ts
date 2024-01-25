@@ -15,6 +15,7 @@ interface IContext {
   offset: number;
   setOffset: Dispatch<SetStateAction<number>>;
   limit: number;
+  addToCart: (product: IProduct) => void;
 }
 
 export default IContext;

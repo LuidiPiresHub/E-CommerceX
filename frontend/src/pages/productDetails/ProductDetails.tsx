@@ -10,7 +10,7 @@ import Header from '../../components/header/Header';
 import { FaStar, FaRegHeart } from "react-icons/fa";
 
 export default function ProductDetails() {
-  const { error, setError, isLoading, setIsLoading } = useContext(EcommerceContext);
+  const { error, setError, isLoading, setIsLoading, addToCart } = useContext(EcommerceContext);
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<IProduct | null>(null);
   const [selectedImage, setSelectedImage] = useState<string>('');
@@ -80,7 +80,7 @@ export default function ProductDetails() {
               <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, similique quisquam aperiam pariatur ratione necessitatibus eaque dolorem vero deleniti officiis, blanditiis eos! Rem dignissimos placeat autem aliquid numquam harum tempora.</p>
               <footer className={styles.buttonsContainer}>
                 <Link to='/checkout' className={`${styles.btn} ${styles.buyBtn}`}>Comprar agora</Link>
-                <button type='button' className={`${styles.btn} ${styles.addCartBtn}`}>Adicionar ao carrinho</button>
+                <button type='button' onClick={() => addToCart(product)} className={`${styles.btn} ${styles.addCartBtn}`}>Adicionar ao carrinho</button>
               </footer>
             </aside>
           </div>

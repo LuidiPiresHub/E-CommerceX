@@ -1,27 +1,14 @@
 import styles from './Products.module.css';
 import { FaCartArrowDown } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { countCartItems, formartPrice, getHightestQuality } from '../../utils/functions';
+import { formartPrice, getHightestQuality } from '../../utils/functions';
 import EcommerceContext from '../../context/EcommerceContext';
 import { useContext, useEffect } from 'react';
 import Header from '../../components/header/Header';
 import ReactPaginate from 'react-paginate';
-import IProduct from '../../interfaces/products.interface';
 
 export default function Product() {
-  const { setCartAmount, products, isLoading, error, getAllProductsByName, offset, setOffset, limit, pageCount } = useContext(EcommerceContext);
-
-  const addToCart = (product: IProduct): void => {
-    const cartItens = JSON.parse(localStorage.getItem('cart')!) || [];
-    const existingProductIndex = cartItens.findIndex((item: IProduct) => item.id === product.id);
-    if (existingProductIndex !== -1) {
-      cartItens[existingProductIndex].quantity += 1;
-    } else {
-      cartItens.push({ ...product, quantity: 1 });
-    }
-    localStorage.setItem('cart', JSON.stringify(cartItens));
-    setCartAmount(countCartItems(cartItens));
-  };
+  const { addToCart, products, isLoading, error, getAllProductsByName, offset, setOffset, limit, pageCount } = useContext(EcommerceContext);
 
   useEffect(() => {
     getAllProductsByName();
