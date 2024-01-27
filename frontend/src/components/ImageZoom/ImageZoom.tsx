@@ -1,14 +1,6 @@
 import { MouseEvent, useRef, useState } from 'react';
 import styles from './ImageZoom.module.css';
-
-interface ImageZoomProps {
-  src: string;
-  alt?: string;
-  imageContainerClassName?: string;
-  imageClassName?: string;
-  magnifyClassName?: string;
-  zoom?: number;
-}
+import { ImageZoomProps } from '../../interfaces/imageZoom.interface';
 
 export default function ImageZoom({ src, alt, imageContainerClassName, imageClassName, magnifyClassName, zoom }: ImageZoomProps) {
   const [showMagnifier, setShowMagnifier] = useState(false);
