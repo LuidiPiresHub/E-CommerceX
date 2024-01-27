@@ -49,7 +49,7 @@ export default function ImageZoom({ src, alt, imageContainerClassName, imageClas
             left: `${cursorPosition.x - (magnifierWidthSize / 2)}px`,
             backgroundPosition: `${backgroundPosition.x}% ${backgroundPosition.y}%`,
             backgroundImage: `url(${src})`,
-            backgroundSize: `${zoom ? zoom * 1000 : 1000}%`,
+            backgroundSize: `${zoom ? zoom * 100 : 500}%`,
             position: 'absolute',
             pointerEvents: 'none',
           }}
