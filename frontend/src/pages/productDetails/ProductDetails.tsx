@@ -8,6 +8,7 @@ import styles from './ProductDetails.module.css';
 import { formartPrice } from '../../utils/functions';
 import Header from '../../components/header/Header';
 import { FaStar, FaRegHeart } from "react-icons/fa";
+import ImageZoom from '../../components/ImageZoom/ImageZoom';
 
 export default function ProductDetails() {
   const { error, setError, isLoading, setIsLoading, addToCart } = useContext(EcommerceContext);
@@ -53,7 +54,14 @@ export default function ProductDetails() {
                   onClick={() => setSelectedImage(url)}
                 />
               ))}</aside>
-              <img src={selectedImage} alt="Imagem principal do produto" className={styles.mainImage} />
+              <ImageZoom
+                src={selectedImage}
+                alt="Imagem principal do produto"
+                imageContainerClassName={styles.imageContainer}
+                imageClassName={styles.mainImage}
+                magnifyClassName={styles.magnify}
+                zoom={5}
+              />
             </section>
             <aside className={styles.productDetails}>
               <section className={styles.cardTop}>
