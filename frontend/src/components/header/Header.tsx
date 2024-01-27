@@ -2,11 +2,12 @@ import { FormEvent, useContext } from 'react';
 import { FaSearch, FaShoppingCart, FaUser } from 'react-icons/fa';
 import styles from './Header.module.css';
 import EcommerceContext from '../../context/EcommerceContext';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function Header() {
   const { cartAmount } = useContext(EcommerceContext);
   const [, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const getProductByQuery = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
@@ -20,7 +21,7 @@ export default function Header() {
 
   return (
     <header className={styles.header}>
-      <h1 className={styles.title}>E-CommerceX</h1>
+      <h1 className={styles.title} onClick={() => navigate('/')}>E-CommerceX</h1>
       <form className={styles.searchWrapper} onSubmit={getProductByQuery}>
         <input
           type="search"
