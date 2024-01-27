@@ -1,18 +1,48 @@
 import styles from './Products.module.css';
 import { FaCartArrowDown } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { formartPrice, getHightestQuality } from '../../utils/functions';
 import EcommerceContext from '../../context/EcommerceContext';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Header from '../../components/header/Header';
 import ReactPaginate from 'react-paginate';
+import IProduct from '../../interfaces/products.interface';
+import axios, { AxiosError } from 'axios';
+import handleAxiosError from '../../axios/handleAxiosError';
 
 export default function Product() {
-  const { addToCart, products, isLoading, error, getAllProductsByName, offset, setOffset, limit, pageCount } = useContext(EcommerceContext);
+  const { addToCart, isLoading, setIsLoading, error, setError, } = useContext(EcommerceContext);
+  const [products, setProducts] = useState<IProduct[]>([]);
+  const [pageCount, setPageCount] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const limit = 50;
+  const maxOffset = 900;
+  const search = searchParams.get('search') || 'Iphone';
+  const page = Number(searchParams.get('page')) || 1;
+  const offset = (page * limit) - limit;
 
   useEffect(() => {
-    getAllProductsByName();
-  }, [offset]);
+    const getAllProductsByName = async (query: string, offset: number, limit: number, maxOffset: number): Promise<void> => {
+      try {
+        setIsLoading(true);
+        const API_URL = `${import.meta.env.VITE_ML_SEARCH_URL}?q=${query}&offset=${offset}&limit=${limit}`;
+        const { data: { results, paging: { total } } } = await axios.get(API_URL);
+        if (!results.length) {
+          setError('Nenhum produto encontrado');
+        } else {
+          setError(null);
+          setProducts(results);
+          setPageCount(Math.ceil(Math.min(total / limit, maxOffset / limit)));
+        }
+      } catch (error) {
+        handleAxiosError(error as AxiosError, setError);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    getAllProductsByName(search, offset, limit, maxOffset);
+  }, [searchParams]);
 
   return (
     <>
@@ -53,7 +83,7 @@ export default function Product() {
             <ReactPaginate
               breakLabel=""
               nextLabel="Next"
-              onPageChange={({ selected }) => setOffset((selected + 1) * limit - limit)}
+              onPageChange={({ selected }) => setSearchParams({ search: search, page: String(selected + 1) })}
               pageRangeDisplayed={2}
               marginPagesDisplayed={1}
               pageCount={pageCount}

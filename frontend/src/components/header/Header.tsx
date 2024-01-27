@@ -1,18 +1,19 @@
-import { useState, FormEvent, useContext } from 'react';
+import { FormEvent, useContext } from 'react';
 import { FaSearch, FaShoppingCart, FaUser } from 'react-icons/fa';
 import styles from './Header.module.css';
 import EcommerceContext from '../../context/EcommerceContext';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 export default function Header() {
-  const [search, setSearch] = useState('');
-  const { cartAmount, getAllProductsByName } = useContext(EcommerceContext);
+  const { cartAmount } = useContext(EcommerceContext);
+  const [, setSearchParams] = useSearchParams();
 
   const getProductByQuery = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    if (search.trim() !== '') {
-      getAllProductsByName(search.trim());
-    }
+    const formElement = event.target as HTMLFormElement;
+    const inputElement = formElement.elements[0] as HTMLInputElement;
+    const inputValue = inputElement.value.trim();
+    setSearchParams({ search: inputValue, offset: '0' });
   };
 
   const hasLogin = true;
@@ -25,7 +26,6 @@ export default function Header() {
           type="search"
           className={styles.searchBar}
           placeholder='Buscar produtos'
-          onChange={({ target: { value } }) => setSearch(value)}
         />
         <button type="submit" className={styles.searchButton}>
           <FaSearch />
