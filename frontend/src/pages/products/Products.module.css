@@ -143,3 +143,34 @@
     visibility: visible;
   }
 }
+
+@media (width <= 768px) {
+  .cardContainer {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .cardPrice {
+    font-size: 1rem;
+  }
+
+  .cardInstallments {
+    font-size: 0.8rem;
+  }
+
+  .cardBuy {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.5rem;
+  }
+}
+
+@media (width <= 425px) {
+  .cardContainer {
+    margin: 3rem 1rem;
+  }
+}
+
+@media (width <= 394px) {
+  .cardBuy {
+    font-size: 1rem;
+  }
+}
