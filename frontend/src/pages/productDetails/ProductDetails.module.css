@@ -32,12 +32,14 @@
 
 .thumbnails::-webkit-scrollbar {
   background-color: rgb(215 215 215);
+  height: 0.3rem;
   width: 0.3rem;
 }
 
 .thumbnails::-webkit-scrollbar-thumb {
   background-color: grey;
 }
+
 
 .altImages {
   background-color: white;
@@ -184,7 +186,19 @@
   .thumbnails {
     flex-direction: row;
     overflow: auto hidden;
-    padding: 0;
-    width: 100px;
+    padding: 0.5rem 0;
+    width: calc(100vw - 9rem);
+  }
+}
+
+@media (width <= 425px) {
+  .main {
+    padding: 2rem 1rem;
+  }
+
+  .thumbnails {
+    flex-direction: row;
+    overflow: auto hidden;
+    width: calc(100vw - 5rem);
   }
 }
