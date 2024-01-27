@@ -19,6 +19,7 @@ export default function ProductDetails() {
   useEffect(() => {
     const getProductById = async (id: string): Promise<void> => {
       try {
+        setIsLoading(true);
         const { data } = await axios.get<IProduct>(`${import.meta.env.VITE_ML_ITEM_URL}/${id}`);
         setProduct(data);
         setSelectedImage(data.pictures[0]?.url || '');
@@ -33,9 +34,10 @@ export default function ProductDetails() {
     getProductById(id as string);
   }, []);
 
-  if (isLoading) return <p>Loading...</p>;
 
-  if (error) return <p>{error}</p>;
+  if (isLoading) return <p className={styles.message}>Loading...</p>;
+
+  if (error) return <p className={styles.message}>{error}</p>;
 
   return (
     <>
