@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import EcommerceContext from './EcommerceContext';
 import IProduct from '../interfaces/products.interface';
 import { countCartItems } from '../utils/functions';
+import { toast } from 'react-toastify';
 
 export default function EcommerceProvider({ children }: { children: ReactNode }) {
   const [cartAmount, setCartAmount] = useState<number>(0);
@@ -19,6 +20,10 @@ export default function EcommerceProvider({ children }: { children: ReactNode })
     }
     localStorage.setItem('cart', JSON.stringify(cartItens));
     setCartAmount(countCartItems(cartItens));
+    toast.success('Item adicionado ao carrinho!', {
+      position: 'top-left',
+      autoClose: 2000,
+    });
   };
 
   useEffect(() => {
