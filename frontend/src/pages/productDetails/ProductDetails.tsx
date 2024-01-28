@@ -1,7 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
-import handleAxiosError from '../../axios/handleAxiosError';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import IProduct from '../../interfaces/products.interface';
 import EcommerceContext from '../../context/EcommerceContext';
 import styles from './ProductDetails.module.css';
@@ -26,7 +25,7 @@ export default function ProductDetails() {
         setError(null);
       } catch (error) {
         setProduct(null);
-        handleAxiosError(error as AxiosError, setError);
+        setError('Não foi possível carregar o produto :(');
       } finally {
         setIsLoading(false);
       }
