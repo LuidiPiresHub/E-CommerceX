@@ -81,7 +81,7 @@
   width: 100%;
 }
 
-.magnify {
+.magnifier {
   border: 2px solid grey;
   border-radius: 50%;
   height: 200px;
@@ -203,6 +203,9 @@
     margin-top: 2rem;
   }
 
+  .magnifier {
+    display: none;
+  }
 }
 
 @media (width <= 600px) {

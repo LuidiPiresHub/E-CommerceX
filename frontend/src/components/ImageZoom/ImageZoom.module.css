@@ -4,3 +4,9 @@
   height: 100px;
   width: 100px;
 }
+
+@media (width <= 768px) {
+  .magnifier {
+    display: none;
+  }
+}

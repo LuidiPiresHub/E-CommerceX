@@ -61,7 +61,7 @@ export default function ProductDetails() {
                 alt="Imagem principal do produto"
                 imageContainerClassName={styles.imageContainer}
                 imageClassName={styles.mainImage}
-                magnifyClassName={styles.magnify}
+                magnifyClassName={styles.magnifier}
                 zoom={5}
               />
             </section>
