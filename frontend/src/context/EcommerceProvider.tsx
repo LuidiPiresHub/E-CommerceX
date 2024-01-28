@@ -8,8 +8,9 @@ export default function EcommerceProvider({ children }: { children: ReactNode })
   const [error, setError] = useState<null | string>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   
+  const cartItens = JSON.parse(localStorage.getItem('cart')!) || [];
+
   const addToCart = (product: IProduct): void => {
-    const cartItens = JSON.parse(localStorage.getItem('cart')!) || [];
     const existingProductIndex = cartItens.findIndex((item: IProduct) => item.id === product.id);
     if (existingProductIndex !== -1) {
       cartItens[existingProductIndex].quantity += 1;
@@ -21,7 +22,6 @@ export default function EcommerceProvider({ children }: { children: ReactNode })
   };
 
   useEffect(() => {
-    const cartItens = JSON.parse(localStorage.getItem('cart')!) || [];
     setCartAmount(countCartItems(cartItens));
   }, []);
 

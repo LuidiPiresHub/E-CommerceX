@@ -49,6 +49,11 @@ export default function Cart() {
     }));
   };
 
+  const clearCart = (): void => {
+    setCartAmount(0);
+    setCart([]);
+  };
+
   const cartItemCount = countCartItems(cart);
   const displayText = cartItemCount === 1 ? `${cartItemCount} item total` : `${cartItemCount} itens totais`;
 
@@ -98,7 +103,7 @@ export default function Cart() {
           <span className={styles.checkoutAmount}>{displayText}</span>
           <span className={styles.checkoutPrice}>{formartPrice(calcCartItemsPrice(cart))}</span>
         </div>
-        <button type='button' className={`${styles.checkoutBtn} ${styles.cleanCartBtn}`}>Limpar Carrinho</button>
+        <button type='button' className={`${styles.checkoutBtn} ${styles.cleanCartBtn}`} onClick={clearCart} >Limpar Carrinho</button>
         <div className={styles.finish}>
           <span className={styles.totalPrice}>{`Total: ${formartPrice(calcCartItemsPrice(cart))}`}</span>
           <button type='button' className={`${styles.checkoutBtn} ${styles.btnCheckout}`} onClick={() => navigate('/checkout')}>Continuar a Compra</button>
