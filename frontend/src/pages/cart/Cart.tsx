@@ -7,6 +7,7 @@ import IProduct from '../../interfaces/products.interface';
 import { FaLongArrowAltLeft } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import emptyCart from '../../assets/images/empty-cart.png';
+import Swal from 'sweetalert2';
 
 export default function Cart() {
   const [cart, setCart] = useState<IProduct[]>([]);
@@ -50,9 +51,29 @@ export default function Cart() {
   };
 
   const clearCart = (): void => {
-    setCartAmount(0);
-    setCart([]);
+    if (cart.length) {
+      Swal.fire({
+        title: 'Tem certeza?',
+        text: 'Você não poderá recuperar o carrinho depois de limpar.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sim, limpe!',
+        cancelButtonText: 'Não, cancele!',
+        reverseButtons: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+      }).then(({ isConfirmed, dismiss }) => {
+        if (isConfirmed) {
+          Swal.fire('Limpo!', 'Seu carrinho foi limpo.', 'success');
+          setCart([]);
+          setCartAmount(0);
+        } else if (dismiss === Swal.DismissReason.cancel) {
+          Swal.fire('Cancelado', 'Seu carrinho está seguro :)', 'error');
+        }
+      });
+    }
   };
+
 
   const cartItemCount = countCartItems(cart);
   const displayText = cartItemCount === 1 ? `${cartItemCount} item total` : `${cartItemCount} itens totais`;
@@ -103,7 +124,7 @@ export default function Cart() {
           <span className={styles.checkoutAmount}>{displayText}</span>
           <span className={styles.checkoutPrice}>{formartPrice(calcCartItemsPrice(cart))}</span>
         </div>
-        <button type='button' className={`${styles.checkoutBtn} ${styles.cleanCartBtn}`} onClick={clearCart} >Limpar Carrinho</button>
+        <button type='button' className={`${styles.checkoutBtn} ${styles.cleanCartBtn}`} onClick={clearCart}>Limpar Carrinho</button>
         <div className={styles.finish}>
           <span className={styles.totalPrice}>{`Total: ${formartPrice(calcCartItemsPrice(cart))}`}</span>
           <button type='button' className={`${styles.checkoutBtn} ${styles.btnCheckout}`} onClick={() => navigate('/checkout')}>Continuar a Compra</button>
