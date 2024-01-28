@@ -53,11 +53,11 @@
 
 
 .altImages {
+  aspect-ratio: 1/1;
   background-color: white;
+  border: 2px solid transparent;
   border-radius: 5px;
   cursor: pointer;
-  height: 100%;
-  height: 60px;
   object-fit: contain;
   width: 60px;
 }
@@ -71,14 +71,13 @@
   border-radius: 5px;
   display: flex;
   object-fit: contain;
-  width: 500px;
 }
 
 .mainImage {
   cursor: none;
-  height: 100%;
+  height: 500px;
   object-fit: contain;
-  width: 100%;
+  width: 500px;
 }
 
 .magnifier {
@@ -171,7 +170,8 @@
     gap: 2rem;
   }
 
-  .imageContainer {
+  .mainImage {
+    height: 300px;
     width: 300px;
   }
 }
@@ -183,8 +183,13 @@
   }
 
   .imageContainer {
+    align-items: center;
     flex: 1;
-    width: 200px;
+    justify-content: center;
+  }
+  
+  .mainImage {
+    flex: 1;
   }
 
   .cardTop {
