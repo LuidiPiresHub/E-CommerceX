@@ -33,6 +33,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  height: 100%;
   width: 100%;
 }
 
@@ -140,7 +141,7 @@
   }
 
   .cardBuy {
-    visibility: visible;
+    display: none;
   }
 }
 
@@ -156,21 +157,10 @@
   .cardInstallments {
     font-size: 0.8rem;
   }
-
-  .cardBuy {
-    font-size: 0.7rem;
-    padding: 0.3rem 0.5rem;
-  }
 }
 
 @media (width <= 425px) {
   .cardContainer {
     margin: 3rem 1rem;
-  }
-}
-
-@media (width <= 394px) {
-  .cardBuy {
-    font-size: 1rem;
   }
 }
