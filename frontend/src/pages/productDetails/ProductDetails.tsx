@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import IProduct from '../../interfaces/products.interface';
+import { IProductDetail } from '../../interfaces/products.interface';
 import EcommerceContext from '../../context/EcommerceContext';
 import styles from './ProductDetails.module.css';
 import { formartPrice } from '../../utils/functions';
@@ -12,16 +12,16 @@ import ImageZoom from '../../components/ImageZoom/ImageZoom';
 export default function ProductDetails() {
   const { error, setError, isLoading, setIsLoading, addToCart } = useContext(EcommerceContext);
   const { id } = useParams<{ id: string }>();
-  const [product, setProduct] = useState<IProduct | null>(null);
+  const [product, setProduct] = useState<IProductDetail | null>(null);
   const [selectedImage, setSelectedImage] = useState<string>('');
 
   useEffect(() => {
-    const getProductById = async (id: string): Promise<void> => {
+    const getProductById = async (productId: string): Promise<void> => {
       try {
         setIsLoading(true);
-        const { data } = await axios.get<IProduct>(`${import.meta.env.VITE_ML_ITEM_URL}/${id}`);
-        setProduct(data);
-        setSelectedImage(data.pictures[0]?.url || '');
+        const { data: { id, title, price, thumbnail, pictures } } = await axios.get<IProductDetail>(`${import.meta.env.VITE_ML_ITEM_URL}/${productId}`);
+        setProduct({ id, title, price, thumbnail, pictures });
+        setSelectedImage(pictures[0].url);
         setError(null);
       } catch (error) {
         setProduct(null);
@@ -33,6 +33,10 @@ export default function ProductDetails() {
     getProductById(id as string);
   }, []);
 
+  const handleCartAdd = () => {
+    const { id, title, price, thumbnail } = product!;
+    addToCart({ id, title, price, thumbnail });
+  };
 
   if (isLoading) return <p className={styles.message}>Loading...</p>;
 
@@ -89,7 +93,7 @@ export default function ProductDetails() {
               <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, similique quisquam aperiam pariatur ratione necessitatibus eaque dolorem vero deleniti officiis, blanditiis eos! Rem dignissimos placeat autem aliquid numquam harum tempora.</p>
               <footer className={styles.buttonsContainer}>
                 <Link to='/checkout' className={`${styles.btn} ${styles.buyBtn}`}>Comprar agora</Link>
-                <button type='button' onClick={() => addToCart(product)} className={`${styles.btn} ${styles.addCartBtn}`}>Adicionar ao carrinho</button>
+                <button type='button' onClick={handleCartAdd} className={`${styles.btn} ${styles.addCartBtn}`}>Adicionar ao carrinho</button>
               </footer>
             </aside>
           </div>

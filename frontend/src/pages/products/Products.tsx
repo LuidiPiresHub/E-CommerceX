@@ -6,9 +6,10 @@ import EcommerceContext from '../../context/EcommerceContext';
 import { useContext, useEffect, useState } from 'react';
 import Header from '../../components/header/Header';
 import ReactPaginate from 'react-paginate';
-import IProduct from '../../interfaces/products.interface';
+import { IProduct } from '../../interfaces/products.interface';
 import axios, { AxiosError } from 'axios';
 import handleAxiosError from '../../axios/handleAxiosError';
+import { IMercadoLivreResponse } from '../../interfaces/mercadoLivre.interfaces';
 
 export default function Product() {
   const { addToCart, isLoading, setIsLoading, error, setError, } = useContext(EcommerceContext);
@@ -27,12 +28,20 @@ export default function Product() {
       try {
         setIsLoading(true);
         const API_URL = `${import.meta.env.VITE_ML_SEARCH_URL}?q=${query}&offset=${offset}&limit=${limit}`;
-        const { data: { results, paging: { total } } } = await axios.get(API_URL);
+        const { data: { results, paging: { total } } } = await axios.get<IMercadoLivreResponse>(API_URL);
+
+        const mappedProducts: IProduct[] = results.map((product: IProduct) => ({
+          id: product.id,
+          title: product.title,
+          price: product.price,
+          thumbnail: product.thumbnail,
+        }));
+
         if (!results.length) {
           setError('Nenhum produto encontrado');
         } else {
           setError(null);
-          setProducts(results);
+          setProducts(mappedProducts);
           setPageCount(Math.ceil(Math.min(total / limit, maxOffset / limit)));
         }
       } catch (error) {

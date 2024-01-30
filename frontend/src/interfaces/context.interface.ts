@@ -1,7 +1,7 @@
-import IProduct from './products.interface';
+import { IProduct } from './products.interface';
 import { Dispatch, SetStateAction } from 'react';
 
-interface IContext {
+export interface IContext {
   cartAmount: number;
   setCartAmount: Dispatch<SetStateAction<number>>;
   error: null | string;
@@ -10,5 +10,3 @@ interface IContext {
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   addToCart: (product: IProduct) => void;
 }
-
-export default IContext;

@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react';
 import EcommerceContext from './EcommerceContext';
-import IProduct from '../interfaces/products.interface';
+import { IProduct } from '../interfaces/products.interface';
 import { countCartItems } from '../utils/functions';
 import { toast } from 'react-toastify';
 
@@ -8,7 +8,7 @@ export default function EcommerceProvider({ children }: { children: ReactNode })
   const [cartAmount, setCartAmount] = useState<number>(0);
   const [error, setError] = useState<null | string>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  
+
   const cartItens = JSON.parse(localStorage.getItem('cart')!) || [];
 
   const addToCart = (product: IProduct): void => {
@@ -29,7 +29,6 @@ export default function EcommerceProvider({ children }: { children: ReactNode })
   useEffect(() => {
     setCartAmount(countCartItems(cartItens));
   }, []);
-
 
   const globalContent = {
     cartAmount,

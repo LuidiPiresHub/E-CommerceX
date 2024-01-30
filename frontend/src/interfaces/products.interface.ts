@@ -1,15 +1,17 @@
-interface IPictures {
-  id: string;
-  url: string;
-}
-
-interface IProduct {
+export interface IProduct {
   id: string;
   title: string;
   price: number;
   thumbnail: string;
-  quantity?: number;
-  pictures: IPictures[];
 }
 
-export default IProduct;
+export interface IProductDetail extends IProduct {
+  pictures: {
+    id: string;
+    url: string;
+  }[];
+}
+
+export interface IProductCart extends IProduct {
+  quantity: number;
+}

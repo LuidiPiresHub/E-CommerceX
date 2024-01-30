@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import IContext from '../interfaces/context.interface';
+import { IContext } from '../interfaces/context.interface';
 
 const EcommerceContext = createContext({} as IContext);
 
