@@ -1,4 +1,4 @@
-import { IProduct } from './products.interface';
+import { IProduct, IProductCart } from './products.interface';
 import { Dispatch, SetStateAction } from 'react';
 
 export interface IContext {
@@ -9,4 +9,5 @@ export interface IContext {
   isLoading: boolean;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   addToCart: (product: IProduct) => void;
+  checkout: (cart: IProductCart[]) => void;
 }
