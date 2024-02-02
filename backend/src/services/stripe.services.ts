@@ -1,32 +1,11 @@
 import { IStripeServices } from '../interfaces/stripe.interface';
 import { Stripe } from 'stripe';
 import dotenv from 'dotenv';
+import { IProduct } from '../interfaces/stripe.interface';
+import { createLineItems } from '../utils/stripeFunctions';
 dotenv.config();
 
 const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY!);
-
-interface IProduct {
-  id: string;
-  title: string;
-  price: number | string;
-  thumbnail: string;
-  quantity: number;
-}
-
-const createLineItems = (data: IProduct[]) => data.map((product) => ({
-  price_data: {
-    currency: 'brl',
-    product_data: {
-      name: product.title,
-      images: [product.thumbnail],
-      metadata: {
-        productId: product.id,
-      },
-    },
-    unit_amount: parseInt(product.price as string) * 100,
-  },
-  quantity: product.quantity,
-}));
 
 const createStripeCheckoutSession = async (data: IProduct[]): Promise<IStripeServices> => {
   try {
