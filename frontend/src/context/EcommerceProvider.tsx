@@ -40,7 +40,7 @@ export default function EcommerceProvider({ children }: { children: ReactNode })
       } catch (error) {
         const errorMessage = (error as AxiosError).message === 'Network Error'
           ? 'Erro de conexão com o servidor'
-          : (error as IBackendResponseError).response.data.message;
+          : (error as IBackendResponseError).response.data.message || 'Ocorreu um erro interno';
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
