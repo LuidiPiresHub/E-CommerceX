@@ -3,7 +3,6 @@
   display: flex;
   flex-direction: column;
   font-size: 2rem;
-  font-weight: 600;
   gap: 1rem;
   justify-content: center;
   min-height: 100vh;

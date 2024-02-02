@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { IProductDetail } from '../../interfaces/products.interface';
@@ -10,7 +10,7 @@ import { FaStar, FaRegHeart } from "react-icons/fa";
 import ImageZoom from '../../components/ImageZoom/ImageZoom';
 
 export default function ProductDetails() {
-  const { error, setError, isLoading, setIsLoading, addToCart } = useContext(EcommerceContext);
+  const { error, setError, isLoading, setIsLoading, addToCart, checkout } = useContext(EcommerceContext);
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<IProductDetail | null>(null);
   const [selectedImage, setSelectedImage] = useState<string>('');
@@ -38,7 +38,7 @@ export default function ProductDetails() {
     addToCart({ id, title, price, thumbnail });
   };
 
-  if (isLoading) return <p className={styles.message}>Loading...</p>;
+  if (isLoading) return <h1 className={styles.message}>Carregando...</h1>;
 
   if (error) return <p className={styles.message}>{error}</p>;
 
@@ -92,7 +92,7 @@ export default function ProductDetails() {
               <h4>O que você precisa saber sobre este produto:</h4>
               <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, similique quisquam aperiam pariatur ratione necessitatibus eaque dolorem vero deleniti officiis, blanditiis eos! Rem dignissimos placeat autem aliquid numquam harum tempora.</p>
               <footer className={styles.buttonsContainer}>
-                <Link to='/checkout' className={`${styles.btn} ${styles.buyBtn}`}>Comprar agora</Link>
+                <button onClick={() => checkout([{ ...product, quantity: 1 }])} className={`${styles.btn} ${styles.buyBtn}`}>Comprar agora</button>
                 <button type='button' onClick={handleCartAdd} className={`${styles.btn} ${styles.addCartBtn}`}>Adicionar ao carrinho</button>
               </footer>
             </aside>
