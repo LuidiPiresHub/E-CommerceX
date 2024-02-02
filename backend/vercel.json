@@ -11,5 +11,8 @@
       "src": "/(.*)",
       "dest": "src/server.ts"
     }
-  ]
+  ],
+  "dependencies": {
+    "mysql2": "^3.9.1"
+  }
 }
