@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint src/**/*.ts --fix",
-    "build": "tsc",
+    "vercel-build": "tsc",
     "db:reset": "npm run build && sequelize db:drop && sequelize db:create && sequelize db:migrate && sequelize db:seed:all",
     "dev": "nodemon --exec ts-node src/server.ts"
   },
