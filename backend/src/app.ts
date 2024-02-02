@@ -11,6 +11,7 @@ app.use(cors());
 app.get('/', (_req: Request, res: Response) => res.json({ message: 'Hello World' }));
 
 app.use('/products', routes.productRoutes);
+app.use('/stripe', routes.stripeRoutes);
 
 app.use(handleError);
 
