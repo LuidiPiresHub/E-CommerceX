@@ -161,12 +161,16 @@
 }
 
 .checkoutBtn {
+  align-items: center;
   border: none;
   border-radius: 0.5rem;
   color: white;
   cursor: pointer;
+  display: flex;
   font-size: 1.2rem;
   font-weight: 600;
+  height: 45px;
+  justify-content: center;
   padding: 0.5rem;
   transition: all 0.3s ease-in-out;
 }

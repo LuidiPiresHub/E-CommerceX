@@ -2,21 +2,20 @@ import { useContext, useEffect, useState } from 'react';
 import styles from './Cart.module.css';
 import { calcCartItemsPrice, countCartItems, formartPrice, getHightestQuality } from '../../utils/functions';
 import EcommerceContext from '../../context/EcommerceContext';
-import { useNavigate } from 'react-router-dom';
-import IProduct from '../../interfaces/products.interface';
+import { IProductCart } from '../../interfaces/products.interface';
 import { FaLongArrowAltLeft } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import emptyCart from '../../assets/images/empty-cart.png';
 import Swal from 'sweetalert2';
+import LoadingBtn from '../../components/loadingBtn/LoadingBtn';
 
 export default function Cart() {
-  const [cart, setCart] = useState<IProduct[]>([]);
-  const { setCartAmount } = useContext(EcommerceContext);
-
-  const navigate = useNavigate();
+  const [cart, setCart] = useState<IProductCart[]>([]);
+  const { setCartAmount, setIsLoading, checkout } = useContext(EcommerceContext);
 
   useEffect(() => {
     setCart(JSON.parse(localStorage.getItem('cart')!) || []);
+    setIsLoading(false);
   }, []);
 
   useEffect(() => {
@@ -74,10 +73,8 @@ export default function Cart() {
     }
   };
 
-
   const cartItemCount = countCartItems(cart);
   const displayText = cartItemCount === 1 ? `${cartItemCount} item total` : `${cartItemCount} itens totais`;
-
   const cartHeader = cart.length ? `${cart.length} ${cart.length === 1 ? 'Item' : 'Itens'}` : 'Carrinho vazio';
 
   return (
@@ -127,7 +124,7 @@ export default function Cart() {
         <button type='button' className={`${styles.checkoutBtn} ${styles.cleanCartBtn}`} onClick={clearCart}>Limpar Carrinho</button>
         <div className={styles.finish}>
           <span className={styles.totalPrice}>{`Total: ${formartPrice(calcCartItemsPrice(cart))}`}</span>
-          <button type='button' className={`${styles.checkoutBtn} ${styles.btnCheckout}`} onClick={() => navigate('/checkout')}>Continuar a Compra</button>
+          <LoadingBtn BtnClassName={`${styles.checkoutBtn} ${styles.btnCheckout}`} onClick={() => checkout(cart)}>Continuar a Compra</LoadingBtn>
         </div>
       </aside>
     </main>
