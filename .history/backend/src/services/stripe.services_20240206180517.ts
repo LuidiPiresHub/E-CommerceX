@@ -16,18 +16,16 @@ const createStripeCheckoutSession = async (data: IProduct[]): Promise<IStripeSer
       shipping_address_collection: {
         allowed_countries: ['BR'],
       },
-      phone_number_collection: {
-        enabled: true,
-      },
       shipping_options: [
         {
           shipping_rate_data: {
             type: 'fixed_amount',
             fixed_amount: {
               amount: 0,
-              currency: 'brl',
+              currency: 'usd',
             },
-            display_name: 'Entrega Grátis',
+            display_name: 'Free shipping',
+            // Delivers between 5-7 business days
             delivery_estimate: {
               minimum: {
                 unit: 'business_day',
@@ -61,6 +59,9 @@ const createStripeCheckoutSession = async (data: IProduct[]): Promise<IStripeSer
           },
         },
       ],
+      phone_number_collection: {
+        enabled: true,
+      },
       success_url: `${process.env.CLIENT_URL}/checkout/success`,
       cancel_url: `${process.env.CLIENT_URL}/checkout/cancel`,
     });
