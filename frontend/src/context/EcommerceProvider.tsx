@@ -38,6 +38,7 @@ export default function EcommerceProvider({ children }: { children: ReactNode })
         setIsLoading(false);
         window.location.href = checkoutUrl;
       } catch (error) {
+        console.log(error);
         const errorMessage = (error as AxiosError).message === 'Network Error'
           ? 'Erro de conexão com o servidor'
           : (error as IBackendResponseError).response.data.message || 'Ocorreu um erro interno';
