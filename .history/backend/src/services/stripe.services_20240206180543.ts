@@ -16,9 +16,6 @@ const createStripeCheckoutSession = async (data: IProduct[]): Promise<IStripeSer
       shipping_address_collection: {
         allowed_countries: ['BR'],
       },
-      phone_number_collection: {
-        enabled: true,
-      },
       shipping_options: [
         {
           shipping_rate_data: {
@@ -61,6 +58,9 @@ const createStripeCheckoutSession = async (data: IProduct[]): Promise<IStripeSer
           },
         },
       ],
+      phone_number_collection: {
+        enabled: true,
+      },
       success_url: `${process.env.CLIENT_URL}/checkout/success`,
       cancel_url: `${process.env.CLIENT_URL}/checkout/cancel`,
     });
