@@ -34,9 +34,15 @@ export default function EcommerceProvider({ children }: { children: ReactNode })
       try {
         setIsLoading(true);
         const backendUrl = import.meta.env.VITE_BACKEND_URL;
-        const { data: { message: checkoutUrl } } = await axios.post<IBackendResponse>(`${backendUrl}/stripe/create-checkout-session`, cart);
+        // const { data: { message: checkoutUrl } } = await axios.post<IBackendResponse>(`${backendUrl}/stripe/create-checkout-session`, cart);
+        const res = await axios.post<IBackendResponse>(`${backendUrl}/stripe/create-checkout-session`, cart);
+        console.log(res);
+        const checkoutUrl = res.data.message;
+        console.log(checkoutUrl);
+        
         setIsLoading(false);
-        window.location.href = checkoutUrl;
+        
+        // window.location.href = checkoutUrl;
       } catch (error) {
         console.log(error);
         const errorMessage = (error as AxiosError).message === 'Network Error'
