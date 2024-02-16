@@ -6,7 +6,7 @@ import handleError from './middlewares/handleError';
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: '*' }));
 
 app.get('/', (_req: Request, res: Response) => res.json({ message: 'Hello World' }));
 
