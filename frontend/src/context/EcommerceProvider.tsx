@@ -29,16 +29,14 @@ export default function EcommerceProvider({ children }: { children: ReactNode })
     });
   };
 
-  const checkout = async (cart: IProductCart[]): Promise<void> => {
-    if (cart.length) {
+  const checkout = async (products: IProductCart[]): Promise<void> => {
+    if (products.length) {
       try {
         setIsLoading(true);
         const backendUrl = import.meta.env.VITE_BACKEND_URL;
-        const { data: { message: checkoutUrl } } = await axios.post<IBackendResponse>(`${backendUrl}/stripe/create-checkout-session`, cart);
-        setIsLoading(false);
-        window.location.href = checkoutUrl;
+        const { data: { message: redirectUrl } } = await axios.post<IBackendResponse>(`${backendUrl}/stripe/create-checkout-session`, { products });
+        window.location.href = redirectUrl;
       } catch (error) {
-        console.log(error);
         const errorMessage = (error as AxiosError).message === 'Network Error'
           ? 'Erro de conexão com o servidor'
           : (error as IBackendResponseError).response.data.message || 'Ocorreu um erro interno';
