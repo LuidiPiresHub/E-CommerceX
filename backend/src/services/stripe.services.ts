@@ -1,17 +1,18 @@
-import { IStripeServices } from '../interfaces/stripe.interface';
+import productsService from './products.services';
 import { Stripe } from 'stripe';
-import dotenv from 'dotenv';
-import { IProduct } from '../interfaces/stripe.interface';
 import { createLineItems } from '../utils/stripeFunctions';
+import { IStripeServices } from '../interfaces/stripe.interface';
+import { IStripeProduct } from '../interfaces/stripe.interface';
+import dotenv from 'dotenv';
 dotenv.config();
 
 const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY!);
 
-const createStripeCheckoutSession = async (data: IProduct[]): Promise<IStripeServices> => {
+const createStripeCheckoutSession = async (products: IStripeProduct[]): Promise<IStripeServices> => {
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card', 'boleto'],
-      line_items: createLineItems(data),
+      line_items: createLineItems(products),
       mode: 'payment',
       shipping_address_collection: {
         allowed_countries: ['BR'],
@@ -62,7 +63,7 @@ const createStripeCheckoutSession = async (data: IProduct[]): Promise<IStripeSer
         },
       ],
       success_url: `${process.env.CLIENT_URL}/checkout/success`,
-      cancel_url: `${process.env.CLIENT_URL}/checkout/cancel`,
+      cancel_url: `${process.env.CLIENT_URL}`,
     });
 
     if (!session.url) return { type: 'BAD_REQUEST', message: 'Erro ao criar sessão de pagamento' };
@@ -77,6 +78,29 @@ const createStripeCheckoutSession = async (data: IProduct[]): Promise<IStripeSer
   }
 };
 
+const webhook = async (eventType: string, sessionId: string): Promise<IStripeServices> => {
+  try {
+    if (eventType === 'checkout.session.completed') {
+      const lineItems = await stripe.checkout.sessions.listLineItems(sessionId);
+      const products = await Promise.all(lineItems.data.map(async (item) => {
+        const product = await stripe.products.retrieve(item.price!.product as string);
+        return {
+          id: product.metadata.productId,
+          title: product.name,
+          thumbnail: product.images[0],
+          price: item.price!.unit_amount!,
+          quantity: item.quantity!,
+        };
+      }));
+      return productsService.createProduct(products) as Promise<IStripeServices>;
+    }
+    return { type: 'NOT_FOUND', message: `Evento "${eventType}" não é tratado pelo webhook` };
+  } catch (error) {
+    return { type: 'INTERNAL', message: 'Erro interno no sistema' };
+  }
+};
+
 export default {
   createStripeCheckoutSession,
+  webhook,
 };

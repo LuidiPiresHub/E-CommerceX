@@ -5,10 +5,10 @@ export interface IStripeServices {
   message: string;
 }
 
-export interface IProduct {
+export interface IStripeProduct {
   id: string;
   title: string;
-  price: number | string;
+  price: number;
   thumbnail: string;
   quantity: number;
 }

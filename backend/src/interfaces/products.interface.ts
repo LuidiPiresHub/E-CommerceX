@@ -1,15 +1,12 @@
 import { HttpStatus } from '../utils/mapStatus';
+import { IStripeProduct } from './stripe.interface';
 
-export interface IProduct {
-  id?: number;
-  productName: string;
-  price: number;
-  description: string;
-  productImage: string;
-  sellerId: number;
+export interface IProduct extends IStripeProduct {
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-export interface IService {
+export interface IProductService {
   type: keyof typeof HttpStatus;
   message: string | IProduct[] | IProduct;
 }
