@@ -1,6 +1,6 @@
-import { IProduct } from '../interfaces/stripe.interface';
+import { IStripeProduct } from '../interfaces/stripe.interface';
 
-export const createLineItems = (data: IProduct[]) => data.map((product) => ({
+export const createLineItems = (products: IStripeProduct[]) => products.map((product) => ({
   price_data: {
     currency: 'brl',
     product_data: {
@@ -10,7 +10,7 @@ export const createLineItems = (data: IProduct[]) => data.map((product) => ({
         productId: product.id,
       },
     },
-    unit_amount: parseInt(product.price as string) * 100,
+    unit_amount: product.price * 100,
   },
   quantity: product.quantity,
 }));
