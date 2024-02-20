@@ -1,7 +1,7 @@
 import { Formik, Form, Field, ErrorMessage, FormikValues, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
-import { MyFormValues } from '../../interfaces/register.interface';
+import { RegisterFormValues } from '../../interfaces/register.interface';
 import styles from './Register.module.css';
 
 export default function Register() {
@@ -14,7 +14,7 @@ export default function Register() {
     confirmPassword: Yup.string().oneOf([Yup.ref('password')], 'As senhas precisam ser iguais').required('Campo obrigatório')
   });
 
-  const onSubmit = (values: FormikValues, { resetForm }: FormikHelpers<MyFormValues>) => {
+  const onSubmit = (values: FormikValues, { resetForm }: FormikHelpers<RegisterFormValues>) => {
     console.log('Valores do formulário:', values);
     resetForm();
   };
