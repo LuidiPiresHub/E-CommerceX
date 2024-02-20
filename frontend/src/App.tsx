@@ -7,6 +7,7 @@ import Cart from './pages/cart/Cart';
 import CheckoutCancel from './pages/checkoutCancel/CheckoutCancel';
 import CheckoutSuccess from './pages/checkoutSuccess/CheckoutSuccess';
 import Login from './pages/login/Login';
+import Register from './pages/register/Register';
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Route path='/product/:id' element={<ProductDetail />} />
         <Route path='/cart' element={<Cart />} />
         <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
         <Route path='/checkout/success' element={<CheckoutSuccess />} />
         <Route path='/checkout/cancel' element={<CheckoutCancel />} />
         <Route path='*' element={<NotFound />} />
