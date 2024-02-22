@@ -3,14 +3,14 @@ import EcommerceContext from './EcommerceContext';
 import { IProduct, IProductCart } from '../interfaces/products.interface';
 import { countCartItems } from '../utils/functions';
 import { toast } from 'react-toastify';
-import { IBackendResponse, IBackendResponseError } from '../interfaces/cart.interface';
+import { IBackendCheckoutResponse, IBackendResponseError } from '../interfaces/server.interface';
 import axios, { AxiosError } from 'axios';
 import Swal from 'sweetalert2';
 
 export default function EcommerceProvider({ children }: { children: ReactNode }) {
   const [cartAmount, setCartAmount] = useState<number>(0);
   const [error, setError] = useState<null | string>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const cartItens = JSON.parse(localStorage.getItem('cart')!) || [];
 
@@ -34,7 +34,7 @@ export default function EcommerceProvider({ children }: { children: ReactNode })
       try {
         setIsLoading(true);
         const backendUrl = import.meta.env.VITE_BACKEND_URL;
-        const { data: { message: redirectUrl } } = await axios.post<IBackendResponse>(`${backendUrl}/stripe/create-checkout-session`, { products });
+        const { data: { message: redirectUrl } } = await axios.post<IBackendCheckoutResponse>(`${backendUrl}/stripe/create-checkout-session`, { products }, { withCredentials: true });
         window.location.href = redirectUrl;
       } catch (error) {
         const errorMessage = (error as AxiosError).message === 'Network Error'

@@ -5,4 +5,5 @@ export interface LoadingBtnProps {
   onClick?: () => void;
   BtnClassName?: string;
   loadClassName?: string;
+  type?: 'button' | 'submit' | 'reset';
 }
