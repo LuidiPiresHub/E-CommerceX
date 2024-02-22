@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
 import { RegisterFormValues } from '../../interfaces/register.interface';
 import styles from './Register.module.css';
-import axios from 'axios';
+import api from '../../axios/api';
 import Swal from 'sweetalert2';
 import { IBackendResponseError } from '../../interfaces/server.interface';
 import LoadingBtn from '../../components/loadingBtn/LoadingBtn';
@@ -24,8 +24,7 @@ export default function Register() {
   const onSubmit = async (values: FormikValues, { resetForm }: FormikHelpers<RegisterFormValues>) => {
     try {
       setIsLoading(true);
-      const backendUrl = import.meta.env.VITE_BACKEND_URL;
-      await axios.post(`${backendUrl}/users/register`, values, { withCredentials: true });
+      await api.post('/users/register', { userData: values });
       resetForm();
     } catch (error) {
       const errorMessage = (error as IBackendResponseError).response.data.message;

@@ -4,7 +4,8 @@ import { IProduct, IProductCart } from '../interfaces/products.interface';
 import { countCartItems } from '../utils/functions';
 import { toast } from 'react-toastify';
 import { IBackendCheckoutResponse, IBackendResponseError } from '../interfaces/server.interface';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
+import api from '../axios/api';
 import Swal from 'sweetalert2';
 
 export default function EcommerceProvider({ children }: { children: ReactNode }) {
@@ -33,8 +34,7 @@ export default function EcommerceProvider({ children }: { children: ReactNode })
     if (products.length) {
       try {
         setIsLoading(true);
-        const backendUrl = import.meta.env.VITE_BACKEND_URL;
-        const { data: { message: redirectUrl } } = await axios.post<IBackendCheckoutResponse>(`${backendUrl}/stripe/create-checkout-session`, { products }, { withCredentials: true });
+        const { data: { message: redirectUrl } } = await api.post<IBackendCheckoutResponse>('/stripe/create-checkout-session', { products });
         window.location.href = redirectUrl;
       } catch (error) {
         const errorMessage = (error as AxiosError).message === 'Network Error'
