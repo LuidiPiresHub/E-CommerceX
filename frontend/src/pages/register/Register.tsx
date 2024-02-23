@@ -9,10 +9,13 @@ import { IBackendResponseError } from '../../interfaces/server.interface';
 import LoadingBtn from '../../components/loadingBtn/LoadingBtn';
 import { useContext } from 'react';
 import EcommerceContext from '../../context/EcommerceContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function Register() {
   const INITIAL_USER_DATA = { name: '', email: '', password: '', confirmPassword: '' };
   const { setIsLoading } = useContext(EcommerceContext);
+
+  const navigate = useNavigate();
 
   const validationSchema = Yup.object({
     name: Yup.string().min(3, 'O usuário precisa ter pelo menos 3 caracteres').required('Campo obrigatório'),
@@ -21,17 +24,18 @@ export default function Register() {
     confirmPassword: Yup.string().oneOf([Yup.ref('password')], 'As senhas precisam ser iguais').required('Campo obrigatório')
   });
 
-  const onSubmit = async (values: FormikValues, { resetForm }: FormikHelpers<RegisterFormValues>) => {
+  const register = async (values: FormikValues, { resetForm }: FormikHelpers<RegisterFormValues>) => {
     try {
       setIsLoading(true);
       await api.post('/users/register', { userData: values });
       resetForm();
+      navigate('/');
     } catch (error) {
-      const errorMessage = (error as IBackendResponseError).response.data.message;
+      const errorMessage = (error as IBackendResponseError).response?.data.message;
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: errorMessage,
+        text: errorMessage || 'Ocorreu um erro interno',
       });
     } finally {
       setIsLoading(false);
@@ -43,7 +47,7 @@ export default function Register() {
       <Formik
         initialValues={INITIAL_USER_DATA}
         validationSchema={validationSchema}
-        onSubmit={onSubmit}
+        onSubmit={register}
       >
         <Form className={styles.form}>
           <h1 className={styles.title}>Register</h1>
