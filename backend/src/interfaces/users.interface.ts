@@ -5,7 +5,7 @@ export interface IUserLogin {
   password: string;
 }
 
-export interface IUserRegister extends IUserLogin{
+export interface IUserRegister extends IUserLogin {
   name: string;
 }
 
