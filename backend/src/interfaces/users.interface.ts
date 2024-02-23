@@ -11,5 +11,5 @@ export interface IUserRegister extends IUserLogin {
 
 export interface IUserService {
   type: keyof typeof HttpStatus
-  message: string
+  message: string;
 }

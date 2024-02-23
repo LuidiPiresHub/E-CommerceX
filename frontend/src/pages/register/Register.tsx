@@ -27,7 +27,7 @@ export default function Register() {
   const register = async (values: FormikValues, { resetForm }: FormikHelpers<RegisterFormValues>) => {
     try {
       setIsLoading(true);
-      await api.post('/users/register', { userData: values });
+      await api.post('/user/register', { userData: values });
       resetForm();
       navigate('/');
     } catch (error) {

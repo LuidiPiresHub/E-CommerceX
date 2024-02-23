@@ -22,7 +22,7 @@ export default function Login() {
   const login = async (values: FormikValues, { resetForm }: FormikHelpers<LoginFormValues>) => {
     try {
       setIsLoading(true);
-      await api.post('/users/login', { userData: values });
+      await api.post('/user/login', { userData: values });
       resetForm();
       navigate('/');
     } catch (error) {

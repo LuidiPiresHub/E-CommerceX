@@ -15,10 +15,17 @@ const register = async (user: IUserRegister): Promise<IUserService> => {
         password: await bcrypt.hash(user.password, 10),
       },
     });
-    const { password, ...userWithoutPassword } = data;
-    return { type: 'CREATED', message: generateToken(userWithoutPassword) };
+
+    const userData = {
+      id: data.id,
+      name: data.name,
+      email: data.email,
+    };
+
+    return { type: 'CREATED', message: generateToken(userData) };
   } catch (err) {
     const error = err as PrismaError;
+
     if (error.code === 'P2002') {
       return { type: 'CONFLICT', message: 'Este email já está cadastrado' };
     }
@@ -29,10 +36,17 @@ const register = async (user: IUserRegister): Promise<IUserService> => {
 const login = async (user: IUserLogin): Promise<IUserService> => {
   const data = await prisma.user.findUnique({ where: { email: user.email } });
   if (!data) return { type: 'NOT_FOUND', message: 'Usuário não encontrado' };
+
   const isPasswordValid = await bcrypt.compare(user.password, data.password);
   if (!isPasswordValid) return { type: 'UNAUTHORIZED', message: 'Senha inválida' };
-  const { password, ...userWithoutPassword } = data;
-  return { type: 'OK', message: generateToken(userWithoutPassword) };
+
+  const userData = {
+    id: data.id,
+    name: data.name,
+    email: data.email,
+  };
+
+  return { type: 'OK', message: generateToken(userData) };
 };
 
 export default {

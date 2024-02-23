@@ -14,7 +14,7 @@ app.get('/', (_req: Request, res: Response) => res.json({ message: 'Hello World'
 
 app.use('/products', routes.productRoutes);
 app.use('/stripe', routes.stripeRoutes);
-app.use('/users', routes.usersRoutes);
+app.use('/user', routes.usersRoutes);
 
 app.use(handleError);
 
