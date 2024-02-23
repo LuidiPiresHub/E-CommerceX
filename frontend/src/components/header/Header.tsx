@@ -1,12 +1,14 @@
-import { FormEvent, useContext } from 'react';
-import { FaSearch, FaShoppingCart, FaUser } from 'react-icons/fa';
+import { FormEvent, useContext, useEffect, useState } from 'react';
+import { FaSearch, FaShoppingCart, FaUserCircle } from 'react-icons/fa';
 import styles from './Header.module.css';
 import EcommerceContext from '../../context/EcommerceContext';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import api from '../../axios/api';
 
 export default function Header() {
   const { cartAmount } = useContext(EcommerceContext);
   const [, setSearchParams] = useSearchParams();
+  const [user, setUser] = useState({ name: '', img: '' });
   const navigate = useNavigate();
 
   const getProductByQuery = (event: FormEvent<HTMLFormElement>): void => {
@@ -18,7 +20,14 @@ export default function Header() {
     navigate(`/?search=${inputValue}&offset=0`);
   };
 
-  const hasLogin = true;
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { message } } = await api.get('/user');
+      console.log(message);
+      setUser((prevState) => ({ ...prevState, name: message.name }));
+    };
+    fetchUser();
+  }, []);
 
   return (
     <header className={styles.header}>
@@ -34,12 +43,12 @@ export default function Header() {
         </button>
       </form>
       <section className={styles.sectionWrapper}>
-        <div className={styles.userContainer}>
-          {hasLogin ? <img src='https://images.pexels.com/photos/4050297/pexels-photo-4050297.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940' className={styles.userPhoto} /> : <FaUser className={styles.userIcon} />}
+        <Link to={user.name ? '/options' : '/login'} className={styles.userContainer}>
+          {user.img ? <img src={user.img} className={styles.userPhoto} /> : <FaUserCircle className={styles.userIcon} />}
           <span className={styles.user}>
-            {hasLogin ? 'Olá Usuario123' : 'Fazer Login'}
+            {user.name ? `Olá, ${user.name}` : 'Fazer Login'}
           </span>
-        </div>
+        </Link>
         <Link to='/cart' className={styles.cart}>
           {cartAmount > 0 && (
             <span className={styles.cartAmount}>{cartAmount}</span>

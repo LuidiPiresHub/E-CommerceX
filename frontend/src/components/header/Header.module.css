@@ -68,6 +68,12 @@
   width: 2rem;
 }
 
+.userIcon {
+  border-radius: 50%;
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
 .user {
   font-size: 13px;
 }
