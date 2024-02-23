@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { mapStatus } from '../utils/mapStatus';
 import productsServices from '../services/products.services';
 
-const getAllProducts = async (req: Request, res: Response): Promise<Response> => {
+const getAllProducts = async (_req: Request, res: Response): Promise<Response> => {
   const { type, message } = await productsServices.getAllProducts();
   return res.status(mapStatus(type)).json({ message });
 };

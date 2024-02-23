@@ -1,8 +1,7 @@
 import productsService from './products.services';
 import { Stripe } from 'stripe';
 import { createLineItems } from '../utils/stripeFunctions';
-import { IStripeServices } from '../interfaces/stripe.interface';
-import { IStripeProduct } from '../interfaces/stripe.interface';
+import { IStripeProduct, IStripeServices } from '../interfaces/stripe.interface';
 import dotenv from 'dotenv';
 dotenv.config();
 
