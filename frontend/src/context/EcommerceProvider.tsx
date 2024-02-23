@@ -7,11 +7,13 @@ import { IBackendCheckoutResponse, IBackendResponseError } from '../interfaces/s
 import { AxiosError } from 'axios';
 import api from '../axios/api';
 import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
 
 export default function EcommerceProvider({ children }: { children: ReactNode }) {
   const [cartAmount, setCartAmount] = useState<number>(0);
   const [error, setError] = useState<null | string>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const cartItens = JSON.parse(localStorage.getItem('cart')!) || [];
 
@@ -37,6 +39,9 @@ export default function EcommerceProvider({ children }: { children: ReactNode })
         const { data: { message: redirectUrl } } = await api.post<IBackendCheckoutResponse>('/stripe/create-checkout-session', { products });
         window.location.href = redirectUrl;
       } catch (error) {
+        if ((error as AxiosError).response?.status === 401) {
+          return navigate('/login');
+        }
         const errorMessage = (error as AxiosError).message === 'Network Error'
           ? 'Erro de conexão com o servidor'
           : (error as IBackendResponseError).response.data.message || 'Ocorreu um erro interno';
