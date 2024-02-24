@@ -1,4 +1,4 @@
-import { IUserLogin, IUserRegister, IUserService } from '../interfaces/users.interface';
+import { IUserLogin, IUserRegister, IUserService, IUserUpdateProfile } from '../interfaces/users.interface';
 import { PrismaClient } from '@prisma/client';
 import { PrismaError } from '../interfaces/prisma.interface';
 import bcrypt from 'bcrypt';
@@ -20,6 +20,7 @@ const register = async (user: IUserRegister): Promise<IUserService> => {
       id: data.id,
       name: data.name,
       email: data.email,
+      profileImage: data.profileImage,
     };
 
     return { type: 'CREATED', message: generateToken(userData) };
@@ -44,12 +45,29 @@ const login = async (user: IUserLogin): Promise<IUserService> => {
     id: data.id,
     name: data.name,
     email: data.email,
+    profileImage: data.profileImage,
   };
 
   return { type: 'OK', message: generateToken(userData) };
 };
 
+const updateProfile = async (userData: IUserUpdateProfile): Promise<IUserService> => {
+  try {
+    await prisma.user.update({
+      where: { id: userData.id },
+      data: {
+        name: userData.name,
+        profileImage: userData.profileImage,
+      },
+    });
+    return { type: 'OK', message: 'Perfil atualizado com sucesso' };
+  } catch (err) {
+    return { type: 'BAD_REQUEST', message: 'Erro ao atualizar perfil' };
+  }
+};
+
 export default {
   register,
   login,
+  updateProfile,
 };

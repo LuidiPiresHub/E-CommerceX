@@ -9,6 +9,12 @@ export interface IUserRegister extends IUserLogin {
   name: string;
 }
 
+export interface IUserUpdateProfile {
+  id: string;
+  name: string;
+  profileImage: string;
+}
+
 export interface IUserService {
   type: keyof typeof HttpStatus
   message: string;

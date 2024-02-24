@@ -31,8 +31,15 @@ const login = async (req: Request, res: Response): Promise<Response> => {
   return res.status(status).send({ message });
 };
 
+const updateProfile = async (req: Request, res: Response): Promise<Response> => {
+  const { userData } = req.body;
+  const { type, message } = await userServices.updateProfile(userData);
+  return res.status(mapStatus(type)).send({ message });
+};
+
 export default {
   register,
   login,
   getUser,
+  updateProfile,
 };
