@@ -1,15 +1,15 @@
-import { FormEvent, useContext, useEffect, useState } from 'react';
+import { FormEvent, useContext } from 'react';
 import { FaSearch, FaShoppingCart, FaUserCircle } from 'react-icons/fa';
 import styles from './Header.module.css';
 import EcommerceContext from '../../context/EcommerceContext';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import api from '../../axios/api';
+import useAuth from '../../hooks/useAuth';
 
 export default function Header() {
   const { cartAmount } = useContext(EcommerceContext);
   const [, setSearchParams] = useSearchParams();
-  const [user, setUser] = useState({ name: '', img: '' });
   const navigate = useNavigate();
+  const { isAuthenticated, userData, logout } = useAuth();
 
   const getProductByQuery = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
@@ -19,15 +19,6 @@ export default function Header() {
     setSearchParams({ search: inputValue, offset: '0' });
     navigate(`/?search=${inputValue}&offset=0`);
   };
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const { data: { message } } = await api.get('/user');
-      console.log(message);
-      setUser((prevState) => ({ ...prevState, name: message.name }));
-    };
-    fetchUser();
-  }, []);
 
   return (
     <header className={styles.header}>
@@ -43,12 +34,33 @@ export default function Header() {
         </button>
       </form>
       <section className={styles.sectionWrapper}>
-        <Link to={user.name ? '/options' : '/login'} className={styles.userContainer}>
-          {user.img ? <img src={user.img} className={styles.userPhoto} /> : <FaUserCircle className={styles.userIcon} />}
-          <span className={styles.user}>
-            {user.name ? `Olá, ${user.name}` : 'Fazer Login'}
-          </span>
-        </Link>
+        <section>
+          {isAuthenticated && userData ? (
+            <div className={styles.userWrapper}>
+              {userData.profileImage ? (
+                <img src={userData.profileImage} alt="" className={styles.userIcon} />
+              ) : (
+                <FaUserCircle className={styles.userIcon} />
+              )}
+              <div>
+                <span className={styles.currentUser}>{`Olá, ${userData.name}`}</span>
+                <div className={styles.userRedirect}>
+                  <Link to='/profile'>Minha conta</Link>
+                  <span>|</span>
+                  <button onClick={logout} className={styles.logoutBtn}>Sair</button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className={styles.userWrapper}>
+              <FaUserCircle className={styles.userIcon} />
+              <div className={styles.redirect}>
+                <span>Faça <Link to="/login" className={styles.link}>Login</Link> ou</span>
+                <span>Crie seu <Link to="/register" className={styles.link}>Cadastro</Link></span>
+              </div>
+            </div>
+          )}
+        </section>
         <Link to='/cart' className={styles.cart}>
           {cartAmount > 0 && (
             <span className={styles.cartAmount}>{cartAmount}</span>
@@ -56,6 +68,6 @@ export default function Header() {
           <FaShoppingCart className={styles.cartIcon} />
         </Link>
       </section>
-    </header>
+    </header >
   );
 }
