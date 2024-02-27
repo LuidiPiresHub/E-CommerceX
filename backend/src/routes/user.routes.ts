@@ -8,5 +8,6 @@ usersRouter.get('/', validateToken, usersController.getUser);
 usersRouter.post('/register', usersController.register);
 usersRouter.post('/login', usersController.login);
 usersRouter.patch('/profile', usersController.updateProfile);
+usersRouter.post('/logout', validateToken, usersController.logout);
 
 export default usersRouter;
