@@ -4,6 +4,11 @@ import cookieParser from 'cookie-parser';
 import 'express-async-errors';
 import routes from './routes';
 import handleError from './middlewares/handleError';
+import dotenv from 'dotenv';
+dotenv.config();
+
+console.log(process.env.CLIENT_URL);
+
 
 const app = express();
 app.use(cors({ credentials: true, origin: process.env.CLIENT_URL }));
