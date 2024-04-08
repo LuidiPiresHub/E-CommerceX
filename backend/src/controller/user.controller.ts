@@ -2,8 +2,7 @@ import { CookieOptions, Request, Response } from 'express';
 import userServices from '../services/user.services';
 import { mapStatus } from '../utils/mapStatus';
 
-// const cookieConfig: CookieOptions = { httpOnly: true, sameSite: 'strict', secure: true };
-const cookieConfig: CookieOptions = { httpOnly: true };
+const cookieConfig: CookieOptions = { httpOnly: true, sameSite: 'strict', secure: true };
 
 const getUser = async (req: Request, res: Response): Promise<Response> => {
   const { user } = req.body;
