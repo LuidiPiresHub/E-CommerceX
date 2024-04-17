@@ -2,7 +2,7 @@ import { CookieOptions, Request, Response } from 'express';
 import userServices from '../services/user.services';
 import { mapStatus } from '../utils/mapStatus';
 
-const cookieConfig: CookieOptions = { httpOnly: true, sameSite: 'strict', secure: true };
+const cookieConfig: CookieOptions = { httpOnly: true, sameSite: 'none', secure: true };
 
 const getUser = async (req: Request, res: Response): Promise<Response> => {
   const { user } = req.body;
@@ -15,8 +15,7 @@ const register = async (req: Request, res: Response): Promise<Response> => {
   const { type, message } = await userServices.register(userData);
   const status = mapStatus(type);
   if (status === 201) {
-    return res.cookie('token', message, cookieConfig)
-      .status(status).json({ message: 'Usuário criado com sucesso' });
+    return res.cookie('token', message, cookieConfig).send();
   }
   return res.status(status).json({ message });
 };
@@ -39,7 +38,7 @@ const updateProfile = async (req: Request, res: Response): Promise<Response> => 
 };
 
 const logout = async (_req: Request, res: Response): Promise<Response> => {
-  return res.clearCookie('token').status(200).json({ message: 'Usuário deslogado com sucesso' });
+  return res.clearCookie('token', cookieConfig).send();
 };
 
 export default {
