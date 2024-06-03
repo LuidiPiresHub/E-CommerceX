@@ -7,7 +7,7 @@ const handleAxiosError = (error: AxiosError, setError: Dispatch<SetStateAction<s
     if (status >= 400 && status < 500) {                          // Tratamento para erro de autenticação
       const message = (data as { message: string }).message;     
       setError(message);                                         
-  } else {                                                        // Outros tratamentos de erro
+    } else {                                                        // Outros tratamentos de erro
       setError('Ocorreu um problema interno. Tente novamente.'); 
     }                                                            
   } else if (error.request) {                                     // A requisição foi feita, mas não houve resposta do servidor
