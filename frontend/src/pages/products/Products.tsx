@@ -84,7 +84,7 @@ export default function Product() {
                   </Link>
                   <button type='button' onClick={() => addToCart(product)} className={styles.cardBuy}>
                     Adicionar ao carrinho
-                    {<FaCartArrowDown />}
+                    <FaCartArrowDown />
                   </button>
                 </div>
               ))}
