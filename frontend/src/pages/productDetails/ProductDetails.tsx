@@ -1,46 +1,86 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { IProductDetail } from '../../interfaces/products.interface';
 import EcommerceContext from '../../context/EcommerceContext';
 import styles from './ProductDetails.module.css';
 import { formartPrice } from '../../utils/functions';
 import Header from '../../components/header/Header';
-import { FaStar, FaRegHeart } from "react-icons/fa";
+import { FaStar, FaRegHeart, FaHeart } from 'react-icons/fa';
 import ImageZoom from '../../components/ImageZoom/ImageZoom';
+import api from '../../axios/api';
+import useAuth from '../../hooks/useAuth';
 
 export default function ProductDetails() {
   const { error, setError, isLoading, setIsLoading, addToCart, checkout } = useContext(EcommerceContext);
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<IProductDetail | null>(null);
   const [selectedImage, setSelectedImage] = useState<string>('');
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
-  useEffect(() => {
-    const getProductById = async (productId: string): Promise<void> => {
-      try {
-        setIsLoading(true);
-        const { data: { id, title, price, thumbnail, pictures } } = await axios.get<IProductDetail>(`${import.meta.env.VITE_ML_ITEM_URL}/${productId}`);
-        setProduct({ id, title, price, thumbnail, pictures });
-        setSelectedImage(pictures[0].url);
-        setError(null);
-      } catch (error) {
-        setProduct(null);
-        setError('Não foi possível carregar o produto :(');
-      } finally {
-        setIsLoading(false);
+  const getProductById = async (productId: string): Promise<void> => {
+    try {
+      setIsLoading(true);
+      const { data: { id, title, price, thumbnail, pictures } } = await axios.get<IProductDetail>(`${import.meta.env.VITE_ML_ITEM_URL}/${productId}`);
+      setProduct({ id, title, price, thumbnail, pictures });
+      setSelectedImage(pictures[0].url);
+      if (isAuthenticated) {
+        const { data: { message }} = await api.get(`products/favorite/${id}`);
+        setIsFavorite(message);
       }
-    };
-    getProductById(id as string);
-  }, []);
+      setError(null);
+    } catch (error) {
+      setProduct(null);
+      setError('Não foi possível carregar o produto :(');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleCartAdd = () => {
     const { id, title, price, thumbnail } = product!;
     addToCart({ id, title, price, thumbnail });
   };
 
+  const toggleFavorite = async () => {
+    try {
+      if (isFavorite) {
+        setIsFavorite(false);
+        await api.delete(`/products/favorite/${product!.id}`);
+      } else {
+        setIsFavorite(true);
+        await api.post('/products/favorite', {
+          product: {
+            id: product!.id,
+            title: product!.title,
+            price: product!.price,
+            thumbnail: product!.thumbnail,
+          }
+        });
+      }
+    } catch (error) {
+      if ((error as AxiosError).response?.status === 401) {
+        navigate('/login');
+      } else {
+        setError('Falha ao atualizar favoritos.');
+      }
+    }
+  };
+
+  useEffect(() => {
+    getProductById(id as string);
+  }, [isAuthenticated]);
+
   if (isLoading) return <h1 className={styles.message}>Carregando...</h1>;
 
-  if (error) return <p className={styles.message}>{error}</p>;
+  if (error) return (
+    <>
+      <Header />
+      <p className={styles.message}>{error}</p>
+    </>
+  );
 
   return (
     <>
@@ -71,7 +111,11 @@ export default function ProductDetails() {
             <aside className={styles.productDetails}>
               <section className={styles.cardTop}>
                 <p>Novo | +100 vendidos</p>
-                <FaRegHeart className={styles.heart} />
+                {isFavorite ? (
+                  <FaHeart className={styles.heart} onClick={toggleFavorite} />
+                ) : (
+                  <FaRegHeart className={styles.heart} onClick={toggleFavorite} />
+                )}
               </section>
               <h1>{product.title}</h1>
               <section className={styles.ratingContainer}>

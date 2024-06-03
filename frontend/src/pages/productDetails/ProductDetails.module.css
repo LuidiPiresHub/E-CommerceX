@@ -5,13 +5,14 @@
   font-size: 2rem;
   gap: 1rem;
   justify-content: center;
-  min-height: 100vh;
+  min-height: calc(100vh - 6rem);
 }
 
 .main {
   align-items: center;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
   padding: 3rem;
 }
 
