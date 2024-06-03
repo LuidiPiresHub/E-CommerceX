@@ -1,44 +1,33 @@
-import { FormEvent, useContext, useState } from 'react';
-import { FaSearch, FaShoppingCart, FaUserCircle, FaHouseUser, FaHeart, FaShoppingBag } from 'react-icons/fa';
-import styles from './Header.module.css';
-import EcommerceContext from '../../context/EcommerceContext';
+import { FaHeart, FaSearch, FaShoppingBag, FaShoppingCart } from 'react-icons/fa';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { FormEvent, useContext } from 'react';
+import EcommerceContext from '../../context/EcommerceContext';
+import styles from './Header.module.css';
 import useAuth from '../../hooks/useAuth';
-import useWindowWidth from '../../hooks/useWindowWidth';
+import userImg from '../../assets/images/userImg.png';
 
 export default function Header() {
   const { cartAmount } = useContext(EcommerceContext);
   const [, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { isAuthenticated, userData, logout } = useAuth();
-  const [menuIsOpen, setMenuIsOpen] = useState(false);
-  const width = useWindowWidth();
+  const { userData, isLoading } = useAuth();
 
   const getProductByQuery = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    setMenuIsOpen(false);
     const formElement = event.target as HTMLFormElement;
     const inputElement = formElement.elements[0] as HTMLInputElement;
     const inputValue = inputElement.value.trim();
+    if (!inputValue) return;
     setSearchParams({ search: inputValue, offset: '0' });
     navigate(`/?search=${inputValue}&offset=0`);
   };
 
-  const openMobileMenu = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    document.body.style.overflow = !menuIsOpen ? 'hidden' : 'auto';
-    setMenuIsOpen((prevState) => !prevState);
-  };
-
   return (
     <header className={styles.header}>
-      <h1 className={styles.title} onClick={() => navigate('/')}>E-CommerceX</h1>
-      <button className={styles.mobileMenuBtn} onClick={openMobileMenu}>
-        <span className={`${styles.bar} ${menuIsOpen ? styles.barActive : ''}`.trim()}></span>
-        <span className={`${styles.bar} ${menuIsOpen ? styles.barActive : ''}`.trim()}></span>
-        <span className={`${styles.bar} ${menuIsOpen ? styles.barActive : ''}`.trim()}></span>
-      </button>
-      <form className={styles.searchWrapper} onSubmit={getProductByQuery}>
+      <Link to='/'>
+        <h1 className={styles.title}>E-CommerceX</h1>
+      </Link>
+      <form onSubmit={getProductByQuery} className={styles.searchForm}>
         <input
           type='search'
           className={styles.searchBar}
@@ -48,102 +37,43 @@ export default function Header() {
           <FaSearch />
         </button>
       </form>
-      <section className={styles.sectionWrapper}>
-
-        {width > 768 ? (
-        // Desktop
-          <section className={`${menuIsOpen ? styles.menuOpen : styles.menuClosed}`}>
-            {isAuthenticated && userData ? (
-              <div className={styles.userWrapper}>
-                {userData.profileImage ? (
-                  <img src={userData.profileImage} alt='Foto de perfil' className={styles.userIcon} />
-                ) : (
-                  <FaUserCircle className={styles.userIcon} />
-                )}
-                <div>
-                  <span className={styles.currentUser}>{`Olá, ${userData.name}`}</span>
-                  <div className={styles.userRedirect}>
-                    <Link to='/profile'>Minha conta</Link>
-                    <span>|</span>
-                    <button onClick={logout} className={styles.logoutBtn}>Sair</button>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className={styles.userWrapper}>
-                <FaUserCircle className={styles.userIcon} />
-                <div className={styles.redirect}>
-                  <span className={styles.test}>Faça <Link to='/login' className={styles.link}>Login</Link> ou</span>
-                  <span>Crie seu <Link to='/register' className={styles.link}>Cadastro</Link></span>
-                </div>
-              </div>
-            )}
-          </section>
+      <section className={styles.rightContainer}>
+        {isLoading ? (
+          <span>Carregando...</span>
         ) : (
-        // Mobile
-          <section className={`${styles.sectionWrapper} ${menuIsOpen ? styles.menuOpen : styles.menuClosed}`}>
-            <div className={styles.userContent}>
-              <h1>E-CommerceX</h1>
-              <div className={styles.username}>
-                {isAuthenticated && userData ? (
-                  <>
-                    {userData.profileImage ? (
-                      <img src={userData.profileImage} alt='Foto de perfil' />
-                    ) : (
-                      <FaUserCircle className={styles.userIcon} />
-                    )}
-                    <span className={styles.currentUser}>{`Olá, ${userData.name}`}</span>
-                  </>
-                ) : (
-                  <>
-                    <FaUserCircle className={styles.userIcon} />
-                    <span className={styles.currentUser}>Olá. Faça seu login</span>
-                  </>
-                )}
-              </div>
-              <ul className={styles.ul}>
-                <li>
-                  <FaHouseUser />
-                  <Link to='/profile'>Minha conta</Link>
-                </li>
-                <li>
-                  <FaHeart />
-                  <Link to='/favorites'>Favoritos</Link>
-                </li>
-                <li>
-                  <FaShoppingBag />
-                  <Link to='/purchases'>Meus Pedidos</Link>
-                </li>
-              </ul>
-            </div>
-            <div className={styles.btnWrapper}>
-              {isAuthenticated ? (
-                <button onClick={logout} className={styles.btn}>Sair</button>
-              ) : (
-                <>
-                  <Link to='/login' className={styles.btn}>Login</Link>
-                  <Link to='/register' className={styles.btn}>Cadastro</Link>
-                </>
+          userData ? (
+            <Link to='/profile' className={styles.userProfile}>
+              <img src={userImg} alt='Foto de Perfil' className={styles.userImg} />
+              <p className={styles.userName}>{userData.name}</p>
+            </Link>
+          ) : (
+            <Link to='/login' className={styles.loginLink}>
+              Fazer login
+            </Link>
+          )
+        )}
+        <nav className={styles.routes}>
+          <Link to='/cart' className={styles.link}>
+            <div className={styles.cartContainer}>
+              <FaShoppingCart className={styles.icons} />
+              {cartAmount > 0 && (
+                <span className={styles.cartCount}>
+                  {cartAmount > 99 ? '99+' : cartAmount}
+                </span>
               )}
             </div>
-          </section>
-        )}
-
-        <section className={styles.routesContainer}>
-          <Link to='/cart' className={styles.cart}>
-            {cartAmount > 0 && (
-              <span className={styles.cartAmount}>{cartAmount}</span>
-            )}
-            <FaShoppingCart className={styles.icons} />
+            <p className={styles.linkName}>Carrinho</p>
           </Link>
-          <Link to='/favorites'>
+          <Link to='/favorites' className={styles.link}>
             <FaHeart className={styles.icons} />
+            <p className={styles.linkName}>Favoritos</p>
           </Link>
-          <Link to='/purchases'>
+          <Link to='/purchases' className={styles.link}>
             <FaShoppingBag className={styles.icons} />
+            <p className={styles.linkName}>Minhas Compras</p>
           </Link>
-        </section>
+        </nav>
       </section>
-    </header >
+    </header>
   );
 }
