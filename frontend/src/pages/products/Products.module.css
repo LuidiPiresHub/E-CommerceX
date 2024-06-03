@@ -148,6 +148,7 @@
 @media (width <= 768px) {
   .cardContainer {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    margin: 3rem 0;
   }
 
   .cardPrice {
@@ -161,6 +162,6 @@
 
 @media (width <= 425px) {
   .cardContainer {
-    margin: 3rem 1rem;
+    margin: 3rem 0;
   }
 }
