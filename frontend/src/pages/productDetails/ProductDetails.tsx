@@ -26,16 +26,21 @@ export default function ProductDetails() {
       const { data: { id, title, price, thumbnail, pictures } } = await axios.get<IProductDetail>(`${import.meta.env.VITE_ML_ITEM_URL}/${productId}`);
       setProduct({ id, title, price, thumbnail, pictures });
       setSelectedImage(pictures[0].url);
-      if (isAuthenticated) {
-        const { data: { message }} = await api.get(`products/favorite/${id}`);
-        setIsFavorite(message);
-      }
       setError(null);
     } catch (error) {
       setProduct(null);
       setError('Não foi possível carregar o produto :(');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const checkIfFavorite = async (productId: string) => {
+    try {
+      const { data: { message } } = await api.get(`products/favorite/${productId}`);
+      setIsFavorite(message);
+    } catch (error) {
+      setError('Não foi possível verificar o estado do favorito.');
     }
   };
 
@@ -71,7 +76,13 @@ export default function ProductDetails() {
 
   useEffect(() => {
     getProductById(id as string);
-  }, [isAuthenticated]);
+  }, [id]);
+
+  useEffect(() => {
+    if (isAuthenticated && product) {
+      checkIfFavorite(product.id);
+    }
+  }, [isAuthenticated, product]);
 
   if (isLoading) return <h1 className={styles.message}>Carregando...</h1>;
 
