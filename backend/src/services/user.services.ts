@@ -8,9 +8,9 @@ const prisma = new PrismaClient();
 
 const register = async (user: IUserRegister): Promise<IUserService> => {
   try {
-    const data = await prisma.user.create({
+    const data = await prisma.users.create({
       data: {
-        name: user.name,
+        username: user.name,
         email: user.email,
         password: await bcrypt.hash(user.password, 10),
       },
@@ -18,9 +18,8 @@ const register = async (user: IUserRegister): Promise<IUserService> => {
 
     const userData = {
       id: data.id,
-      name: data.name,
+      name: data.username,
       email: data.email,
-      profileImage: data.profileImage,
     };
 
     return { type: 'CREATED', message: generateToken(userData) };
@@ -35,7 +34,7 @@ const register = async (user: IUserRegister): Promise<IUserService> => {
 };
 
 const login = async (user: IUserLogin): Promise<IUserService> => {
-  const data = await prisma.user.findUnique({ where: { email: user.email } });
+  const data = await prisma.users.findUnique({ where: { email: user.email } });
   if (!data) return { type: 'NOT_FOUND', message: 'Usuário não encontrado' };
 
   const isPasswordValid = await bcrypt.compare(user.password, data.password);
@@ -43,9 +42,8 @@ const login = async (user: IUserLogin): Promise<IUserService> => {
 
   const userData = {
     id: data.id,
-    name: data.name,
+    name: data.username,
     email: data.email,
-    profileImage: data.profileImage,
   };
 
   return { type: 'OK', message: generateToken(userData) };
@@ -53,11 +51,10 @@ const login = async (user: IUserLogin): Promise<IUserService> => {
 
 const updateProfile = async (userData: IUserUpdateProfile): Promise<IUserService> => {
   try {
-    await prisma.user.update({
+    await prisma.users.update({
       where: { id: userData.id },
       data: {
-        name: userData.name,
-        profileImage: userData.profileImage,
+        username: userData.name,
       },
     });
     return { type: 'OK', message: 'Perfil atualizado com sucesso' };
