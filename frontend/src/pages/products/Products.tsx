@@ -24,6 +24,7 @@ export default function Product() {
   const offset = (page * limit) - limit;
 
   useEffect(() => {
+    document.title = 'E-CommerceX - Produtos';
     const getAllProductsByName = async (query: string, offset: number, limit: number, maxOffset: number): Promise<void> => {
       try {
         setIsLoading(true);

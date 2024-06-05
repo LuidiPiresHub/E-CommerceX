@@ -5,7 +5,7 @@ import styles from './Login.module.css';
 import { LoginFormValues } from '../../interfaces/login.interface';
 import { IBackendResponseError } from '../../interfaces/server.interface';
 import EcommerceContext from '../../context/EcommerceContext';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import api from '../../axios/api';
 
@@ -36,6 +36,10 @@ export default function Login() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    document.title = 'E-CommerceX - Login';
+  }, []);
 
   return (
     <main className={styles.main}>

@@ -7,7 +7,7 @@ import api from '../../axios/api';
 import Swal from 'sweetalert2';
 import { IBackendResponseError } from '../../interfaces/server.interface';
 import LoadingBtn from '../../components/loadingBtn/LoadingBtn';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import EcommerceContext from '../../context/EcommerceContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -41,6 +41,10 @@ export default function Register() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    document.title = 'E-CommerceX - Register';
+  }, []);
 
   return (
     <main className={styles.main}>
