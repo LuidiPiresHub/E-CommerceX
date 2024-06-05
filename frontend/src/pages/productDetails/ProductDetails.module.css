@@ -214,6 +214,10 @@
 }
 
 @media (width <= 600px) {
+  .main {
+    padding: 2rem 1rem;
+  }
+
   .productContainer {
     align-items: center;
     flex-direction: column-reverse;
@@ -228,8 +232,8 @@
 }
 
 @media (width <= 425px) {
-  .main {
-    padding: 2rem 1rem;
+  .mainImage {
+    width: 100%;
   }
 
   .thumbnails {
