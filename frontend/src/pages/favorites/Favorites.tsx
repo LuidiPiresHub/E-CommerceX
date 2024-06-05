@@ -1,5 +1,5 @@
 import Header from '../../components/header/Header';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { formartPrice } from '../../utils/functions';
 import { useEffect, useState } from 'react';
 import { IServerResp } from '../../interfaces/server.interface';
@@ -7,17 +7,23 @@ import { IProductFavorite } from '../../interfaces/favorite.interface';
 import api from '../../axios/api';
 import { FaHeart } from 'react-icons/fa';
 import styles from './Favorites.module.css';
+import { AxiosError } from 'axios';
 
 export default function Favorites() {
   const [favorites, setFavorites] = useState<IProductFavorite[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    document.title = 'E-CommerceX - Favoritos';
     const getFavorites = async () => {
       try {
         const { data: { message } } = await api.get<IServerResp<IProductFavorite[]>>('products/favorites');
         setFavorites(message);
       } catch (error) {
+        if ((error as AxiosError).response?.status === 401) {
+          navigate('/login');
+        }
         setFavorites([]);
       } finally {
         setIsLoading(false);
