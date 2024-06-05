@@ -4,7 +4,7 @@ import { FormEvent, useContext } from 'react';
 import EcommerceContext from '../../context/EcommerceContext';
 import styles from './Header.module.css';
 import useAuth from '../../hooks/useAuth';
-import userImg from '../../assets/images/userImg.png';
+import defaultImg from '../../assets/images/userImg.png';
 
 export default function Header() {
   const { cartAmount } = useContext(EcommerceContext);
@@ -43,7 +43,7 @@ export default function Header() {
         ) : (
           userData ? (
             <Link to='/profile' className={styles.userProfile}>
-              <img src={userImg} alt='Foto de Perfil' className={styles.userImg} />
+              <img src={localStorage.getItem('userImg') || defaultImg} alt='Foto de Perfil' className={styles.userImg} />
               <p className={styles.userName}>{userData.name}</p>
             </Link>
           ) : (

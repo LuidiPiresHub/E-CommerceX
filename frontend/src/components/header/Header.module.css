@@ -64,6 +64,7 @@
 .userImg {
   border-radius: 50%;
   height: 2rem;
+  object-fit: cover;
   width: 2rem;
 }
 
