@@ -10,6 +10,7 @@ import { FaStar, FaRegHeart, FaHeart } from 'react-icons/fa';
 import ImageZoom from '../../components/ImageZoom/ImageZoom';
 import api from '../../axios/api';
 import useAuth from '../../hooks/useAuth';
+import { toast } from 'react-toastify';
 
 export default function ProductDetails() {
   const { error, setError, isLoading, setIsLoading, addToCart, checkout } = useContext(EcommerceContext);
@@ -26,6 +27,7 @@ export default function ProductDetails() {
       const { data: { id, title, price, thumbnail, pictures } } = await axios.get<IProductDetail>(`${import.meta.env.VITE_ML_ITEM_URL}/${productId}`);
       setProduct({ id, title, price, thumbnail, pictures });
       setSelectedImage(pictures[0].url);
+      document.title = `E-CommerceX - ${title}`;
       setError(null);
     } catch (error) {
       setProduct(null);
@@ -69,7 +71,10 @@ export default function ProductDetails() {
       if ((error as AxiosError).response?.status === 401) {
         navigate('/login');
       } else {
-        setError('Falha ao atualizar favoritos.');
+        toast.error('Falha ao atualizar favoritos.', {
+          position: 'top-left',
+          autoClose: 2000,
+        });
       }
     }
   };
