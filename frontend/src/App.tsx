@@ -12,6 +12,7 @@ import CheckoutCancel from './pages/checkoutCancel/CheckoutCancel';
 import CheckoutSuccess from './pages/checkoutSuccess/CheckoutSuccess';
 import NotFound from './pages/notFound/NotFound';
 import Profile from './pages/profile/Profile';
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 
 export default function App() {
   useEffect(() => {
@@ -44,7 +45,9 @@ export default function App() {
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
         <Route path='/favorites' element={<Favorites />} />
-        <Route path='/profile' element={<Profile />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/profile" element={<Profile />} />
+        </Route>
         <Route path='/checkout/success' element={<CheckoutSuccess />} />
         <Route path='/checkout/cancel' element={<CheckoutCancel />} />
         <Route path='*' element={<NotFound />} />

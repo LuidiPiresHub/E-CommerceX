@@ -3,8 +3,8 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { FormEvent, useContext } from 'react';
 import EcommerceContext from '../../context/EcommerceContext';
 import styles from './Header.module.css';
-import useAuth from '../../hooks/useAuth';
 import defaultImg from '../../assets/images/userImg.png';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Header() {
   const { cartAmount } = useContext(EcommerceContext);

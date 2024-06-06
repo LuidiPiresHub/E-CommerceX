@@ -9,8 +9,8 @@ import Header from '../../components/header/Header';
 import { FaStar, FaRegHeart, FaHeart } from 'react-icons/fa';
 import ImageZoom from '../../components/ImageZoom/ImageZoom';
 import api from '../../axios/api';
-import useAuth from '../../hooks/useAuth';
 import { toast } from 'react-toastify';
+import { useAuth } from '../../context/AuthContext';
 
 export default function ProductDetails() {
   const { error, setError, isLoading, setIsLoading, addToCart, checkout } = useContext(EcommerceContext);

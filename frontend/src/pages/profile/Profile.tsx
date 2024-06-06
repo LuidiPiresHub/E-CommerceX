@@ -4,14 +4,14 @@ import styles from './Profile.module.css';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { FaLock, FaLongArrowAltLeft } from 'react-icons/fa';
-import useAuth from '../../hooks/useAuth';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Profile() {
   const [file, setFile] = useState<string | null>(null);
   const [imageOpacity, setImageOpacity] = useState(1);
   const [rotate, setRotate] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { userData, isLoading, logout } = useAuth();
+  const { isLoading, userData, logout } = useAuth();
 
   useEffect(() => {
     document.title = 'E-CommerceX - Perfil';
