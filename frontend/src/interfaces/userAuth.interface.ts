@@ -3,4 +3,7 @@ export interface IUserAuth {
   name: string;
   email: string;
   profileImage: string;
+  gender: string;
+  phone: string;
+  birthday: string;
 }

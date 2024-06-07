@@ -177,13 +177,32 @@
 
 }
 
+.input:where(select) {
+  cursor: pointer;
+}
+
+.input[type="date"] {
+  cursor: text;
+}
+
+.input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  font-size: 20px;
+}
+
 .input:focus, .input:focus ~ .label {
   border-color: #007bff;
   color: #007bff;
 }
 
-.inputContainer:not(:nth-child(1)) {
+.disabledInput {
   opacity: 0.5;
+}
+
+.error {
+  color: red;
+  font-size: 0.9rem;
+  margin: 0.5rem;
 }
 
 .icon {
