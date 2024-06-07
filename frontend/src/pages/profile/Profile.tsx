@@ -6,7 +6,8 @@ import { Link } from 'react-router-dom';
 import { FaLock, FaLongArrowAltLeft } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import { ErrorMessage, Field, Form, Formik, FormikValues } from 'formik';
-import * as Yup from 'yup';
+import { formatPhoneNumber } from '../../utils/functions';
+import { profileSchema } from '../../schemas/profileSchema';
 
 export default function Profile() {
   const [file, setFile] = useState<string | null>(null);
@@ -55,12 +56,6 @@ export default function Profile() {
     }
   };
 
-  const handleButtonClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
   const removeProfileImg = () => {
     if (file) {
       setImageOpacity(0);
@@ -78,29 +73,6 @@ export default function Profile() {
   const updateProfile = (values: FormikValues) => {
     console.log(values);
   };
-
-  const calculateAge = (birthdate: Date): number => {
-    const today = new Date();
-    const birthDate = new Date(birthdate);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
-  };
-
-  const formSchema = Yup.object({
-    username: Yup.string().min(3, 'Nome de usuário precisa ter pelo menos 3 caracteres').required('Campo obrigatório'),
-    gender: Yup.string().required('Selecione um gênero'),
-    phone: Yup.string().matches(/^\d{2,3} \d{8,9}$/, 'Siga o padrão DDD espaço numero').required('Campo obrigatório'),
-    birthday: Yup.date()
-      .max(new Date(), 'A data de nascimento não pode ser no futuro')
-      .test('age', 'Você deve ter pelo menos 5 anos de idade', (date) => date && calculateAge(date) >= 5)
-      .required('Campo obrigatório'),
-  });
-  
-  
 
   return (
     <main className={styles.main}>
@@ -127,7 +99,11 @@ export default function Profile() {
                 accept="image/*"
                 className={styles.inputFile}
               />
-              <button type='button' onClick={handleButtonClick} className={styles.customButton}>
+              <button
+                type='button'
+                onClick={() => fileInputRef.current?.click()}
+                className={styles.customButton}
+              >
                 Selecionar
               </button>
               {file && (
@@ -146,95 +122,103 @@ export default function Profile() {
             </section>
             <Formik
               initialValues={INITIAL_USER_DATA}
-              validationSchema={formSchema}
+              validationSchema={profileSchema}
               onSubmit={updateProfile}
             >
-              <Form className={styles.form}>
-                <div>
-                  <div className={styles.inputContainer}>
-                    <Field
-                      type="text"
-                      id="username"
-                      name="username"
-                      className={styles.input}
-                      placeholder='Digite seu nome de usuário'
-                      spellCheck={false}
-                    />
-                    <label htmlFor="username" className={styles.label}>
-                      Usuario
-                    </label>
+              {({ setFieldValue, values }) => (
+                <Form className={styles.form}>
+                  <div>
+                    <div className={styles.inputContainer}>
+                      <Field
+                        type="text"
+                        id="username"
+                        name="username"
+                        className={styles.input}
+                        placeholder='Digite seu nome de usuário'
+                        spellCheck={false}
+                      />
+                      <label htmlFor="username" className={styles.label}>
+                        Usuario
+                      </label>
+                    </div>
+                    <ErrorMessage name="username" component="p" className={styles.error} />
                   </div>
-                  <ErrorMessage name="username" component="p" className={styles.error} />
-                </div>
-                <div>
-                  <div className={styles.inputContainer}>
-                    <Field
-                      as="select"
-                      id="gender"
-                      name="gender"
-                      className={styles.input}
-                    >
-                      <option value="">Selecione um gênero</option>
-                      <option value="masculino">Masculino</option>
-                      <option value="feminino">Feminino</option>
-                      <option value="outro">Outro</option>
-                    </Field>
-                    <label htmlFor="gender" className={styles.label}>
-                      Gênero
-                    </label>
+                  <div>
+                    <div className={styles.inputContainer}>
+                      <Field
+                        as="select"
+                        id="gender"
+                        name="gender"
+                        className={styles.input}
+                      >
+                        <option value="">Selecione um gênero</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Feminino">Feminino</option>
+                        <option value="Outros">Outros</option>
+                      </Field>
+                      <label htmlFor="gender" className={styles.label}>
+                        Gênero
+                      </label>
+                    </div>
+                    <ErrorMessage name="gender" component="p" className={styles.error} />
                   </div>
-                  <ErrorMessage name="gender" component="p" className={styles.error} />
-                </div>
-                <div className={styles.disabledInput}>
-                  <div className={styles.inputContainer}>
-                    <Field
-                      type="email"
-                      name="email"
-                      className={styles.input}
-                      disabled={true}
-                    />
-                    <label htmlFor="email" className={styles.label}>
-                      E-mail
-                    </label>
-                    <FaLock className={styles.icon} />
+                  <div className={styles.disabledInput}>
+                    <div className={styles.inputContainer}>
+                      <Field
+                        type="email"
+                        name="email"
+                        className={styles.input}
+                        disabled={true}
+                      />
+                      <label htmlFor="email" className={styles.label}>
+                        E-mail
+                      </label>
+                      <FaLock className={styles.icon} />
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <div className={styles.inputContainer}>
-                    <Field
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      className={styles.input}
-                      placeholder='(999) 99999-9999'
-                    />
-                    <label htmlFor="phone" className={styles.label}>
-                      Celular
-                    </label>
+                  <div>
+                    <div className={styles.inputContainer}>
+                      <Field
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        className={styles.input}
+                        placeholder='(999) 99999-9999'
+                        value={values.phone}
+                        onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                          const { value } = event.target;
+                          const formatedPhone = formatPhoneNumber(value);
+                          setFieldValue('phone', formatedPhone);
+                        }}
+                      />
+                      <label htmlFor="phone" className={styles.label}>
+                        Celular
+                      </label>
+                    </div>
+                    <ErrorMessage name="phone" component="p" className={styles.error} />
                   </div>
-                  <ErrorMessage name="phone" component="p" className={styles.error} />
-                </div>
-                <div>
-                  <div className={styles.inputContainer}>
-                    <Field
-                      type="date"
-                      id="birthday"
-                      name="birthday"
-                      className={styles.input}
-                    />
-                    <label htmlFor="birthday" className={styles.label}>
-                      Data de nascimento
-                    </label>
+                  <div>
+                    <div className={styles.inputContainer}>
+                      <Field
+                        type="date"
+                        id="birthday"
+                        name="birthday"
+                        className={styles.input}
+                      />
+                      <label htmlFor="birthday" className={styles.label}>
+                        Data de nascimento
+                      </label>
+                    </div>
+                    <ErrorMessage name="birthday" component="p" className={styles.error} />
                   </div>
-                  <ErrorMessage name="birthday" component="p" className={styles.error} />
-                </div>
-                <footer className={styles.formFooter}>
-                  <button type='button' className={styles.logoutBtn} onClick={logout}>Logout</button>
-                  <button type='submit' className={styles.submitButton}>
-                    Atualizar Perfil
-                  </button>
-                </footer>
-              </Form>
+                  <footer className={styles.formFooter}>
+                    <button type='button' className={styles.logoutBtn} onClick={logout}>Logout</button>
+                    <button type='submit' className={styles.submitButton}>
+                      Atualizar Perfil
+                    </button>
+                  </footer>
+                </Form>
+              )}
             </Formik>
           </section>
         </>
