@@ -1,5 +1,4 @@
 import { Formik, Form, Field, ErrorMessage, FormikValues, FormikHelpers } from 'formik';
-import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
 import { RegisterFormValues } from '../../interfaces/register.interface';
 import styles from './Register.module.css';
@@ -10,19 +9,12 @@ import LoadingBtn from '../../components/loadingBtn/LoadingBtn';
 import { useContext, useEffect } from 'react';
 import EcommerceContext from '../../context/EcommerceContext';
 import { useNavigate } from 'react-router-dom';
+import { validationSchema } from '../../schemas/registerSchema';
 
 export default function Register() {
   const INITIAL_USER_DATA = { name: '', email: '', password: '', confirmPassword: '' };
   const { setIsLoading } = useContext(EcommerceContext);
-
   const navigate = useNavigate();
-
-  const validationSchema = Yup.object({
-    name: Yup.string().min(3, 'O usuário precisa ter pelo menos 3 caracteres').required('Campo obrigatório'),
-    email: Yup.string().email('Digite um e-mail válido').required('Campo obrigatório'),
-    password: Yup.string().min(3, 'A senha precisa ter pelo menos 3 caracteres').required('Campo obrigatório'),
-    confirmPassword: Yup.string().oneOf([Yup.ref('password')], 'As senhas precisam ser iguais').required('Campo obrigatório')
-  });
 
   const register = async (values: FormikValues, { resetForm }: FormikHelpers<RegisterFormValues>) => {
     try {

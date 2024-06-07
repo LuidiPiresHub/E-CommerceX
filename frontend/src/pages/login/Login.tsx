@@ -1,18 +1,13 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
 import styles from './Login.module.css';
 import { useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { loginSchema } from '../../schemas/loginSchema';
 
 export default function Login() {
   const { login } = useAuth();
   const INITIAL_USER_DATA = { email: '', password: '' };
-
-  const validationSchema = Yup.object({
-    email: Yup.string().email('Digite um e-mail válido').required('Campo obrigatório'),
-    password: Yup.string().min(3, 'A senha precisa ter pelo menos 3 caracteres').required('Campo obrigatório'),
-  });
 
   useEffect(() => {
     document.title = 'E-CommerceX - Login';
@@ -22,7 +17,7 @@ export default function Login() {
     <main className={styles.main}>
       <Formik
         initialValues={INITIAL_USER_DATA}
-        validationSchema={validationSchema}
+        validationSchema={loginSchema}
         onSubmit={login}
       >
         <Form className={styles.form}>
