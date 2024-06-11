@@ -1,6 +1,7 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, static as static_ } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import path from 'path';
 import 'express-async-errors';
 import routes from './routes';
 import handleError from './middlewares/handleError';
@@ -17,6 +18,7 @@ app.get('/', (_req: Request, res: Response) => res.json({ message: 'Hello World'
 app.use('/products', routes.productRoutes);
 app.use('/stripe', routes.stripeRoutes);
 app.use('/user', routes.userRoutes);
+app.use('/uploads', static_(path.resolve(__dirname, '..', 'uploads')));
 
 app.use(handleError);
 
