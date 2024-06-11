@@ -6,72 +6,92 @@ import { Link } from 'react-router-dom';
 import { FaLock, FaLongArrowAltLeft } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import { ErrorMessage, Field, Form, Formik, FormikValues } from 'formik';
-import { formatPhoneNumber } from '../../utils/functions';
+import { convertToDigitsOnly, formatPhoneNumber } from '../../utils/functions';
 import { profileSchema } from '../../schemas/profileSchema';
+import api from '../../axios/api';
+import { format } from 'date-fns';
+import { AxiosError } from 'axios';
 
 export default function Profile() {
-  const [file, setFile] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<File | string | null>(null);
   const [imageOpacity, setImageOpacity] = useState(1);
   const [rotate, setRotate] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { isLoading, userData, logout } = useAuth();
 
-  const INITIAL_USER_DATA = {
-    username: userData?.name || '',
-    email: userData?.email || '',
-    gender: userData?.gender || '',
-    phone: userData?.phone || '',
-    birthday: userData?.birthday || '',
-  };
-
   useEffect(() => {
     document.title = 'E-CommerceX - Perfil';
-    setFile(localStorage.getItem('userImg'));
+    if (userData && userData.profileImg) {
+      const imgUrl = `${import.meta.env.VITE_BACKEND_URL}${userData.profileImg}`;
+      setSelectedImage(imgUrl);
+    }
   }, []);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const selectedFile = e.target.files[0];
-      if (selectedFile.size > 5 * 1024 * 1024) {
+  const handleProfileImg = (e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const selectedFile = files[0];
+      if (selectedFile.size > 10 * 1024 * 1024) {
         fileInputRef.current!.value = '';
-        toast.error('O arquivo selecionado é muito grande. Escolha um arquivo menor que 5MB.', {
+        toast.error('O arquivo selecionado é muito grande. Escolha um arquivo menor que 10MB.', {
           position: 'top-left',
           autoClose: 5000,
         });
       } else {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const base64String = reader.result as string;
-          setImageOpacity(0);
-          setRotate(true);
-          setTimeout(() => {
-            localStorage.setItem('userImg', base64String);
-            setFile(base64String);
-            setImageOpacity(1);
-            setRotate(false);
-          }, 300);
-        };
-        reader.readAsDataURL(selectedFile);
+        setImageOpacity(0);
+        setRotate(true);
+        setTimeout(() => {
+          setSelectedImage(selectedFile);
+          setImageOpacity(1);
+          setRotate(false);
+        }, 300);
       }
     }
   };
 
   const removeProfileImg = () => {
-    if (file) {
+    if (selectedImage) {
       setImageOpacity(0);
       setRotate(true);
       setTimeout(() => {
-        setFile(null);
         fileInputRef.current!.value = '';
-        localStorage.removeItem('userImg');
         setImageOpacity(1);
         setRotate(false);
+        setSelectedImage(null);
       }, 300);
     }
   };
 
-  const updateProfile = (values: FormikValues) => {
-    console.log(values);
+  const updateProfile = async (values: FormikValues) => {
+    try {
+      const formData = new FormData();
+      if (selectedImage) {
+        formData.append('profileImg', selectedImage);
+      }
+      Object.entries(values).forEach(([key, value]) => formData.append(key, value));
+      await api.put(`/user/${userData!.id}`, formData);
+      toast.success('Perfil atualizado com sucesso!', {
+        position: 'top-left',
+        autoClose: 5000,
+      });
+    } catch (error) {
+      if ((error as AxiosError).response?.status === 400) {
+        toast.error('O arquivo selecionado é muito grande. Escolha um arquivo menor que 10MB.', {
+          position: 'top-left',
+          autoClose: 5000,
+        });
+      }
+      toast.error('Erro ao atualizar perfil. Tente novamente.', {
+        position: 'top-left',
+        autoClose: 5000,
+      });
+    }
+  };
+
+  const getImageUrl = (image: string | File | null, defaultImg: string) => {
+    if (!image) return defaultImg;
+    if (typeof image === 'string') return image;
+    return URL.createObjectURL(image);
   };
 
   return (
@@ -87,7 +107,7 @@ export default function Profile() {
           <section className={styles.profileCard}>
             <div className={styles.imgContainer}>
               <img
-                src={file || defaultImage}
+                src={getImageUrl(selectedImage, defaultImage)}
                 alt="Imagem de usuario"
                 className={`${styles.image} ${rotate ? styles.rotate : ''}`}
                 style={{ opacity: imageOpacity }}
@@ -95,7 +115,7 @@ export default function Profile() {
               <input
                 type="file"
                 ref={fileInputRef}
-                onChange={handleChange}
+                onChange={handleProfileImg}
                 accept="image/*"
                 className={styles.inputFile}
               />
@@ -106,7 +126,7 @@ export default function Profile() {
               >
                 Selecionar
               </button>
-              {file && (
+              {selectedImage && (
                 <button
                   type='button'
                   onClick={removeProfileImg}
@@ -118,10 +138,16 @@ export default function Profile() {
             </div>
             <section className={styles.greetingsContainer}>
               <h1>Seja bem vindo(a):</h1>
-              <h1 className={styles.username}>{userData.name}</h1>
+              <h1 className={styles.username}>{userData.username}</h1>
             </section>
             <Formik
-              initialValues={INITIAL_USER_DATA}
+              initialValues={{
+                username: userData.username,
+                email: userData.email,
+                gender: userData.gender,
+                phoneNumber: convertToDigitsOnly(userData.phoneNumber),
+                birthdate: format(new Date(userData.birthdate), 'yyyy-MM-dd'),
+              }}
               validationSchema={profileSchema}
               onSubmit={updateProfile}
             >
@@ -180,36 +206,36 @@ export default function Profile() {
                     <div className={styles.inputContainer}>
                       <Field
                         type="tel"
-                        id="phone"
-                        name="phone"
+                        id="phoneNumber"
+                        name="phoneNumber"
                         className={styles.input}
                         placeholder='(999) 99999-9999'
-                        value={values.phone}
+                        value={values.phoneNumber}
                         onChange={(event: ChangeEvent<HTMLInputElement>) => {
                           const { value } = event.target;
                           const formatedPhone = formatPhoneNumber(value);
-                          setFieldValue('phone', formatedPhone);
+                          setFieldValue('phoneNumber', formatedPhone);
                         }}
                       />
-                      <label htmlFor="phone" className={styles.label}>
+                      <label htmlFor="phoneNumber" className={styles.label}>
                         Celular
                       </label>
                     </div>
-                    <ErrorMessage name="phone" component="p" className={styles.error} />
+                    <ErrorMessage name="phoneNumber" component="p" className={styles.error} />
                   </div>
                   <div>
                     <div className={styles.inputContainer}>
                       <Field
                         type="date"
-                        id="birthday"
-                        name="birthday"
+                        id="birthdate"
+                        name="birthdate"
                         className={styles.input}
                       />
                       <label htmlFor="birthday" className={styles.label}>
                         Data de nascimento
                       </label>
                     </div>
-                    <ErrorMessage name="birthday" component="p" className={styles.error} />
+                    <ErrorMessage name="birthdate" component="p" className={styles.error} />
                   </div>
                   <footer className={styles.formFooter}>
                     <button type='button' className={styles.logoutBtn} onClick={logout}>Logout</button>
