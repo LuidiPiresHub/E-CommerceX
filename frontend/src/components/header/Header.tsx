@@ -11,6 +11,7 @@ export default function Header() {
   const [, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { userData, isLoading } = useAuth();
+  const imgUrl = userData && userData.profileImg && `${import.meta.env.VITE_BACKEND_URL}${userData.profileImg}`;
 
   const getProductByQuery = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
@@ -43,8 +44,8 @@ export default function Header() {
         ) : (
           userData ? (
             <Link to='/profile' className={styles.userProfile}>
-              <img src={localStorage.getItem('userImg') || defaultImg} alt='Foto de Perfil' className={styles.userImg} />
-              <p className={styles.userName}>{userData.name}</p>
+              <img src={imgUrl || defaultImg} alt='Foto de Perfil' className={styles.userImg} />
+              <p className={styles.userName}>{userData.username}</p>
             </Link>
           ) : (
             <Link to='/login' className={styles.loginLink}>
