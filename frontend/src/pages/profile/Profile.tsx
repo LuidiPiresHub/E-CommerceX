@@ -145,8 +145,8 @@ export default function Profile() {
                 username: userData.username,
                 email: userData.email,
                 gender: userData.gender,
-                phoneNumber: convertToDigitsOnly(userData.phoneNumber),
-                birthdate: format(new Date(userData.birthdate), 'yyyy-MM-dd'),
+                phoneNumber: convertToDigitsOnly(userData.phoneNumber || ''),
+                birthdate: format(new Date(userData.birthdate || ''), 'yyyy-MM-dd'),
               }}
               validationSchema={profileSchema}
               onSubmit={updateProfile}
