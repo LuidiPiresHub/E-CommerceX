@@ -5,8 +5,7 @@ import { mapStatus } from '../utils/mapStatus';
 const cookieConfig: CookieOptions = { httpOnly: true, sameSite: 'none', secure: true };
 
 const getUser = async (req: Request, res: Response): Promise<Response> => {
-  const { user } = req.body;
-  const { iat, exp, ...userData } = user;
+  const { iat, exp, ...userData } = req.user;
   return res.status(200).json({ message: userData });
 };
 
@@ -31,20 +30,26 @@ const login = async (req: Request, res: Response): Promise<Response> => {
   return res.status(status).json({ message });
 };
 
-const updateProfile = async (req: Request, res: Response): Promise<Response> => {
-  const { userData } = req.body;
-  const { type, message } = await userServices.updateProfile(userData);
-  return res.status(mapStatus(type)).json({ message });
-};
-
 const logout = async (_req: Request, res: Response): Promise<Response> => {
   return res.clearCookie('token', cookieConfig).send();
+};
+
+const updateUser = async (req: Request, res: Response): Promise<Response> => {
+  const { id } = req.user;
+  const { body, file } = req;
+  const { type, message } = await userServices.updateUser(id, body, file?.filename);
+  const status = mapStatus(type);
+  if (status === 200) {
+    return res.cookie('token', message, cookieConfig)
+      .status(status).json({ message: 'Token atualizado com sucesso' });
+  }
+  return res.status(status).json({ message });
 };
 
 export default {
   register,
   login,
   getUser,
-  updateProfile,
   logout,
+  updateUser,
 };

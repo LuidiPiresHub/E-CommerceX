@@ -1,28 +1,25 @@
-import { IUserLogin, IUserRegister, IUserService, IUserUpdateProfile } from '../interfaces/users.interface';
+import { IUserData, IUserLogin, IUserRegister, IUserService } from '../interfaces/users.interface';
 import { PrismaClient } from '@prisma/client';
 import { PrismaError } from '../interfaces/prisma.interface';
 import bcrypt from 'bcrypt';
 import { generateToken } from '../auth/jwtFunctions';
+import { deleteImageById } from '../utils/deleteImageById';
 
 const prisma = new PrismaClient();
 
-const register = async (user: IUserRegister): Promise<IUserService> => {
+const register = async (userData: IUserRegister): Promise<IUserService> => {
   try {
     const data = await prisma.users.create({
       data: {
-        username: user.name,
-        email: user.email,
-        password: await bcrypt.hash(user.password, 10),
+        username: userData.username,
+        email: userData.email,
+        password: await bcrypt.hash(userData.password, 10),
       },
     });
 
-    const userData = {
-      id: data.id,
-      name: data.username,
-      email: data.email,
-    };
+    const { password, ...userWithoutPassword } = data;
 
-    return { type: 'CREATED', message: generateToken(userData) };
+    return { type: 'CREATED', message: generateToken(userWithoutPassword) };
   } catch (err) {
     const error = err as PrismaError;
 
@@ -40,25 +37,31 @@ const login = async (user: IUserLogin): Promise<IUserService> => {
   const isPasswordValid = await bcrypt.compare(user.password, data.password);
   if (!isPasswordValid) return { type: 'UNAUTHORIZED', message: 'Senha inválida' };
 
-  const userData = {
-    id: data.id,
-    name: data.username,
-    email: data.email,
-  };
+  const { password, ...userWithoutPassword } = data;
 
-  return { type: 'OK', message: generateToken(userData) };
+  return { type: 'OK', message: generateToken(userWithoutPassword) };
 };
 
-const updateProfile = async (userData: IUserUpdateProfile): Promise<IUserService> => {
+const updateUser = async (userId: string, body: IUserData, filename?: string): Promise<IUserService> => {
   try {
-    await prisma.users.update({
-      where: { id: userData.id },
+    if (!filename) deleteImageById(userId);
+
+    const data = await prisma.users.update({
+      where: { id: userId },
       data: {
-        username: userData.name,
+        ...body,
+        birthdate: new Date(body.birthdate!),
+        profileImg: filename ? `/uploads/${filename}` : null,
       },
     });
-    return { type: 'OK', message: 'Perfil atualizado com sucesso' };
-  } catch (err) {
+
+    const { password, ...userWithoutPassword } = data;
+
+    return { type: 'OK', message: generateToken(userWithoutPassword) };
+  } catch (error) {
+    console.log(error);
+
+    deleteImageById(userId);
     return { type: 'BAD_REQUEST', message: 'Erro ao atualizar perfil' };
   }
 };
@@ -66,5 +69,5 @@ const updateProfile = async (userData: IUserUpdateProfile): Promise<IUserService
 export default {
   register,
   login,
-  updateProfile,
+  updateUser,
 };
