@@ -50,7 +50,7 @@ const updateUser = async (userId: string, body: IUserData, filename?: string): P
       where: { id: userId },
       data: {
         ...body,
-        birthdate: new Date(body.birthdate!),
+        birthdate: body.birthdate ? new Date(body.birthdate) : null,
         profileImg: filename ? `/uploads/${filename}` : null,
       },
     });
