@@ -1,6 +1,5 @@
 import multer, { FileFilterCallback } from 'multer';
 import path from 'path';
-import fs from 'fs';
 import { Request } from 'express';
 import { deleteImageById } from '../utils/deleteImageById';
 
@@ -19,9 +18,6 @@ const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallb
 const storage = multer.diskStorage({
   destination: function (_req, _file, cb) {
     const uploadDirectory = path.join(__dirname, '../../uploads');
-    if (!fs.existsSync(uploadDirectory)) {
-      fs.mkdirSync(uploadDirectory);
-    }
     cb(null, uploadDirectory);
   },
   filename: function (req, file, cb) {
