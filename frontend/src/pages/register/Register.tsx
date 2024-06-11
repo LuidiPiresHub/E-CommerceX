@@ -1,37 +1,13 @@
-import { Formik, Form, Field, ErrorMessage, FormikValues, FormikHelpers } from 'formik';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Link } from 'react-router-dom';
-import { RegisterFormValues } from '../../interfaces/register.interface';
 import styles from './Register.module.css';
-import api from '../../axios/api';
-import Swal from 'sweetalert2';
-import { IBackendResponseError } from '../../interfaces/server.interface';
 import LoadingBtn from '../../components/loadingBtn/LoadingBtn';
-import { useContext, useEffect } from 'react';
-import EcommerceContext from '../../context/EcommerceContext';
-import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { validationSchema } from '../../schemas/registerSchema';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Register() {
-  const { setIsLoading } = useContext(EcommerceContext);
-  const navigate = useNavigate();
-
-  const register = async (values: FormikValues, { resetForm }: FormikHelpers<RegisterFormValues>) => {
-    try {
-      setIsLoading(true);
-      await api.post('/user/register', { userData: values });
-      resetForm();
-      navigate('/');
-    } catch (error) {
-      const errorMessage = (error as IBackendResponseError).response?.data.message;
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: errorMessage || 'Ocorreu um erro interno',
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { register } = useAuth();
 
   useEffect(() => {
     document.title = 'E-CommerceX - Register';

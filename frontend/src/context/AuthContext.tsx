@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { IUserAuth } from '../interfaces/userAuth.interface';
 import { FormikHelpers, FormikValues } from 'formik';
 import { LoginFormValues } from '../interfaces/login.interface';
+import { RegisterFormValues } from '../interfaces/register.interface';
 import { IBackendResponseError } from '../interfaces/server.interface';
 import Swal from 'sweetalert2';
 
@@ -16,7 +17,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
-  const fetchUser = async () => {
+  const fetchUser = async (): Promise<void> => {
     try {
       setIsLoading(true);
       const { data: { message } } = await api.get('/user');
@@ -30,7 +31,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const login = async (values: FormikValues, { resetForm }: FormikHelpers<LoginFormValues>) => {
+  const login = async (values: FormikValues, { resetForm }: FormikHelpers<LoginFormValues>): Promise<void> => {
     try {
       setIsLoading(true);
       await api.post('/user/login', { userData: values });
@@ -49,6 +50,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const register = async (values: FormikValues, { resetForm }: FormikHelpers<RegisterFormValues>): Promise<void> => {
+    try {
+      setIsLoading(true);
+      await api.post('/user/register', { userData: values });
+      await fetchUser();
+      resetForm();
+      navigate('/');
+    } catch (error) {
+      const errorMessage = (error as IBackendResponseError).response?.data.message;
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: errorMessage || 'Ocorreu um erro interno',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
   const logout = async (): Promise<void> => {
     setIsLoading(true);
     await api.post('/user/logout');
@@ -63,7 +84,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, userData, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, userData, isLoading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
