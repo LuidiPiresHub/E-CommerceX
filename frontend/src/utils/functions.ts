@@ -26,3 +26,5 @@ export const formatPhoneNumber = (phone: string) => {
   const phoneFormat = '($1) $2-$3';
   return phoneNumber.replace(new RegExp(phoneRegex), phoneFormat);
 };
+
+export const convertToDigitsOnly = (formattedPhoneNumber: string): string => formattedPhoneNumber.replace(/\D/g, '');
