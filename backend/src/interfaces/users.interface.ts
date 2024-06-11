@@ -6,13 +6,19 @@ export interface IUserLogin {
 }
 
 export interface IUserRegister extends IUserLogin {
-  name: string;
+  username: string;
 }
 
-export interface IUserUpdateProfile {
+export interface IUserData {
   id: string;
-  name: string;
-  profileImage: string;
+  email: string;
+  username: string;
+  phoneNumber: string | null;
+  gender: string | null;
+  birthdate: Date | null;
+  profileImg: string | null;
+  created_at: Date;
+  updated_at: Date;
 }
 
 export interface IUserService {
