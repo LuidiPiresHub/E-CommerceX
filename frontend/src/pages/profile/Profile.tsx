@@ -10,7 +10,6 @@ import { convertToDigitsOnly, formatPhoneNumber } from '../../utils/functions';
 import { profileSchema } from '../../schemas/profileSchema';
 import api from '../../axios/api';
 import { format } from 'date-fns';
-import { AxiosError } from 'axios';
 
 export default function Profile() {
   const [selectedImage, setSelectedImage] = useState<File | string | null>(null);
@@ -74,13 +73,7 @@ export default function Profile() {
         position: 'top-left',
         autoClose: 5000,
       });
-    } catch (error) {
-      if ((error as AxiosError).response?.status === 400) {
-        toast.error('O arquivo selecionado é muito grande. Escolha um arquivo menor que 10MB.', {
-          position: 'top-left',
-          autoClose: 5000,
-        });
-      }
+    } catch {
       toast.error('Erro ao atualizar perfil. Tente novamente.', {
         position: 'top-left',
         autoClose: 5000,
