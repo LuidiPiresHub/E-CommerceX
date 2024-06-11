@@ -7,7 +7,6 @@ import { loginSchema } from '../../schemas/loginSchema';
 
 export default function Login() {
   const { login } = useAuth();
-  const INITIAL_USER_DATA = { email: '', password: '' };
 
   useEffect(() => {
     document.title = 'E-CommerceX - Login';
@@ -16,7 +15,7 @@ export default function Login() {
   return (
     <main className={styles.main}>
       <Formik
-        initialValues={INITIAL_USER_DATA}
+        initialValues={{ email: '', password: '' }}
         validationSchema={loginSchema}
         onSubmit={login}
       >

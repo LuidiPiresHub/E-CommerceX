@@ -12,7 +12,6 @@ import { useNavigate } from 'react-router-dom';
 import { validationSchema } from '../../schemas/registerSchema';
 
 export default function Register() {
-  const INITIAL_USER_DATA = { name: '', email: '', password: '', confirmPassword: '' };
   const { setIsLoading } = useContext(EcommerceContext);
   const navigate = useNavigate();
 
@@ -41,7 +40,7 @@ export default function Register() {
   return (
     <main className={styles.main}>
       <Formik
-        initialValues={INITIAL_USER_DATA}
+        initialValues={{ username: '', email: '', password: '', confirmPassword: '' }}
         validationSchema={validationSchema}
         onSubmit={register}
       >
@@ -50,11 +49,11 @@ export default function Register() {
           <Field
             className={styles.input}
             type='text'
-            id='name'
-            name='name'
+            id='username'
+            name='username'
             placeholder='Usuario'
           />
-          <ErrorMessage name="name" component="span" className={styles.error} />
+          <ErrorMessage name="username" component="span" className={styles.error} />
           <Field
             className={styles.input}
             type='email'

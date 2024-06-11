@@ -1,9 +1,9 @@
 export interface IUserAuth {
   id: number;
-  name: string;
+  username: string;
   email: string;
-  profileImage: string;
+  profileImg: string;
   gender: string;
-  phone: string;
-  birthday: string;
+  phoneNumber: string;
+  birthdate: Date;
 }
