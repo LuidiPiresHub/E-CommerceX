@@ -8,14 +8,18 @@ datasource db {
 }
 
 model users {
-  id         String      @id @default(cuid())
-  email      String      @unique
-  password   String
-  username   String
-  purchases  purchases[]
-  favorites  favorites[]
-  created_at DateTime    @default(now())
-  updated_at DateTime    @updatedAt
+  id          String      @id @default(cuid())
+  email       String      @unique
+  password    String
+  username    String
+  phoneNumber String?
+  gender      String?
+  birthdate   DateTime?
+  profileImg  String?
+  purchases   purchases[]
+  favorites   favorites[]
+  created_at  DateTime    @default(now())
+  updated_at  DateTime    @updatedAt
 }
 
 model purchases {
@@ -41,5 +45,6 @@ model favorites {
   users_id                    String?
   created_at                  DateTime @default(now())
   updated_at                  DateTime @updatedAt
+
   @@unique([favorited_product_id, users_id])
 }
