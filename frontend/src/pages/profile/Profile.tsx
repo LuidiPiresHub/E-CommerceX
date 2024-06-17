@@ -21,8 +21,7 @@ export default function Profile() {
   useEffect(() => {
     document.title = 'E-CommerceX - Perfil';
     if (userData && userData.profileImg) {
-      const imgUrl = `${import.meta.env.VITE_BACKEND_URL}${userData.profileImg}`;
-      setSelectedImage(imgUrl);
+      setSelectedImage(userData.profileImg);
     }
   }, []);
 

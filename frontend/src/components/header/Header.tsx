@@ -11,7 +11,7 @@ export default function Header() {
   const [, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { userData, isLoading } = useAuth();
-  const imgUrl = userData && userData.profileImg && `${import.meta.env.VITE_BACKEND_URL}${userData.profileImg}`;
+  const imgUrl = userData?.profileImg || null;
 
   const getProductByQuery = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
