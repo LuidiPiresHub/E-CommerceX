@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaError } from '../interfaces/prisma.interface';
 import bcrypt from 'bcrypt';
 import { generateToken } from '../auth/jwtFunctions';
-import { deleteImageById } from '../utils/deleteImageById';
+import { cloudinaryUploader } from '../utils/cloudinaryUploader';
 
 const prisma = new PrismaClient();
 
@@ -42,26 +42,21 @@ const login = async (user: IUserLogin): Promise<IUserService> => {
   return { type: 'OK', message: generateToken(userWithoutPassword) };
 };
 
-const updateUser = async (userId: string, body: IUserData, filename?: string): Promise<IUserService> => {
+const updateUser = async (userId: string, body: IUserData, buffer?: Buffer): Promise<IUserService> => {
   try {
-    if (!filename) deleteImageById(userId);
+    const uploaderUrl = await cloudinaryUploader(userId, buffer);
 
     const data = await prisma.users.update({
       where: { id: userId },
       data: {
         ...body,
         birthdate: body.birthdate ? new Date(body.birthdate) : null,
-        profileImg: filename ? `/uploads/${filename}` : null,
+        profileImg: uploaderUrl,
       },
     });
-
     const { password, ...userWithoutPassword } = data;
-
     return { type: 'OK', message: generateToken(userWithoutPassword) };
   } catch (error) {
-    console.log(error);
-
-    deleteImageById(userId);
     return { type: 'BAD_REQUEST', message: 'Erro ao atualizar perfil' };
   }
 };

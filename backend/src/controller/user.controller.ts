@@ -37,7 +37,7 @@ const logout = async (_req: Request, res: Response): Promise<Response> => {
 const updateUser = async (req: Request, res: Response): Promise<Response> => {
   const { id } = req.user;
   const { body, file } = req;
-  const { type, message } = await userServices.updateUser(id, body, file?.filename);
+  const { type, message } = await userServices.updateUser(id, body, file?.buffer);
   const status = mapStatus(type);
   if (status === 200) {
     return res.cookie('token', message, cookieConfig)

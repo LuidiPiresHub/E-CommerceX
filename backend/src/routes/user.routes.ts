@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import usersController from '../controller/user.controller';
 import validateToken from '../middlewares/validadeToken';
-import { upload } from '../multer/multerConfig';
+import { upload } from '../config/multer';
 
 const usersRouter = Router();
 
