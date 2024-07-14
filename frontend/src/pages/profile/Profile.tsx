@@ -5,11 +5,12 @@ import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { FaLock, FaLongArrowAltLeft } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
-import { ErrorMessage, Field, Form, Formik, FormikValues } from 'formik';
-import { convertToDigitsOnly, formatPhoneNumber } from '../../utils/functions';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { formatBirthdate, formatPhoneNumber, urlToFile } from '../../utils/functions';
 import { profileSchema } from '../../schemas/profileSchema';
 import api from '../../axios/api';
-import { format } from 'date-fns';
+import LoadingBtn from '../../components/loadingBtn/LoadingBtn';
+import { IProfileData } from '../../interfaces/profile.interface';
 
 export default function Profile() {
   const [selectedImage, setSelectedImage] = useState<File | string | null>(null);
@@ -17,6 +18,7 @@ export default function Profile() {
   const [rotate, setRotate] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { isLoading, userData, logout } = useAuth();
+  const standardGenders = ['Masculino', 'Feminino', 'Outros'];
 
   useEffect(() => {
     document.title = 'E-CommerceX - Perfil';
@@ -60,13 +62,25 @@ export default function Profile() {
     }
   };
 
-  const updateProfile = async (values: FormikValues) => {
+  const updateProfile = async (values: IProfileData): Promise<void> => {
     try {
+      const gender: string = values.otherGender ? values.otherGender : values.gender;
+      const newValues = { ...values, gender };
+      delete newValues.otherGender;
       const formData = new FormData();
-      if (selectedImage) {
-        formData.append('profileImg', selectedImage);
+      if (typeof selectedImage === 'string') {
+        const file = await urlToFile(selectedImage);
+        formData.append('profileImg', file);
+      } else {
+        formData.append('profileImg', selectedImage!);
       }
-      Object.entries(values).forEach(([key, value]) => formData.append(key, value));
+      Object.entries(newValues).forEach(([key, value]) => {
+        if (key === 'birthdate') {
+          formData.append(key, new Date(value).toISOString());
+        } else {
+          formData.append(key, value);
+        }
+      });
       await api.put(`/user/${userData!.id}`, formData);
       toast.success('Perfil atualizado com sucesso!', {
         position: 'top-left',
@@ -84,6 +98,23 @@ export default function Profile() {
     if (!image) return defaultImg;
     if (typeof image === 'string') return image;
     return URL.createObjectURL(image);
+  };
+
+
+  const getInitialValues = () => {
+    if (userData) {
+      const initialValues = {
+        username: userData.username,
+        email: userData.email,
+        phoneNumber: userData.phoneNumber ? userData.phoneNumber : '',
+        birthdate: userData.birthdate ? formatBirthdate(userData.birthdate) : '',
+      };
+      if (!standardGenders.includes(userData.gender!)) {
+        return { ...initialValues, gender: 'Outros', otherGender: userData.gender as string };
+      } else {
+        return { ...initialValues, gender: userData.gender as string, otherGender: '' };
+      }
+    }
   };
 
   return (
@@ -133,13 +164,7 @@ export default function Profile() {
               <h1 className={styles.username}>{userData.username}</h1>
             </section>
             <Formik
-              initialValues={{
-                username: userData.username,
-                email: userData.email,
-                gender: userData.gender ? userData.gender : '',
-                phoneNumber: userData.phoneNumber ? convertToDigitsOnly(userData.phoneNumber) : '',
-                birthdate: userData.birthdate ? format(new Date(userData.birthdate), 'yyyy-MM-dd') : '',
-              }}
+              initialValues={getInitialValues()!}
               validationSchema={profileSchema}
               onSubmit={updateProfile}
             >
@@ -168,11 +193,16 @@ export default function Profile() {
                         id="gender"
                         name="gender"
                         className={styles.input}
+                        onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                          const { value } = event.target;
+                          setFieldValue('gender', value);
+                          setFieldValue('otherGender', '');
+                        }}
                       >
                         <option value="">Selecione um gênero</option>
-                        <option value="Masculino">Masculino</option>
-                        <option value="Feminino">Feminino</option>
-                        <option value="Outros">Outros</option>
+                        {standardGenders.map((gender) => (
+                          <option key={gender} value={gender}>{gender}</option>
+                        ))}
                       </Field>
                       <label htmlFor="gender" className={styles.label}>
                         Gênero
@@ -180,6 +210,25 @@ export default function Profile() {
                     </div>
                     <ErrorMessage name="gender" component="p" className={styles.error} />
                   </div>
+                  {values.gender === 'Outros' && (
+                    <div>
+                      <div className={styles.inputContainer}>
+                        <Field
+                          type="text"
+                          id="otherGender"
+                          name="otherGender"
+                          className={styles.input}
+                          placeholder='Digite seu nome de usuário'
+                          value={values.otherGender}
+                          spellCheck={false}
+                        />
+                        <label htmlFor="otherGender" className={styles.label}>
+                          Outro Gênero
+                        </label>
+                      </div>
+                      <ErrorMessage name="otherGender" component="p" className={styles.error} />
+                    </div>
+                  )}
                   <div className={styles.disabledInput}>
                     <div className={styles.inputContainer}>
                       <Field
@@ -231,9 +280,13 @@ export default function Profile() {
                   </div>
                   <footer className={styles.formFooter}>
                     <button type='button' className={styles.logoutBtn} onClick={logout}>Logout</button>
-                    <button type='submit' className={styles.submitButton}>
+                    <LoadingBtn
+                      type='submit'
+                      isLoading={false}
+                      className={styles.submitButton}
+                    >
                       Atualizar Perfil
-                    </button>
+                    </LoadingBtn>
                   </footer>
                 </Form>
               )}

@@ -174,11 +174,14 @@
   padding: 0.8rem;
   transition: 150ms ease-in-out;
   width: 100%;
-
 }
 
 .input:where(select) {
   cursor: pointer;
+}
+
+.input:-webkit-autofill {
+  box-shadow: 0 0 0 9999px white inset;
 }
 
 .input[type="date"] {
@@ -236,7 +239,9 @@
   border-radius: 4px;
   color: white;
   cursor: pointer;
+  display: flex;
   font-size: 16px;
+  gap: 0.5rem;
   padding: 0.8rem;
   transition: 200ms ease-in-out;
 }
