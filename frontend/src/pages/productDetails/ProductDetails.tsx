@@ -1,8 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { IProductDetail } from '../../interfaces/products.interface';
-import EcommerceContext from '../../context/EcommerceContext';
 import styles from './ProductDetails.module.css';
 import { formartPrice } from '../../utils/functions';
 import Header from '../../components/header/Header';
@@ -11,9 +10,11 @@ import ImageZoom from '../../components/ImageZoom/ImageZoom';
 import api from '../../axios/api';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../context/AuthContext';
+import { useGlobal } from '../../context/GlobalContext';
+import { ThreeCircles } from 'react-loader-spinner';
 
 export default function ProductDetails() {
-  const { error, setError, isLoading, setIsLoading, addToCart, checkout } = useContext(EcommerceContext);
+  const { error, setError, isLoading, setIsLoading, addToCart, checkout } = useGlobal();
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<IProductDetail | null>(null);
   const [selectedImage, setSelectedImage] = useState<string>('');
@@ -89,7 +90,16 @@ export default function ProductDetails() {
     }
   }, [isAuthenticated, product]);
 
-  if (isLoading) return <h1 className={styles.message}>Carregando...</h1>;
+  if (isLoading) return (
+    <div className={styles.spinnerWrapper}>
+      <ThreeCircles
+        height="100"
+        width="100"
+        color="#4fa94d"
+        ariaLabel="three-circles-loading"
+      />
+    </div>
+  );
 
   if (error) return (
     <>

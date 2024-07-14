@@ -2,17 +2,18 @@ import styles from './Products.module.css';
 import { FaCartArrowDown } from 'react-icons/fa';
 import { Link, useSearchParams } from 'react-router-dom';
 import { formartPrice, getHightestQuality } from '../../utils/functions';
-import EcommerceContext from '../../context/EcommerceContext';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Header from '../../components/header/Header';
 import ReactPaginate from 'react-paginate';
 import { IProduct } from '../../interfaces/products.interface';
 import axios, { AxiosError } from 'axios';
 import handleAxiosError from '../../axios/handleAxiosError';
 import { IMercadoLivreResponse } from '../../interfaces/mercadoLivre.interfaces';
+import { useGlobal } from '../../context/GlobalContext';
+import { MagnifyingGlass } from 'react-loader-spinner';
 
 export default function Product() {
-  const { addToCart, isLoading, setIsLoading, error, setError, } = useContext(EcommerceContext);
+  const { addToCart, isLoading, setIsLoading, error, setError, } = useGlobal();
   const [products, setProducts] = useState<IProduct[]>([]);
   const [pageCount, setPageCount] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -59,7 +60,14 @@ export default function Product() {
       <Header />
       <main className={styles.main}>
         {isLoading ? (
-          <h1>Carregando...</h1>
+          <MagnifyingGlass
+            visible={true}
+            height="130"
+            width="130"
+            ariaLabel="magnifying-glass-loading"
+            glassColor="#ADD8E6"
+            color="#1533db"
+          />
         ) : error ? (
           <h1>
             {error}
