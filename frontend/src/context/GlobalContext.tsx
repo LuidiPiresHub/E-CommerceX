@@ -1,5 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
-import EcommerceContext from './EcommerceContext';
+import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import { IProduct, IProductCart } from '../interfaces/products.interface';
 import { countCartItems } from '../utils/functions';
 import { toast } from 'react-toastify';
@@ -8,8 +7,11 @@ import { AxiosError } from 'axios';
 import api from '../axios/api';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import { GlobalContextType } from '../interfaces/globalContext.interface';
 
-export default function EcommerceProvider({ children }: { children: ReactNode }) {
+const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
+
+export function GlobalProvider({ children }: { children: ReactNode }) {
   const [cartAmount, setCartAmount] = useState<number>(0);
   const [error, setError] = useState<null | string>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -75,8 +77,16 @@ export default function EcommerceProvider({ children }: { children: ReactNode })
   };
 
   return (
-    <EcommerceContext.Provider value={globalContent}>
+    <GlobalContext.Provider value={globalContent}>
       {children}
-    </EcommerceContext.Provider>
+    </GlobalContext.Provider>
   );
 }
+
+export const useGlobal = (): GlobalContextType => {
+  const context = useContext(GlobalContext);
+  if (context === undefined) {
+    throw new Error('useGlobal must be used within a GlobalProvider');
+  }
+  return context;
+};

@@ -4,13 +4,13 @@ import { ToastContainer } from 'react-toastify';
 import App from './App.tsx';
 import 'react-toastify/dist/ReactToastify.min.css';
 import './index.css';
-import { AuthProvider } from './context/AuthContext.tsx';
+import { GlobalProvider } from './context/GlobalContext.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
-    <AuthProvider>
+    <GlobalProvider>
       <ToastContainer />
       <App />
-    </AuthProvider>
+    </GlobalProvider>
   </BrowserRouter>
 );

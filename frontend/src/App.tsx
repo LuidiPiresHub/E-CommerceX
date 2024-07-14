@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import Swal from 'sweetalert2';
 import { Routes, Route } from 'react-router-dom';
-import EcommerceProvider from './context/EcommerceProvider';
 import Products from './pages/products/Products';
 import ProductDetail from './pages/productDetails/ProductDetails';
 import Cart from './pages/cart/Cart';
@@ -13,6 +12,7 @@ import CheckoutSuccess from './pages/checkoutSuccess/CheckoutSuccess';
 import NotFound from './pages/notFound/NotFound';
 import Profile from './pages/profile/Profile';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
+import { AuthProvider } from './context/AuthContext';
 
 export default function App() {
   useEffect(() => {
@@ -37,7 +37,7 @@ export default function App() {
   }, []);
 
   return (
-    <EcommerceProvider>
+    <AuthProvider>
       <Routes>
         <Route path='/' element={<Products />} />
         <Route path='/product/:id' element={<ProductDetail />} />
@@ -52,6 +52,6 @@ export default function App() {
         <Route path='/checkout/cancel' element={<CheckoutCancel />} />
         <Route path='*' element={<NotFound />} />
       </Routes>
-    </EcommerceProvider>
+    </AuthProvider>
   );
 }
