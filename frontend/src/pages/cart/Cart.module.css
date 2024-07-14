@@ -202,6 +202,7 @@
 
 .btnCheckout {
   background-color:rgb(50 0 255);
+  gap: 0.5rem;
 }
 
 @media (width <= 1220px) {
