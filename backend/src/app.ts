@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import path from 'path';
 import 'express-async-errors';
 import routes from './routes';
-import handleError from './middlewares/handleError';
+// import handleError from './middlewares/handleError';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -20,6 +20,6 @@ app.use('/stripe', routes.stripeRoutes);
 app.use('/user', routes.userRoutes);
 app.use('/uploads', static_(path.resolve(__dirname, '..', 'uploads')));
 
-app.use(handleError);
+// app.use(handleError);
 
 export default app;
