@@ -1,4 +1,6 @@
+import { format, parse } from 'date-fns';
 import { IProductCart } from '../interfaces/products.interface';
+import axios from 'axios';
 
 export const formartPrice = (price: number): string => price.toLocaleString('pt-br', { currency: 'BRL', style: 'currency' });
 
@@ -27,4 +29,19 @@ export const formatPhoneNumber = (phone: string) => {
   return phoneNumber.replace(new RegExp(phoneRegex), phoneFormat);
 };
 
-export const convertToDigitsOnly = (formattedPhoneNumber: string): string => formattedPhoneNumber.replace(/\D/g, '');
+export const formatBirthdate = (birthdate: Date | string): string => {
+  const date = new Date(birthdate).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+  const parsedData = parse(date, 'dd/MM/yyyy', new Date());
+  return format(parsedData, 'yyyy-MM-dd');
+};
+
+export const urlToFile = async (imageUrl: string): Promise<File> => {
+  try {
+    const { headers, data } = await axios.get(imageUrl, { responseType: 'blob' });
+    const contentType = headers['content-type'];
+    const blob = new Blob([data], { type: contentType });
+    return new File([blob], contentType, { type: blob.type });
+  } catch (error) {
+    throw new Error(`Erro ao converter URL para File: ${error}`);
+  }
+};
