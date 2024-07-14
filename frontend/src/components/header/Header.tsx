@@ -1,13 +1,13 @@
 import { FaHeart, FaSearch, FaShoppingBag, FaShoppingCart } from 'react-icons/fa';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { FormEvent, useContext } from 'react';
-import EcommerceContext from '../../context/EcommerceContext';
+import { FormEvent } from 'react';
 import styles from './Header.module.css';
 import defaultImg from '../../assets/images/userImg.png';
 import { useAuth } from '../../context/AuthContext';
+import { useGlobal } from '../../context/GlobalContext';
 
 export default function Header() {
-  const { cartAmount } = useContext(EcommerceContext);
+  const { cartAmount } = useGlobal();
   const [, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { userData, isLoading } = useAuth();

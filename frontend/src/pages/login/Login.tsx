@@ -4,9 +4,10 @@ import styles from './Login.module.css';
 import { useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { loginSchema } from '../../schemas/loginSchema';
+import LoadingBtn from '../../components/loadingBtn/LoadingBtn';
 
 export default function Login() {
-  const { login } = useAuth();
+  const { login, isLoading } = useAuth();
 
   useEffect(() => {
     document.title = 'E-CommerceX - Login';
@@ -37,7 +38,13 @@ export default function Login() {
             placeholder='Senha'
           />
           <ErrorMessage name="password" component="div" className={styles.error} />
-          <button className={styles.button} type='submit'>Login</button>
+          <LoadingBtn
+            className={styles.button}
+            isLoading={isLoading}
+            type='submit'
+          >
+            Login
+          </LoadingBtn>
           <div className={styles.redirect}>
             <p>Não tem conta?</p>
             <Link to='/register' className={styles.link}>Registre-se</Link>

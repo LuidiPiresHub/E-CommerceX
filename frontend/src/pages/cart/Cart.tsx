@@ -1,17 +1,17 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './Cart.module.css';
 import { calcCartItemsPrice, countCartItems, formartPrice, getHightestQuality } from '../../utils/functions';
-import EcommerceContext from '../../context/EcommerceContext';
 import { IProductCart } from '../../interfaces/products.interface';
 import { FaLongArrowAltLeft } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import emptyCart from '../../assets/images/empty-cart.png';
 import Swal from 'sweetalert2';
 import LoadingBtn from '../../components/loadingBtn/LoadingBtn';
+import { useGlobal } from '../../context/GlobalContext';
 
 export default function Cart() {
   const [cart, setCart] = useState<IProductCart[]>([]);
-  const { setCartAmount, setIsLoading, checkout } = useContext(EcommerceContext);
+  const { setCartAmount, setIsLoading, checkout, isLoading } = useGlobal();
 
   useEffect(() => {
     setCart(JSON.parse(localStorage.getItem('cart')!) || []);
@@ -124,7 +124,13 @@ export default function Cart() {
         <button type='button' className={`${styles.checkoutBtn} ${styles.cleanCartBtn}`} onClick={clearCart}>Limpar Carrinho</button>
         <div className={styles.finish}>
           <span className={styles.totalPrice}>{`Total: ${formartPrice(calcCartItemsPrice(cart))}`}</span>
-          <LoadingBtn BtnClassName={`${styles.checkoutBtn} ${styles.btnCheckout}`} onClick={() => checkout(cart)}>Continuar a Compra</LoadingBtn>
+          <LoadingBtn
+            className={`${styles.checkoutBtn} ${styles.btnCheckout}`}
+            onClick={() => checkout(cart)}
+            isLoading={isLoading}
+          >
+            Continuar a Compra
+          </LoadingBtn>
         </div>
       </aside>
     </main>

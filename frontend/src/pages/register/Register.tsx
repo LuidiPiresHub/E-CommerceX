@@ -7,7 +7,7 @@ import { validationSchema } from '../../schemas/registerSchema';
 import { useAuth } from '../../context/AuthContext';
 
 export default function Register() {
-  const { register } = useAuth();
+  const { register, isLoading } = useAuth();
 
   useEffect(() => {
     document.title = 'E-CommerceX - Register';
@@ -54,7 +54,13 @@ export default function Register() {
             placeholder='Confirme a senha'
           />
           <ErrorMessage name="confirmPassword" component="span" className={styles.error} />
-          <LoadingBtn type='submit' BtnClassName={styles.button}>Cadastrar</LoadingBtn>
+          <LoadingBtn
+            type='submit'
+            isLoading={isLoading}
+            className={styles.button}
+          >
+            Cadastrar
+          </LoadingBtn>
           <div className={styles.redirect}>
             <p>Já tem conta?</p>
             <Link to='/login' className={styles.link}>Faça Login</Link>
