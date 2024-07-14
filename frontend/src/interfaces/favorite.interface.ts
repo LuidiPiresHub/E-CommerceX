@@ -8,3 +8,7 @@ export interface IProductFavorite {
     created_at: Date;
     updated_at: Date;
 }
+
+export interface IFavoriteBackend {
+  message: IProductFavorite[];
+}
