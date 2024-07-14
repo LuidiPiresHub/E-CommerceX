@@ -9,7 +9,3 @@ export interface IBackendResponseError {
     }
   }
 }
-
-export interface IServerResp<T> {
-  message: T;
-}
