@@ -2,8 +2,8 @@ import { ReactNode } from 'react';
 
 export interface LoadingBtnProps {
   children: ReactNode;
+  isLoading: boolean;
   onClick?: () => void;
-  BtnClassName?: string;
-  loadClassName?: string;
+  className?: string;
   type?: 'button' | 'submit' | 'reset';
 }

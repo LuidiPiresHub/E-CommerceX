@@ -1,21 +1,16 @@
-import { useContext } from 'react';
 import styles from './LoadingBtn.module.css';
 import { LoadingBtnProps } from '../../interfaces/loadingBtn.interface';
-import EcommerceContext from '../../context/EcommerceContext';
 
-export default function LoadingBtn({ children, onClick, BtnClassName, loadClassName, type }: LoadingBtnProps) {
-  const { isLoading } = useContext(EcommerceContext);
+export default function LoadingBtn({ children, isLoading, onClick, className, type }: LoadingBtnProps) {
   return (
     <button
       type={type ? type : 'button'}
-      style={{ position: 'relative' }}
-      onClick={onClick} className={BtnClassName ? BtnClassName : styles.button}
+      onClick={onClick}
+      className={className}
+      disabled={isLoading}
     >
-      {isLoading ? (
-        <div className={loadClassName ? loadClassName : styles.loading}></div>
-      ) : (
-        <>{children}</>
-      )}
+      {children}
+      {isLoading && <div className={styles.loading}></div>}
     </button>
   );
 }
