@@ -52,8 +52,9 @@ const updateUser = async (userId: string, body: IUserData, buffer?: Buffer): Pro
         ...body,
         birthdate: body.birthdate ? new Date(body.birthdate) : null,
         profileImg: uploaderUrl,
-      },
+      }
     });
+
     const { password, ...userWithoutPassword } = data;
     return { type: 'OK', message: generateToken(userWithoutPassword) };
   } catch (error) {

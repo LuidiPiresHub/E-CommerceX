@@ -10,7 +10,7 @@ export const createLineItems = (products: IStripeProduct[]) => products.map((pro
         productId: product.id,
       },
     },
-    unit_amount: product.price * 100,
+    unit_amount: Number((product.price * 100).toFixed(0)),
   },
   quantity: product.quantity,
 }));
