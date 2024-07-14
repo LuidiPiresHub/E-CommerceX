@@ -3,12 +3,12 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model users {
-  id          String      @id @default(cuid())
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
   email       String      @unique
   password    String
   username    String
@@ -23,26 +23,26 @@ model users {
 }
 
 model purchases {
-  id                          String   @id @default(cuid())
+  id                          String   @id @default(auto()) @map("_id") @db.ObjectId
   purchased_product_id        String
   purchased_product_name      String
   purchased_product_price     Float
   purchased_product_quantity  Int
   purchased_product_thumbnail String
   users                       users?   @relation(fields: [users_id], references: [id])
-  users_id                    String?
+  users_id                    String?  @db.ObjectId
   created_at                  DateTime @default(now())
   updated_at                  DateTime @updatedAt
 }
 
 model favorites {
-  id                          String   @id @default(cuid())
+  id                          String   @id @default(auto()) @map("_id") @db.ObjectId
   favorited_product_id        String
   favorited_product_name      String
   favorited_product_price     Float
   favorited_product_thumbnail String
   users                       users?   @relation(fields: [users_id], references: [id])
-  users_id                    String?
+  users_id                    String?  @db.ObjectId
   created_at                  DateTime @default(now())
   updated_at                  DateTime @updatedAt
 
