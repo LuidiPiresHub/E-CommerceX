@@ -1,5 +1,5 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from './Register.module.css';
 import LoadingBtn from '../../components/loadingBtn/LoadingBtn';
 import { useEffect } from 'react';
@@ -7,11 +7,13 @@ import { validationSchema } from '../../schemas/registerSchema';
 import { useAuth } from '../../context/AuthContext';
 
 export default function Register() {
-  const { register, isLoading } = useAuth();
+  const { register, isLoading, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.title = 'E-CommerceX - Register';
-  }, []);
+    if (isAuthenticated) navigate('/');
+  }, [isAuthenticated]);
 
   return (
     <main className={styles.main}>

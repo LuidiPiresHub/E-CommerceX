@@ -1,5 +1,5 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from './Login.module.css';
 import { useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
@@ -7,11 +7,13 @@ import { loginSchema } from '../../schemas/loginSchema';
 import LoadingBtn from '../../components/loadingBtn/LoadingBtn';
 
 export default function Login() {
-  const { login, isLoading } = useAuth();
+  const { login, isLoading, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.title = 'E-CommerceX - Login';
-  }, []);
+    if (isAuthenticated) navigate('/');
+  }, [isAuthenticated]);
 
   return (
     <main className={styles.main}>
