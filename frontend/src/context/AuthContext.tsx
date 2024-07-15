@@ -78,10 +78,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(false);
     navigate('/');
   };
-
+  
   useEffect(() => {
     fetchUser();
-  }, []);
+  }, [window.location.pathname]);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, userData, isLoading, login, register, logout }}>
