@@ -57,7 +57,7 @@ const updateUser = async (userId: string, body: IUserData, buffer?: Buffer): Pro
 
     const { password, ...userWithoutPassword } = data;
     return { type: 'OK', message: generateToken(userWithoutPassword) };
-  } catch (error) {
+  } catch {
     return { type: 'BAD_REQUEST', message: 'Erro ao atualizar perfil' };
   }
 };
