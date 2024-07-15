@@ -65,8 +65,9 @@ export default function Profile() {
   const updateProfile = async (values: IProfileData): Promise<void> => {
     try {
       const gender: string = values.otherGender ? values.otherGender : values.gender;
-      const newValues = { ...values, gender };
-      delete newValues.otherGender;
+      const { email: _email, otherGender: _otherGender, ...newValues } = values;
+      newValues.gender = gender;
+      
       const formData = new FormData();
       if (typeof selectedImage === 'string') {
         const file = await urlToFile(selectedImage);
@@ -81,7 +82,7 @@ export default function Profile() {
           formData.append(key, value);
         }
       });
-      await api.put(`/user/${userData!.id}`, formData);
+      await api.put(`/user/${userData!.id}`, formData );
       toast.success('Perfil atualizado com sucesso!', {
         position: 'top-left',
         autoClose: 5000,
