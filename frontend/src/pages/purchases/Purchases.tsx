@@ -6,7 +6,7 @@ import { ptBR } from 'date-fns/locale'
 import styles from './Purchases.module.css'
 import { formartPrice, getHightestQuality } from '../../utils/functions'
 import { useGlobal } from '../../context/GlobalContext'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Purchase } from '../../interfaces/purchases.interface'
 import { ThreeCircles } from 'react-loader-spinner';
 
