@@ -74,7 +74,7 @@ const unfavoriteProduct = async (productId: string, users_id: string): Promise<I
 
 const getPurchases = async (userId: string): Promise<IProductService> => {
   const purchases = await prisma.purchases.findMany({ where: { users_id: userId }, orderBy: { created_at: 'desc' } });
-  if (!purchases) return { type: 'NOT_FOUND', message: 'Nenhuma compra encontrada' };
+  if (!purchases.length) return { type: 'NOT_FOUND', message: 'Nenhuma compra encontrada' };
   return { type: 'OK', message: purchases };
 };
 
