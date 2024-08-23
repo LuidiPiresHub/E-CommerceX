@@ -7,7 +7,7 @@ dotenv.config();
 
 const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY!);
 
-const createStripeCheckoutSession = async (products: IStripeProduct[]): Promise<IStripeServices> => {
+const createStripeCheckoutSession = async (products: IStripeProduct[], userId: string): Promise<IStripeServices> => {
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card', 'boleto'],
@@ -61,6 +61,7 @@ const createStripeCheckoutSession = async (products: IStripeProduct[]): Promise<
           },
         },
       ],
+      metadata: { userId },
       success_url: `${process.env.CLIENT_URL}/checkout/success`,
       cancel_url: `${process.env.CLIENT_URL}`,
     });
@@ -80,6 +81,8 @@ const createStripeCheckoutSession = async (products: IStripeProduct[]): Promise<
 const webhook = async (eventType: string, sessionId: string): Promise<IStripeServices> => {
   try {
     if (eventType === 'checkout.session.completed') {
+      const session = await stripe.checkout.sessions.retrieve(sessionId);
+      const userId = session.metadata?.userId;
       const lineItems = await stripe.checkout.sessions.listLineItems(sessionId);
       const products = await Promise.all(lineItems.data.map(async (item) => {
         const product = await stripe.products.retrieve(item.price!.product as string);
@@ -91,7 +94,7 @@ const webhook = async (eventType: string, sessionId: string): Promise<IStripeSer
           quantity: item.quantity!,
         };
       }));
-      return productsService.createProduct(products) as Promise<IStripeServices>;
+      return productsService.createProduct(products, userId!) as Promise<IStripeServices>;
     }
     return { type: 'NOT_FOUND', message: `Evento "${eventType}" não é tratado pelo webhook` };
   } catch (error) {

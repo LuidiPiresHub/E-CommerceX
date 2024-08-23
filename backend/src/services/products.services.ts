@@ -5,10 +5,11 @@ import { PrismaError } from '../interfaces/prisma.interface';
 
 const prisma = new PrismaClient();
 
-const createProduct = async (cartItems: IStripeProduct[]): Promise<IProductService> => {
+const createProduct = async (cartItems: IStripeProduct[], userId: string): Promise<IProductService> => {
   await Promise.all(cartItems.map(async (product) => {
     return await prisma.purchases.create({
       data: {
+        users_id: userId,
         purchased_product_id: product.id,
         purchased_product_name: product.title,
         purchased_product_price: product.price,
@@ -71,10 +72,17 @@ const unfavoriteProduct = async (productId: string, users_id: string): Promise<I
   }
 };
 
+const getPurchases = async (userId: string): Promise<IProductService> => {
+  const purchases = await prisma.purchases.findMany({ where: { users_id: userId }, orderBy: { created_at: 'desc' } });
+  if (!purchases) return { type: 'NOT_FOUND', message: 'Nenhuma compra encontrada' };
+  return { type: 'OK', message: purchases };
+};
+
 export default {
   createProduct,
   favoriteProduct,
   getFavoriteStatus,
   getFavoriteProducts,
   unfavoriteProduct,
+  getPurchases,
 };

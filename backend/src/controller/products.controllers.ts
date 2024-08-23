@@ -28,9 +28,16 @@ const unfavoriteProduct = async (req: Request, res: Response): Promise<Response>
   return res.status(mapStatus(type)).json({ message });
 };
 
+const getPurchases = async (req: Request, res: Response): Promise<Response> => {
+  const { id } = req.user;
+  const { message } = await productsServices.getPurchases(id);
+  return res.status(200).json({ message });
+};
+
 export default {
   favoriteProduct,
   getFavoriteStatus,
   getFavoriteProducts,
   unfavoriteProduct,
+  getPurchases,
 };

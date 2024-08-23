@@ -4,7 +4,8 @@ import { mapStatus } from '../utils/mapStatus';
 
 const createStripeCheckoutSession = async (req: Request, res: Response) => {
   const { products } = req.body;
-  const { type, message } = await stripeService.createStripeCheckoutSession(products);
+  const { id } = req.user;
+  const { type, message } = await stripeService.createStripeCheckoutSession(products, id);
   return res.status(mapStatus(type)).json({ message });
 };
 

@@ -1,5 +1,6 @@
 import { HttpStatus } from '../utils/mapStatus';
 import { IStripeProduct } from './stripe.interface';
+import { purchases } from '@prisma/client';
 
 export interface IProduct extends IStripeProduct {
   createdAt: Date;
@@ -18,7 +19,7 @@ export interface IProductFavorite {
 
 export interface IProductService {
   type: keyof typeof HttpStatus;
-  message: string | IProduct[] | IProduct | boolean | IProductFavorite[];
+  message: string | IProduct[] | IProduct | boolean | IProductFavorite[] | purchases[];
 }
 
 export interface IProductDetail {

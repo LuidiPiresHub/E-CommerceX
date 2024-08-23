@@ -9,5 +9,6 @@ productRoutes.post('/favorite', validateToken, validateFavoriteProduct, products
 productRoutes.get('/favorite/:id', validateToken, productsControllers.getFavoriteStatus);
 productRoutes.get('/favorites', validateToken, productsControllers.getFavoriteProducts);
 productRoutes.delete('/favorite/:id', validateToken, productsControllers.unfavoriteProduct);
+productRoutes.get('/purchases', validateToken, productsControllers.getPurchases);
 
 export default productRoutes;
