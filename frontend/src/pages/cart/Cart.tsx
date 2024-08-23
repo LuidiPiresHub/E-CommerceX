@@ -14,6 +14,7 @@ export default function Cart() {
   const { setCartAmount, setIsLoading, checkout, isLoading } = useGlobal();
 
   useEffect(() => {
+    document.title = 'E-CommerceX - Carrinho';
     setCart(JSON.parse(localStorage.getItem('cart')!) || []);
     setIsLoading(false);
   }, []);
