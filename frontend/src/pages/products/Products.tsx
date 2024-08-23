@@ -20,7 +20,9 @@ export default function Product() {
 
   const limit = 50;
   const maxOffset = 900;
-  const search = searchParams.get('search') || 'Iphone';
+  const productKeywords = ['Iphone', 'Notebook', 'Televisão', 'Monitor', 'Pc Gamer', 'Tablet'];
+  const randomProduct = productKeywords[Math.floor(Math.random() * productKeywords.length)];
+  const search = searchParams.get('search') || randomProduct;
   const page = Number(searchParams.get('page')) || 1;
   const offset = (page * limit) - limit;
 
