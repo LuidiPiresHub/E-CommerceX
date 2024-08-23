@@ -44,12 +44,16 @@ export default function App() {
         <Route path='/cart' element={<Cart />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
-        <Route path='/favorites' element={<Favorites />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path='/favorites' element={<Favorites />} />
+        </Route>
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
         </Route>
         <Route path='/checkout/success' element={<CheckoutSuccess />} />
-        <Route path='/purchases' element={<Purchases />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path='/purchases' element={<Purchases />} />
+        </Route>
         <Route path='*' element={<NotFound />} />
       </Routes>
     </AuthProvider>
