@@ -8,6 +8,14 @@
   min-height: calc(100vh - 6rem);
 }
 
+.message {
+  align-items: center;
+  display: flex;
+  font-size: 2rem;
+  justify-content: center;
+  min-height: calc(100vh - 5rem);
+}
+
 .main {
   align-items: center;
   display: flex;
