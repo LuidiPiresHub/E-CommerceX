@@ -29,8 +29,8 @@ model purchases {
   purchased_product_price     Float
   purchased_product_quantity  Int
   purchased_product_thumbnail String
-  users                       users?   @relation(fields: [users_id], references: [id])
-  users_id                    String?  @db.ObjectId
+  users                       users    @relation(fields: [users_id], references: [id])
+  users_id                    String   @db.ObjectId
   created_at                  DateTime @default(now())
   updated_at                  DateTime @updatedAt
 }
@@ -41,8 +41,8 @@ model favorites {
   favorited_product_name      String
   favorited_product_price     Float
   favorited_product_thumbnail String
-  users                       users?   @relation(fields: [users_id], references: [id])
-  users_id                    String?  @db.ObjectId
+  users                       users    @relation(fields: [users_id], references: [id])
+  users_id                    String   @db.ObjectId
   created_at                  DateTime @default(now())
   updated_at                  DateTime @updatedAt
 
