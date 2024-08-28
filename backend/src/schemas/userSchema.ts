@@ -17,7 +17,7 @@ export const userLoginSchema = Yup.object().shape({
 
 export const userUpdateSchema = Yup.object().shape({
   username: Yup.string().min(3).required(),
-  phoneNumber: Yup.string().min(11).max(12).notRequired(),
+  phoneNumber: Yup.string().min(15).max(16).notRequired(),
   gender: Yup.string().notRequired(),
   birthdate: Yup.date().notRequired(),
 });

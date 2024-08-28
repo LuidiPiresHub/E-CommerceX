@@ -110,10 +110,10 @@ export default function Profile() {
         phoneNumber: userData.phoneNumber ? userData.phoneNumber : '',
         birthdate: userData.birthdate ? formatBirthdate(userData.birthdate) : '',
       };
-      if (!standardGenders.includes(userData.gender!)) {
+      if (userData.gender && !standardGenders.includes(userData.gender)) {
         return { ...initialValues, gender: 'Outros', otherGender: userData.gender as string };
       } else {
-        return { ...initialValues, gender: userData.gender as string, otherGender: '' };
+        return { ...initialValues, gender: userData.gender || '', otherGender: '' };
       }
     }
   };
