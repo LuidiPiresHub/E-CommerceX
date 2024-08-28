@@ -1,7 +1,7 @@
 .main {
   background-color: white;
   display: flex;
-  height: 100vh;
+  height: calc(100vh - 1rem);
 }
 
 .productsContainer {
@@ -201,7 +201,7 @@
 }
 
 .btnCheckout {
-  background-color:rgb(50 0 255);
+  background-color: rgb(71 113 241);
   gap: 0.5rem;
 }
 
@@ -250,7 +250,7 @@
   }
 
   .cartTitle {
-    font-size: 1.5rem;
+    font-size: 1rem;
     padding-bottom: 1rem;
   }
 
@@ -258,13 +258,24 @@
     gap: 1rem;
     padding: 1rem 2rem;
   }
+
+  .checkoutBtn {
+    border-radius: 5px;
+    font-size: 1rem;
+    height: 30px;
+    margin-inline: auto;
+    max-width: 400px;
+    padding: 0;
+    width: 100%;
+  }
   
   .cleanCartBtn {
-    background-color: rgb(248 76 76);;
+    background-color: rgb(65 137 230 / 15%);
+    color: rgb(52 131 250);
   }
 
   .checkoutAmount, .checkoutPrice, .totalPrice {
-    font-size: 1rem;
+    font-size: 0.8rem;
   }
 
   .finish {
