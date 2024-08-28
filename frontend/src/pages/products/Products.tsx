@@ -4,13 +4,13 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { formartPrice, getHightestQuality } from '../../utils/functions';
 import { useEffect, useState } from 'react';
 import Header from '../../components/header/Header';
-import ReactPaginate from 'react-paginate';
 import { IProduct } from '../../interfaces/products.interface';
 import axios, { AxiosError } from 'axios';
 import handleAxiosError from '../../axios/handleAxiosError';
 import { IMercadoLivreResponse } from '../../interfaces/mercadoLivre.interfaces';
 import { useGlobal } from '../../context/GlobalContext';
 import { MagnifyingGlass } from 'react-loader-spinner';
+import Pagination from '../../components/pagination/Pagination';
 
 export default function Product() {
   const { addToCart, isLoading, setIsLoading, error, setError, } = useGlobal();
@@ -100,23 +100,10 @@ export default function Product() {
                 </div>
               ))}
             </section>
-            <ReactPaginate
-              breakLabel=""
-              nextLabel="Next"
-              onPageChange={({ selected }) => setSearchParams({ search: search, page: String(selected + 1) })}
-              pageRangeDisplayed={2}
-              marginPagesDisplayed={1}
-              pageCount={pageCount}
-              previousLabel="Previous"
-              renderOnZeroPageCount={null}
-              containerClassName={styles.pagination}
-              pageLinkClassName={styles.pageLink}
-              previousLinkClassName={styles.previous}
-              nextLinkClassName={styles.next}
-              activeLinkClassName={styles.active}
-              breakLinkClassName={styles.break}
-              disabledLinkClassName={styles.disabledLink}
+            <Pagination
               forcePage={pageCount === 0 ? -1 : Math.floor(offset / limit)}
+              pageCount={pageCount}
+              onPageChange={({ selected }) => setSearchParams({ search: search, page: String(selected + 1) })}
             />
           </>
         )}
