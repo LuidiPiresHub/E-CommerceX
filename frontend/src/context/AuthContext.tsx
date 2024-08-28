@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const navigate = useNavigate();
   const { state } = useLocation();
-  const from = state?.from?.pathname || '/';
+  const from: string = state?.from?.pathname || '/';
 
   const fetchUser = async (): Promise<void> => {
     try {
