@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import api from '../axios/api';
 import { AuthContextType } from '../interfaces/authContext.interface';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { IUserAuth } from '../interfaces/userAuth.interface';
 import { FormikHelpers, FormikValues } from 'formik';
 import { LoginFormValues } from '../interfaces/login.interface';
@@ -16,6 +16,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [userData, setUserData] = useState<null | IUserAuth>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const from = state?.from?.pathname || '/';
 
   const fetchUser = async (): Promise<void> => {
     try {
@@ -37,7 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       await api.post('/user/login', { userData: values });
       await fetchUser();
       resetForm();
-      navigate('/');
+      navigate(from);
     } catch (error) {
       const errorMessage = (error as IBackendResponseError).response?.data.message;
       Swal.fire({
@@ -56,7 +58,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       await api.post('/user/register', { userData: values });
       await fetchUser();
       resetForm();
-      navigate('/');
+      navigate(from);
     } catch (error) {
       const errorMessage = (error as IBackendResponseError).response?.data.message;
       Swal.fire({
