@@ -42,7 +42,7 @@ export default function ProductDetails() {
     try {
       const { data: { message } } = await api.get(`products/favorite/${productId}`);
       setIsFavorite(message);
-    } catch (error) {
+    } catch {
       setError('Não foi possível verificar o estado do favorito.');
     }
   };
@@ -162,7 +162,7 @@ export default function ProductDetails() {
               <h4>O que você precisa saber sobre este produto:</h4>
               <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, similique quisquam aperiam pariatur ratione necessitatibus eaque dolorem vero deleniti officiis, blanditiis eos! Rem dignissimos placeat autem aliquid numquam harum tempora.</p>
               <footer className={styles.buttonsContainer}>
-                <button onClick={() => checkout([{ ...product, quantity: 1 }])} className={`${styles.btn} ${styles.buyBtn}`}>Comprar agora</button>
+                <button onClick={() => checkout([{ ...product, quantity: 1 }], `/product/${id}`)} className={`${styles.btn} ${styles.buyBtn}`}>Comprar agora</button>
                 <button type='button' onClick={handleCartAdd} className={`${styles.btn} ${styles.addCartBtn}`}>Adicionar ao carrinho</button>
               </footer>
             </aside>

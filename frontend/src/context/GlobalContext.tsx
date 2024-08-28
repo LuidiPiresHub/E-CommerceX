@@ -34,7 +34,7 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const checkout = async (products: IProductCart[]): Promise<void> => {
+  const checkout = async (products: IProductCart[], redirectUrl?: string): Promise<void> => {
     if (products.length) {
       try {
         setIsLoading(true);
@@ -42,7 +42,7 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
         window.location.href = redirectUrl;
       } catch (error) {
         if ((error as AxiosError).response?.status === 401) {
-          return navigate('/login');
+          return navigate('/login', { state: { from: { pathname: redirectUrl } } });
         }
         const errorMessage = (error as AxiosError).message === 'Network Error'
           ? 'Erro de conexão com o servidor'

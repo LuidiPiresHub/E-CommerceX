@@ -9,5 +9,5 @@ export interface GlobalContextType {
   isLoading: boolean;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   addToCart: (product: IProduct) => void;
-  checkout: (cart: IProductCart[]) => void;
+  checkout: (cart: IProductCart[], redirectUrl?: string) => void;
 }
