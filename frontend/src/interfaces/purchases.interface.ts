@@ -9,3 +9,10 @@ export interface Purchase {
   created_at: string
   updated_at: string
 }
+
+export interface IPurchasesBackend {
+  message: {
+    purchases: Purchase[]
+    pageCount: number
+  } | string
+}

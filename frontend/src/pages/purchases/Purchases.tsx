@@ -6,24 +6,29 @@ import { ptBR } from 'date-fns/locale'
 import styles from './Purchases.module.css'
 import { formartPrice, getHightestQuality } from '../../utils/functions'
 import { useGlobal } from '../../context/GlobalContext'
-import { Link } from 'react-router-dom'
-import { Purchase } from '../../interfaces/purchases.interface'
+import { Link, useSearchParams } from 'react-router-dom'
+import { IPurchasesBackend, Purchase } from '../../interfaces/purchases.interface'
 import { ThreeCircles } from 'react-loader-spinner';
+import Pagination from '../../components/pagination/Pagination'
 
 export default function Purchases() {
-  const [purchases, setPurchases] = useState<Purchase[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<null | string>(null)
+  const [purchases, setPurchases] = useState<Purchase[]>([])
+  const [pageCount, setPageCount] = useState<number>(1)
+  const [searchParams, setSearchParams] = useSearchParams();
   const { checkout } = useGlobal()
+  const page = Number(searchParams.get('page')) || 1;
 
   useEffect(() => {
     document.title = 'E-CommerceX - Compras'
     const fetchPurchases = async () => {
       try {
         setLoading(true)
-        const { data: { message } } = await api.get<{ message: Purchase[] | string }>('/products/purchases')
+        const { data: { message } } = await api.get<IPurchasesBackend>(`/products/purchases?page=${page}`)
         if (typeof message === 'string') throw new Error(message)
-        setPurchases(message)
+        setPurchases(message.purchases)
+        setPageCount(message.pageCount)
       } catch (error) {
         setError((error as Error).message || 'Ocorreu um erro ao buscar suas compras')
       } finally {
@@ -31,7 +36,7 @@ export default function Purchases() {
       }
     }
     fetchPurchases();
-  }, [])
+  }, [searchParams])
 
   const handleCheckout = (purchase: Purchase) => {
     checkout([{
@@ -87,6 +92,15 @@ export default function Purchases() {
           </div>
         </div>
       ))}</main>
+      {pageCount > 1 && (
+        <footer className={styles.footer}>
+          <Pagination
+            pageCount={pageCount}
+            forcePage={page - 1}
+            onPageChange={({ selected }) => setSearchParams({ page: String(selected + 1) })}
+          />
+        </footer>
+      )}
     </>
   )
 }

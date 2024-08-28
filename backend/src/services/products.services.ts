@@ -47,9 +47,25 @@ const getFavoriteStatus = async (productId: string): Promise<IProductService> =>
   }
 };
 
-const getFavoriteProducts = async (userId: string): Promise<IProductService> => {
-  const products = await prisma.favorites.findMany({ where: { users_id: userId }});
-  return { type: 'OK', message: products };
+const getFavoriteProducts = async (userId: string, page: number = 1): Promise<IProductService> => {
+  const limit = 10;
+  const offset = (page - 1) * limit;
+
+  const [products, totalProducts] = await prisma.$transaction([
+    prisma.favorites.findMany({
+      where: {
+        users_id: userId
+      },
+      take: limit,
+      skip: offset
+    }),
+    prisma.favorites.count({ where: { users_id: userId } }),
+  ]);
+
+  if (!products.length) return { type: 'NOT_FOUND', message: 'Nenhum produto favoritado' };
+
+  const pageCount = Math.ceil(totalProducts / limit);
+  return { type: 'OK', message: { products, pageCount } };
 };
 
 const unfavoriteProduct = async (productId: string, users_id: string): Promise<IProductService> => {
@@ -72,10 +88,28 @@ const unfavoriteProduct = async (productId: string, users_id: string): Promise<I
   }
 };
 
-const getPurchases = async (userId: string): Promise<IProductService> => {
-  const purchases = await prisma.purchases.findMany({ where: { users_id: userId }, orderBy: { created_at: 'desc' } });
+const getPurchases = async (userId: string, page: number = 1): Promise<IProductService> => {
+  const limit = 10;
+  const offset = (page - 1) * limit;
+
+  const [purchases, totalPurchases] = await prisma.$transaction([
+    prisma.purchases.findMany({
+      where: {
+        users_id: userId
+      },
+      orderBy: {
+        created_at: 'desc'
+      },
+      take: limit,
+      skip: offset,
+    }),
+    prisma.purchases.count({ where: { users_id: userId } })
+  ]);
+
   if (!purchases.length) return { type: 'NOT_FOUND', message: 'Nenhuma compra encontrada' };
-  return { type: 'OK', message: purchases };
+
+  const pageCount = Math.ceil(totalPurchases / limit);
+  return { type: 'OK', message: { purchases, pageCount } };
 };
 
 export default {

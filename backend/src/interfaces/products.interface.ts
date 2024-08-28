@@ -17,9 +17,19 @@ export interface IProductFavorite {
   updated_at: Date;
 }
 
+export interface IgetPurchases {
+  purchases: purchases[];
+  pageCount: number;
+}
+
+export interface getFavoriteProducts {
+  products: IProductFavorite[];
+  pageCount: number;
+}
+
 export interface IProductService {
   type: keyof typeof HttpStatus;
-  message: string | IProduct[] | IProduct | boolean | IProductFavorite[] | purchases[];
+  message: string | IProduct[] | IProduct | boolean | getFavoriteProducts | IgetPurchases;
 }
 
 export interface IProductDetail {

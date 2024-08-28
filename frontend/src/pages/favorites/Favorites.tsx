@@ -1,30 +1,36 @@
 import Header from '../../components/header/Header';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { formartPrice } from '../../utils/functions';
 import { useEffect, useState } from 'react';
 import { IFavoriteBackend, IProductFavorite } from '../../interfaces/favorite.interface';
 import api from '../../axios/api';
 import { FaHeart } from 'react-icons/fa';
 import styles from './Favorites.module.css';
+import Pagination from '../../components/pagination/Pagination';
 
 export default function Favorites() {
-  const [favorites, setFavorites] = useState<IProductFavorite[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [favorites, setFavorites] = useState<IProductFavorite[]>([]);
+  const [pageCount, setPageCount] = useState<number>(1)
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = Number(searchParams.get('page')) || 1;
 
   useEffect(() => {
     document.title = 'E-CommerceX - Favoritos';
     const getFavorites = async () => {
       try {
-        const { data: { message } } = await api.get<IFavoriteBackend>('products/favorites');
-        setFavorites(message);
-      } catch (error) {
+        const { data: { message } } = await api.get<IFavoriteBackend>(`products/favorites?page=${page}`);
+        if (typeof message === 'string') throw new Error(message);
+        setFavorites(message.products);
+        setPageCount(message.pageCount);
+      } catch {
         setFavorites([]);
       } finally {
         setIsLoading(false);
       }
     };
     getFavorites();
-  }, []);
+  }, [searchParams]);
 
   const unfavoriteProduct = async (productId: string) => {
     const newFavorites = favorites.filter((favorite) => favorite.favorited_product_id !== productId);
@@ -40,7 +46,7 @@ export default function Favorites() {
           <h1>Carregando...</h1>
         ) : (
           !isLoading && !favorites.length ? (
-            <h1>Nenhum Produto favoritado!</h1>
+            <h1 className={styles.errorMessage}>Nenhum Produto favoritado!</h1>
           ) : (
             favorites.map((favorite) => (
               <section
@@ -73,6 +79,15 @@ export default function Favorites() {
           )
         )}
       </main>
+      {pageCount > 1 && (
+        <footer className={styles.footer}>
+          <Pagination
+            pageCount={pageCount}
+            forcePage={page - 1}
+            onPageChange={({ selected }) => setSearchParams({ page: String(selected + 1) })}
+          />
+        </footer>
+      )}
     </>
   );
 }

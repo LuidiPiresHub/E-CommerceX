@@ -10,5 +10,8 @@ export interface IProductFavorite {
 }
 
 export interface IFavoriteBackend {
-  message: IProductFavorite[];
+  message: {
+    products: IProductFavorite[];
+    pageCount: number;
+  } | string;
 }

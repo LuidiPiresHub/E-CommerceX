@@ -17,7 +17,8 @@ const getFavoriteStatus = async (req: Request, res: Response): Promise<Response>
 
 const getFavoriteProducts = async (req: Request, res: Response): Promise<Response> => {
   const { id } = req.user;
-  const { type, message } = await productsServices.getFavoriteProducts(id);
+  const { page } = req.query as { page: string };
+  const { type, message } = await productsServices.getFavoriteProducts(id, Number(page));
   return res.status(mapStatus(type)).json({ message });
 };
 
@@ -30,7 +31,8 @@ const unfavoriteProduct = async (req: Request, res: Response): Promise<Response>
 
 const getPurchases = async (req: Request, res: Response): Promise<Response> => {
   const { id } = req.user;
-  const { message } = await productsServices.getPurchases(id);
+  const { page } = req.query as { page: string };
+  const { message } = await productsServices.getPurchases(id, Number(page));
   return res.status(200).json({ message });
 };
 
