@@ -62,7 +62,7 @@ const createStripeCheckoutSession = async (products: IStripeProduct[], userId: s
         },
       ],
       metadata: { userId },
-      success_url: `${process.env.CLIENT_URL}/checkout/success`,
+      success_url: `${process.env.CLIENT_URL}/purchases?fromPayment=true`,
       cancel_url: `${process.env.CLIENT_URL}`,
     });
 
