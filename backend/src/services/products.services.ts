@@ -56,6 +56,9 @@ const getFavoriteProducts = async (userId: string, page: number = 1): Promise<IP
       where: {
         users_id: userId
       },
+      orderBy: {
+        created_at: 'desc'
+      },
       take: limit,
       skip: offset
     }),
