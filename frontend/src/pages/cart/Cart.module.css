@@ -205,6 +205,16 @@
   gap: 0.5rem;
 }
 
+.disabled {
+  background-color: rgb(71 113 241 / 50%);
+  cursor: not-allowed;
+}
+
+.disabled:hover {
+  box-shadow: none;
+  transform: none;
+}
+
 @media (width <= 1220px) {
   .cartTitle {
     padding-right: 0;
