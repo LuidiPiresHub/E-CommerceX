@@ -70,7 +70,7 @@ export default function ProductDetails() {
       }
     } catch (error) {
       if ((error as AxiosError).response?.status === 401) {
-        navigate('/login');
+        navigate('/login', { state: { from: { pathname: `/product/${id}` } } });
       } else {
         toast.error('Falha ao atualizar favoritos.', {
           position: 'top-left',
