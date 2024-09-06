@@ -7,7 +7,6 @@ import Cart from './pages/cart/Cart';
 import Login from './pages/login/Login';
 import Register from './pages/register/Register';
 import Favorites from './pages/favorites/Favorites';
-import CheckoutSuccess from './pages/checkoutSuccess/CheckoutSuccess';
 import NotFound from './pages/notFound/NotFound';
 import Profile from './pages/profile/Profile';
 import Purchases from './pages/purchases/Purchases';
@@ -50,7 +49,6 @@ export default function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
         </Route>
-        <Route path='/checkout/success' element={<CheckoutSuccess />} />
         <Route element={<ProtectedRoute />}>
           <Route path='/purchases' element={<Purchases />} />
         </Route>
