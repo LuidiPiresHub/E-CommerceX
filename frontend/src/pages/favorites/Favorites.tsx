@@ -11,7 +11,7 @@ import Pagination from '../../components/pagination/Pagination';
 export default function Favorites() {
   const [isLoading, setIsLoading] = useState(true);
   const [favorites, setFavorites] = useState<IProductFavorite[]>([]);
-  const [pageCount, setPageCount] = useState<number>(1)
+  const [pageCount, setPageCount] = useState<number>(1);
   const [searchParams, setSearchParams] = useSearchParams();
   const page = Number(searchParams.get('page')) || 1;
 
