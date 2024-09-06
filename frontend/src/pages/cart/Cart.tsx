@@ -126,9 +126,10 @@ export default function Cart() {
         <div className={styles.finish}>
           <span className={styles.totalPrice}>{`Total: ${formartPrice(calcCartItemsPrice(cart))}`}</span>
           <LoadingBtn
-            className={`${styles.checkoutBtn} ${styles.btnCheckout}`}
+            className={`${styles.checkoutBtn} ${styles.btnCheckout} ${!cart.length ? styles.disabled : ''}`.trim()}
             onClick={() => checkout(cart)}
             isLoading={isLoading}
+            disabled={!cart.length}
           >
             Continuar a Compra
           </LoadingBtn>

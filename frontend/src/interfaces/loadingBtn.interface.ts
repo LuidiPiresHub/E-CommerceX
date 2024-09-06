@@ -6,4 +6,5 @@ export interface LoadingBtnProps {
   onClick?: () => void;
   className?: string;
   type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
 }
