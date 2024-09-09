@@ -21,14 +21,6 @@ export const calculateAge = (birthdate: Date): number => {
   return age;
 };
 
-export const formatPhoneNumber = (phone: string) => {
-  const phoneNumber = phone.replace(/\D/g, '');
-  const dddLength = phoneNumber.length > 11 ? 3 : 2;
-  const phoneRegex = `^(\\d{${dddLength}})(\\d{5})(\\d{4}).*`;
-  const phoneFormat = '($1) $2-$3';
-  return phoneNumber.replace(new RegExp(phoneRegex), phoneFormat);
-};
-
 export const formatBirthdate = (birthdate: Date | string): string => {
   const date = new Date(birthdate).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
   const parsedData = parse(date, 'dd/MM/yyyy', new Date());
