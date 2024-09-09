@@ -5,12 +5,13 @@ import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { FaLock, FaLongArrowAltLeft } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
-import { ErrorMessage, Field, Form, Formik } from 'formik';
-import { formatBirthdate, formatPhoneNumber, urlToFile } from '../../utils/functions';
+import { ErrorMessage, Field, Form, Formik, FieldProps } from 'formik';
+import { formatBirthdate, urlToFile } from '../../utils/functions';
 import { profileSchema } from '../../schemas/profileSchema';
 import api from '../../axios/api';
 import LoadingBtn from '../../components/loadingBtn/LoadingBtn';
 import { IProfileData } from '../../interfaces/profile.interface';
+import InputMask from 'react-input-mask';
 
 export default function Profile() {
   const [selectedImage, setSelectedImage] = useState<File | string | null>(null);
@@ -67,7 +68,7 @@ export default function Profile() {
       const gender: string = values.otherGender ? values.otherGender : values.gender;
       const { email: _email, otherGender: _otherGender, ...newValues } = values;
       newValues.gender = gender;
-      
+
       const formData = new FormData();
       if (typeof selectedImage === 'string') {
         const file = await urlToFile(selectedImage);
@@ -82,6 +83,7 @@ export default function Profile() {
           formData.append(key, value);
         }
       });
+
       await api.put(`/user/${userData!.id}`, formData );
       toast.success('Perfil atualizado com sucesso!', {
         position: 'top-left',
@@ -219,7 +221,7 @@ export default function Profile() {
                           id="otherGender"
                           name="otherGender"
                           className={styles.input}
-                          placeholder='Digite seu nome de usuário'
+                          placeholder='Digite seu gênero'
                           value={values.otherGender}
                           spellCheck={false}
                         />
@@ -250,15 +252,18 @@ export default function Profile() {
                         type="tel"
                         id="phoneNumber"
                         name="phoneNumber"
-                        className={styles.input}
                         placeholder='(999) 99999-9999'
                         value={values.phoneNumber}
-                        onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                          const { value } = event.target;
-                          const formatedPhone = formatPhoneNumber(value);
-                          setFieldValue('phoneNumber', formatedPhone);
-                        }}
-                      />
+                      >
+                        {({ field }: FieldProps) => (
+                          <InputMask
+                            {...field}
+                            mask="(99) 99999-9999"
+                            className={styles.input}
+                            alwaysShowMask={true}
+                          />
+                        )}
+                      </Field>
                       <label htmlFor="phoneNumber" className={styles.label}>
                         Celular
                       </label>
