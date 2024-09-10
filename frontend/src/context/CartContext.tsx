@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { createContext, ReactNode, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { ICart, ICartBackend } from '../interfaces/cart.interface';
 import { IProduct } from '../interfaces/products.interface';
 import api from '../axios/api';
@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 import { AxiosError } from 'axios';
 import { IBackendCheckoutResponse, IBackendResponseError } from '../interfaces/server.interface';
 import { countCartItems } from '../utils/functions';
+import { throttle } from 'lodash';
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
@@ -19,8 +20,13 @@ export default function CartProvider({ children }: { children: ReactNode }) {
   const [cartAmount, setCartAmount] = useState<number>(0);
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
-
+  
   useEffect(() => {
+    if (!isAuthenticated) {
+      setCart([]);
+      setCartAmount(0);
+    }
+    
     const fetchCartItems = async () => {
       try {
         const { data: { message } } = await api.get<ICartBackend>('/cart');
@@ -31,7 +37,10 @@ export default function CartProvider({ children }: { children: ReactNode }) {
       }
     };
     fetchCartItems();
-  }, []);
+  }, [isAuthenticated]);
+
+  const cartRef = useRef(cart);
+  cartRef.current = cart;
 
   const updateCartState = (product: ICart, productExist: ICart | undefined): void => {
     setCart((prevState) => {
@@ -49,14 +58,11 @@ export default function CartProvider({ children }: { children: ReactNode }) {
 
   const addToCart = async (product: IProduct): Promise<void> => {
     if (!isAuthenticated) return navigate('/login', { state: { from: { pathname: `/product/${product.id}` } } });
-    if (isLoading) return;
-
-    setIsLoading(true);
-    const productExist = cart.find((item) => item.cart_product_id === product.id);
+    const productExist = cartRef.current.find((item) => item.cart_product_id === product.id);
     const previousCartState = [...cart];
     const previousCartCounter = cartAmount;
 
-    setCartAmount(previousCartCounter + 1);
+    setCartAmount(countCartItems(cartRef.current));
     updateCartState({
       cart_product_id: product.id,
       cart_product_title: product.title,
@@ -82,10 +88,15 @@ export default function CartProvider({ children }: { children: ReactNode }) {
         position: 'top-left',
         autoClose: 2000,
       });
-    } finally {
-      setIsLoading(false);
     }
   };
+
+  const throttledAddToCart = useCallback(
+    throttle(async (product: IProduct) => {
+      await addToCart(product);
+    }, 200),
+    [isAuthenticated]
+  );
 
 
   const checkout = async (products: ICart[], redirectUrl?: string): Promise<void> => {
@@ -116,7 +127,7 @@ export default function CartProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <CartContext.Provider value={{ addToCart, cart, setCart, checkout, setCartAmount, cartAmount, isLoading }}>
+    <CartContext.Provider value={{ cart, setCart, checkout, setCartAmount, cartAmount, isLoading, throttledAddToCart }}>
       {children}
     </CartContext.Provider>
   );

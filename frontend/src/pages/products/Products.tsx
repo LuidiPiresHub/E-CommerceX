@@ -18,7 +18,7 @@ export default function Product() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
-  const { addToCart } = useCart();
+  const { throttledAddToCart } = useCart();
 
   const limit = 50;
   const maxOffset = 900;
@@ -95,7 +95,7 @@ export default function Product() {
                       </p>
                     </div>
                   </Link>
-                  <button type='button' onClick={() => addToCart(product)} className={styles.cardBuy}>
+                  <button type='button' onClick={() => throttledAddToCart(product)} className={styles.cardBuy}>
                     Adicionar ao carrinho
                     <FaCartArrowDown />
                   </button>
