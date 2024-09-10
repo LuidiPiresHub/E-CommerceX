@@ -4,13 +4,13 @@ export const createLineItems = (products: IStripeProduct[]) => products.map((pro
   price_data: {
     currency: 'brl',
     product_data: {
-      name: product.title,
-      images: [product.thumbnail],
+      name: product.cart_product_title,
+      images: [product.cart_product_thumbnail],
       metadata: {
-        productId: product.id,
+        productId: product.cart_product_id,
       },
     },
-    unit_amount: Number((product.price * 100).toFixed(0)),
+    unit_amount: Number((product.cart_product_price * 100).toFixed(0)),
   },
-  quantity: product.quantity,
+  quantity: product.cart_product_quantity,
 }));

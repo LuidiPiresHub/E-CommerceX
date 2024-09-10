@@ -1,11 +1,11 @@
 import { PrismaClient } from '@prisma/client';
-import { IStripeProduct } from '../interfaces/stripe.interface';
 import { IProductDetail, IProductService } from '../interfaces/products.interface';
 import { PrismaError } from '../interfaces/prisma.interface';
+import { ICartProduct } from '../interfaces/cart.interface';
 
 const prisma = new PrismaClient();
 
-const createProduct = async (cartItems: IStripeProduct[], userId: string): Promise<IProductService> => {
+const createProduct = async (cartItems: ICartProduct[], userId: string): Promise<IProductService> => {
   await Promise.all(cartItems.map(async (product) => {
     return await prisma.purchases.create({
       data: {
