@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import productsControllers from '../controller/products.controllers';
+import productsControllers from '../controller/products.controller';
 import validateToken from '../middlewares/validadeToken';
 import { validateFavoriteProduct } from '../middlewares/validateProducts';
 
