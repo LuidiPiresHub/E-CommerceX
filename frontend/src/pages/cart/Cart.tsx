@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import styles from './Cart.module.css';
 import { calcCartItemsPrice, countCartItems, formartPrice, getHightestQuality } from '../../utils/functions';
 import { FaLongArrowAltLeft } from 'react-icons/fa';
@@ -8,25 +8,38 @@ import Swal from 'sweetalert2';
 import LoadingBtn from '../../components/loadingBtn/LoadingBtn';
 import { useCart } from '../../context/CartContext';
 import api from '../../axios/api';
+import { debounce } from 'lodash';
+import { ICart } from '../../interfaces/cart.interface';
 
 export default function Cart() {
   const { cart, setCart, setCartAmount, checkout, isLoading } = useCart();
-  const [isFetching, setIsFetching] = useState<boolean>(false);
 
   useEffect(() => {
     document.title = 'E-CommerceX - Carrinho';
   }, []);
 
-  const decrementQuantity = async (id: string): Promise<void> => {
-    if (isFetching) return;
-    setIsFetching(true);
-    const previousCartState = [...cart];
+  const debouncedUpdateCart = useCallback(
+    debounce(async (id: string, quantity: number, revert: ICart[]) => {
+      try {
+        if (quantity === 0) {
+          await api.delete(`/cart/${id}`);
+        } else {
+          await api.put(`/cart/${id}`, { quantity });
+        }
+      } catch {
+        setCart(revert);
+      }
+    }, 300),
+    []
+  );
 
+  const decrementQuantity = async (id: string): Promise<void> => {
+    const previousCartState = [...cart];
     setCartAmount((prevAmount) => prevAmount > 0 ? prevAmount - 1 : 0);
     setCart((prevProducts) => {
       const updatedProducts = prevProducts.map((product) => {
-        if (product.cart_product_id === id && product.cart_product_quantity! > 0) {
-          return { ...product, cart_product_quantity: product.cart_product_quantity! - 1 };
+        if (product.cart_product_id === id && product.cart_product_quantity > 0) {
+          return { ...product, cart_product_quantity: product.cart_product_quantity - 1 };
         }
         return product;
       });
@@ -36,24 +49,11 @@ export default function Cart() {
     const product = cart.find((item) => item.cart_product_id === id);
     if (!product) return;
     
-    try {
-      if (product.cart_product_quantity - 1 === 0) {
-        await api.delete(`/cart/${id}`);
-      } else {
-        await api.put(`/cart/${id}`, { quantity: product.cart_product_quantity - 1 });
-      }
-    } catch {
-      setCart(previousCartState);
-    } finally {
-      setIsFetching(false);
-    }
+    debouncedUpdateCart(id, product.cart_product_quantity - 1, previousCartState);
   };
 
   const incrementQuantity = async (id: string): Promise<void> => {
-    if (isFetching) return;
-    setIsFetching(true);
     const previousCartState = [...cart];
-
     setCartAmount((prevAmount) => prevAmount + 1);
     setCart((prevProducts) => prevProducts.map((product) => {
       if (product.cart_product_id === id) {
@@ -65,15 +65,7 @@ export default function Cart() {
     const product = cart.find((item) => item.cart_product_id === id);
     if (!product) return;
   
-    try {
-      await api.put(`/cart/${id}`, { quantity: product.cart_product_quantity + 1 });
-    } catch (error) {
-      console.log(error);
-      
-      setCart(previousCartState);
-    } finally {
-      setIsFetching(false);
-    }
+    debouncedUpdateCart(id, product.cart_product_quantity + 1, previousCartState);
   };
 
   const clearCart = async (): Promise<void> => {
