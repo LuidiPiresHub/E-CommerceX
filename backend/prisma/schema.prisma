@@ -16,10 +16,26 @@ model users {
   gender      String?
   birthdate   DateTime?
   profileImg  String?
+  cart        cart[]
   purchases   purchases[]
   favorites   favorites[]
   created_at  DateTime    @default(now())
   updated_at  DateTime    @updatedAt
+}
+
+model cart {
+  id                     String   @id @default(auto()) @map("_id") @db.ObjectId
+  cart_product_id        String
+  cart_product_title     String
+  cart_product_price     Float
+  cart_product_quantity  Int
+  cart_product_thumbnail String
+  users                  users?   @relation(fields: [user_id], references: [id])
+  user_id               String?  @db.ObjectId
+  created_at             DateTime @default(now())
+  updated_at             DateTime @updatedAt
+
+  @@unique([cart_product_id, user_id])
 }
 
 model purchases {
