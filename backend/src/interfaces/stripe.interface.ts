@@ -6,9 +6,9 @@ export interface IStripeServices {
 }
 
 export interface IStripeProduct {
-  id: string;
-  title: string;
-  price: number;
-  thumbnail: string;
-  quantity: number;
+  cart_product_id: string;
+  cart_product_title: string;
+  cart_product_price: number;
+  cart_product_quantity: number;
+  cart_product_thumbnail: string;
 }

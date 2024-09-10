@@ -12,11 +12,16 @@ const validadeStripeProducts = async (req: Request, res: Response, next: NextFun
 
   try {
     await Promise.all(products.map(async (product) => {
-      if (typeof product.price !== 'number') {
-        throw new Yup.ValidationError('Price should be a number', product, 'price', product.price);
+      if (typeof product.cart_product_price !== 'number') {
+        throw new Yup.ValidationError('Price should be a number', product, 'price', product.cart_product_price);
       }
-      if (typeof product.quantity !== 'number') {
-        throw new Yup.ValidationError('Quantity should be a number', product, 'quantity', product.quantity);
+      if (typeof product.cart_product_quantity !== 'number') {
+        throw new Yup.ValidationError(
+          'Quantity should be a number'
+          , product,
+          'quantity',
+          product.cart_product_quantity
+        );
       }
       await productSchema.validate(product);
     }));
