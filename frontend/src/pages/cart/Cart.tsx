@@ -1,56 +1,82 @@
 import { useEffect, useState } from 'react';
 import styles from './Cart.module.css';
 import { calcCartItemsPrice, countCartItems, formartPrice, getHightestQuality } from '../../utils/functions';
-import { IProductCart } from '../../interfaces/products.interface';
 import { FaLongArrowAltLeft } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import emptyCart from '../../assets/images/empty-cart.png';
 import Swal from 'sweetalert2';
 import LoadingBtn from '../../components/loadingBtn/LoadingBtn';
-import { useGlobal } from '../../context/GlobalContext';
+import { useCart } from '../../context/CartContext';
+import api from '../../axios/api';
 
 export default function Cart() {
-  const [cart, setCart] = useState<IProductCart[]>([]);
-  const { setCartAmount, setIsLoading, checkout, isLoading } = useGlobal();
+  const { cart, setCart, setCartAmount, checkout, isLoading } = useCart();
+  const [isFetching, setIsFetching] = useState<boolean>(false);
 
   useEffect(() => {
     document.title = 'E-CommerceX - Carrinho';
-    setCart(JSON.parse(localStorage.getItem('cart')!) || []);
-    setIsLoading(false);
   }, []);
 
-  useEffect(() => {
-    if (cart.length) {
-      localStorage.setItem('cart', JSON.stringify(cart));
-    } else {
-      localStorage.removeItem('cart');
-    }
-  }, [cart]);
+  const decrementQuantity = async (id: string): Promise<void> => {
+    if (isFetching) return;
+    setIsFetching(true);
+    const previousCartState = [...cart];
 
-  const decrementQuantity = (id: string): void => {
     setCartAmount((prevAmount) => prevAmount > 0 ? prevAmount - 1 : 0);
     setCart((prevProducts) => {
       const updatedProducts = prevProducts.map((product) => {
-        if (product.id === id && product.quantity! > 0) {
-          return { ...product, quantity: product.quantity! - 1 };
+        if (product.cart_product_id === id && product.cart_product_quantity! > 0) {
+          return { ...product, cart_product_quantity: product.cart_product_quantity! - 1 };
         }
         return product;
       });
-      return updatedProducts.filter((product) => product.quantity! > 0);
+      return updatedProducts.filter((product) => product.cart_product_quantity > 0);
     });
+
+    const product = cart.find((item) => item.cart_product_id === id);
+    if (!product) return;
+    
+    try {
+      if (product.cart_product_quantity - 1 === 0) {
+        await api.delete(`/cart/${id}`);
+      } else {
+        await api.put(`/cart/${id}`, { quantity: product.cart_product_quantity - 1 });
+      }
+    } catch {
+      setCart(previousCartState);
+    } finally {
+      setIsFetching(false);
+    }
   };
 
-  const incrementQuantity = (id: string): void => {
+  const incrementQuantity = async (id: string): Promise<void> => {
+    if (isFetching) return;
+    setIsFetching(true);
+    const previousCartState = [...cart];
+
     setCartAmount((prevAmount) => prevAmount + 1);
     setCart((prevProducts) => prevProducts.map((product) => {
-      if (product.id === id) {
-        return { ...product, quantity: product.quantity! + 1 };
+      if (product.cart_product_id === id) {
+        return { ...product, cart_product_quantity: product.cart_product_quantity + 1 };
       }
       return product;
     }));
+
+    const product = cart.find((item) => item.cart_product_id === id);
+    if (!product) return;
+  
+    try {
+      await api.put(`/cart/${id}`, { quantity: product.cart_product_quantity + 1 });
+    } catch (error) {
+      console.log(error);
+      
+      setCart(previousCartState);
+    } finally {
+      setIsFetching(false);
+    }
   };
 
-  const clearCart = (): void => {
+  const clearCart = async (): Promise<void> => {
     if (cart.length) {
       Swal.fire({
         title: 'Tem certeza?',
@@ -62,11 +88,16 @@ export default function Cart() {
         reverseButtons: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-      }).then(({ isConfirmed, dismiss }) => {
+      }).then(async ({ isConfirmed, dismiss }) => {
         if (isConfirmed) {
-          Swal.fire('Limpo!', 'Seu carrinho foi limpo.', 'success');
-          setCart([]);
-          setCartAmount(0);
+          try {
+            Swal.fire('Limpo!', 'Seu carrinho foi limpo.', 'success');
+            setCart([]);
+            setCartAmount(0);
+            await api.delete('/cart');
+          } catch {
+            Swal.fire('Erro!', 'Ocorreu um erro ao limpar o carrinho.', 'error');
+          }
         } else if (dismiss === Swal.DismissReason.cancel) {
           Swal.fire('Cancelado', 'Seu carrinho está seguro :)', 'error');
         }
@@ -94,18 +125,18 @@ export default function Cart() {
         <section className={styles.productsOverflow}>
           {cart.length ? (
             cart.map((product) => (
-              <article key={product.id} className={styles.productCard}>
+              <article key={product.cart_product_id} className={styles.productCard}>
                 <Link to={`/product/${product.id}`} className={styles.productLink}>
-                  <img src={getHightestQuality(product.thumbnail)} alt={product.title} className={styles.productImage} />
+                  <img src={getHightestQuality(product.cart_product_thumbnail)} alt={product.cart_product_title} className={styles.productImage} />
                 </Link>
                 <div className={styles.detailsWrapper}>
-                  <h2 className={styles.productName}>{product.title}</h2>
+                  <h2 className={styles.productName}>{product.cart_product_title}</h2>
                   <div className={styles.wrapper}>
-                    <p>{formartPrice(product.price)}</p>
+                    <p>{formartPrice(product.cart_product_price)}</p>
                     <div className={styles.btnWrapper}>
-                      <button type='button' className={styles.quantityBtn} onClick={() => decrementQuantity(product.id)}>-</button>
-                      <span className={styles.productQuantity}>{product.quantity}</span>
-                      <button type='button' className={styles.quantityBtn} onClick={() => incrementQuantity(product.id)}>+</button>
+                      <button type='button' className={styles.quantityBtn} onClick={() => decrementQuantity(product.cart_product_id)}>-</button>
+                      <span className={styles.productQuantity}>{product.cart_product_quantity}</span>
+                      <button type='button' className={styles.quantityBtn} onClick={() => incrementQuantity(product.cart_product_id)}>+</button>
                     </div>
                   </div>
                 </div>
@@ -122,7 +153,7 @@ export default function Cart() {
           <span className={styles.checkoutAmount}>{displayText}</span>
           <span className={styles.checkoutPrice}>{formartPrice(calcCartItemsPrice(cart))}</span>
         </div>
-        <button type='button' className={`${styles.checkoutBtn} ${styles.cleanCartBtn}`} onClick={clearCart}>Limpar Carrinho</button>
+        <button type='button' className={`${styles.checkoutBtn} ${styles.cleanCartBtn}`} disabled={!cart.length} onClick={clearCart}>Limpar Carrinho</button>
         <div className={styles.finish}>
           <span className={styles.totalPrice}>{`Total: ${formartPrice(calcCartItemsPrice(cart))}`}</span>
           <LoadingBtn
