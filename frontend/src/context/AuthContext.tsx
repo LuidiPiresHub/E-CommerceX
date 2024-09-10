@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import api from '../axios/api';
 import { AuthContextType } from '../interfaces/authContext.interface';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -6,12 +6,12 @@ import { IUserAuth } from '../interfaces/userAuth.interface';
 import { FormikHelpers, FormikValues } from 'formik';
 import { LoginFormValues } from '../interfaces/login.interface';
 import { RegisterFormValues } from '../interfaces/register.interface';
-import { IBackendResponseError } from '../interfaces/server.interface';
 import Swal from 'sweetalert2';
+import { IBackendResponseError } from '../interfaces/server.interface';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export default function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [userData, setUserData] = useState<null | IUserAuth>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </AuthContext.Provider>
   );
-};
+}
 
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
