@@ -10,15 +10,17 @@ import ImageZoom from '../../components/ImageZoom/ImageZoom';
 import api from '../../axios/api';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../context/AuthContext';
-import { useGlobal } from '../../context/GlobalContext';
 import { ThreeCircles } from 'react-loader-spinner';
+import { useCart } from '../../context/CartContext';
 
 export default function ProductDetails() {
-  const { error, setError, isLoading, setIsLoading, addToCart, checkout } = useGlobal();
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<IProductDetail | null>(null);
   const [selectedImage, setSelectedImage] = useState<string>('');
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const { addToCart, checkout } = useCart();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
@@ -30,7 +32,7 @@ export default function ProductDetails() {
       setSelectedImage(pictures[0].url);
       document.title = `E-CommerceX - ${title}`;
       setError(null);
-    } catch (error) {
+    } catch {
       setProduct(null);
       setError('Não foi possível carregar o produto :(');
     } finally {
@@ -77,6 +79,18 @@ export default function ProductDetails() {
           autoClose: 2000,
         });
       }
+    }
+  };
+
+  const handleCheckout = async (): Promise<void> => {
+    if (product) {
+      checkout([{
+        cart_product_id: product.id,
+        cart_product_title: product.title,
+        cart_product_price: product.price,
+        cart_product_quantity: 1,
+        cart_product_thumbnail: product.thumbnail,
+      }], `/product/${id}`);
     }
   };
 
@@ -162,7 +176,7 @@ export default function ProductDetails() {
               <h4>O que você precisa saber sobre este produto:</h4>
               <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, similique quisquam aperiam pariatur ratione necessitatibus eaque dolorem vero deleniti officiis, blanditiis eos! Rem dignissimos placeat autem aliquid numquam harum tempora.</p>
               <footer className={styles.buttonsContainer}>
-                <button onClick={() => checkout([{ ...product, quantity: 1 }], `/product/${id}`)} className={`${styles.btn} ${styles.buyBtn}`}>Comprar agora</button>
+                <button onClick={handleCheckout} className={`${styles.btn} ${styles.buyBtn}`}>Comprar agora</button>
                 <button type='button' onClick={handleCartAdd} className={`${styles.btn} ${styles.addCartBtn}`}>Adicionar ao carrinho</button>
               </footer>
             </aside>

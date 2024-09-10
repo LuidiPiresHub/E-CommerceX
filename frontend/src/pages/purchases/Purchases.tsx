@@ -5,13 +5,13 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import styles from './Purchases.module.css';
 import { formartPrice, getHightestQuality } from '../../utils/functions';
-import { useGlobal } from '../../context/GlobalContext';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { IPurchasesBackend, Purchase } from '../../interfaces/purchases.interface';
 import { ThreeCircles } from 'react-loader-spinner';
 import Pagination from '../../components/pagination/Pagination';
 import Swal from 'sweetalert2';
 import Conffeti from '../../components/conffeti/Conffeti';
+import { useCart } from '../../context/CartContext';
 
 export default function Purchases() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -20,7 +20,7 @@ export default function Purchases() {
   const [pageCount, setPageCount] = useState<number>(1);
   const [showConffeti, setShowConffeti] = useState<boolean>(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const { checkout } = useGlobal();
+  const { checkout } = useCart();
   const page = Number(searchParams.get('page')) || 1;
   const fromPayment = searchParams.get('fromPayment');
   const navigate = useNavigate();
@@ -59,11 +59,11 @@ export default function Purchases() {
 
   const handleCheckout = (purchase: Purchase) => {
     checkout([{
-      id: purchase.purchased_product_id,
-      price: purchase.purchased_product_price / 100,
-      title: purchase.purchased_product_name,
-      thumbnail: purchase.purchased_product_thumbnail,
-      quantity: 1,
+      cart_product_id: purchase.purchased_product_id,
+      cart_product_price: purchase.purchased_product_price / 100,
+      cart_product_title: purchase.purchased_product_name,
+      cart_product_thumbnail: purchase.purchased_product_thumbnail,
+      cart_product_quantity: 1,
     }]);
   };
 

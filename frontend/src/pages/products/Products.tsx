@@ -8,15 +8,17 @@ import { IProduct } from '../../interfaces/products.interface';
 import axios, { AxiosError } from 'axios';
 import handleAxiosError from '../../axios/handleAxiosError';
 import { IMercadoLivreResponse } from '../../interfaces/mercadoLivre.interfaces';
-import { useGlobal } from '../../context/GlobalContext';
 import { MagnifyingGlass } from 'react-loader-spinner';
 import Pagination from '../../components/pagination/Pagination';
+import { useCart } from '../../context/CartContext';
 
 export default function Product() {
-  const { addToCart, isLoading, setIsLoading, error, setError, } = useGlobal();
   const [products, setProducts] = useState<IProduct[]>([]);
   const [pageCount, setPageCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const { addToCart } = useCart();
 
   const limit = 50;
   const maxOffset = 900;

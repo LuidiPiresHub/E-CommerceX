@@ -4,10 +4,10 @@ import { FormEvent } from 'react';
 import styles from './Header.module.css';
 import defaultImg from '../../assets/images/userImg.png';
 import { useAuth } from '../../context/AuthContext';
-import { useGlobal } from '../../context/GlobalContext';
+import { useCart } from '../../context/CartContext';
 
 export default function Header() {
-  const { cartAmount } = useGlobal();
+  const { cartAmount } = useCart();
   const [, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { userData, isLoading } = useAuth();
