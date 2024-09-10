@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import Swal from 'sweetalert2';
-import { Routes, Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import Products from './pages/products/Products';
 import ProductDetail from './pages/productDetails/ProductDetails';
 import Cart from './pages/cart/Cart';
@@ -11,7 +11,8 @@ import NotFound from './pages/notFound/NotFound';
 import Profile from './pages/profile/Profile';
 import Purchases from './pages/purchases/Purchases';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
-import { AuthProvider } from './context/AuthContext';
+import AuthProvider from './context/AuthContext';
+import CartProvider from './context/CartContext';
 
 export default function App() {
   useEffect(() => {
@@ -37,23 +38,25 @@ export default function App() {
 
   return (
     <AuthProvider>
-      <Routes>
-        <Route path='/' element={<Products />} />
-        <Route path='/product/:id' element={<ProductDetail />} />
-        <Route path='/cart' element={<Cart />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
-        <Route element={<ProtectedRoute />}>
-          <Route path='/favorites' element={<Favorites />} />
-        </Route>
-        <Route element={<ProtectedRoute />}>
-          <Route path="/profile" element={<Profile />} />
-        </Route>
-        <Route element={<ProtectedRoute />}>
-          <Route path='/purchases' element={<Purchases />} />
-        </Route>
-        <Route path='*' element={<NotFound />} />
-      </Routes>
+      <CartProvider>
+        <Routes>
+          <Route path='/' element={<Products />} />
+          <Route path='/product/:id' element={<ProductDetail />} />
+          <Route path='/cart' element={<Cart />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path='/favorites' element={<Favorites />} />
+          </Route>
+          <Route element={<ProtectedRoute />}>
+            <Route path="/profile" element={<Profile />} />
+          </Route>
+          <Route element={<ProtectedRoute />}>
+            <Route path='/purchases' element={<Purchases />} />
+          </Route>
+          <Route path='*' element={<NotFound />} />
+        </Routes>
+      </CartProvider>
     </AuthProvider>
   );
 }
