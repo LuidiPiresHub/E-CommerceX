@@ -1,12 +1,12 @@
 import { format, parse } from 'date-fns';
-import { IProductCart } from '../interfaces/products.interface';
 import axios from 'axios';
+import { ICart } from '../interfaces/cart.interface';
 
 export const formartPrice = (price: number): string => price.toLocaleString('pt-br', { currency: 'BRL', style: 'currency' });
 
-export const countCartItems = (cartItems: IProductCart[]): number => cartItems.reduce((acc, curr) => acc + curr.quantity!, 0);
+export const countCartItems = (cartItems: ICart[]): number => cartItems.reduce((acc, curr) => acc + curr.cart_product_quantity, 0);
 
-export const calcCartItemsPrice = (cartItems: IProductCart[]): number => cartItems.reduce((acc, curr) => acc + curr.price * curr.quantity!, 0);
+export const calcCartItemsPrice = (cartItems: ICart[]): number => cartItems.reduce((acc, curr) => acc + curr.cart_product_price * curr.cart_product_quantity, 0);
 
 export const getHightestQuality = (image: string): string => image.replace(/\w\.jpg/gi, 'W.jpg');
 
