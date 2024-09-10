@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "lint-css": "stylelint src/**/*.css --fix",
     "lint-js": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --fix",
-    "lint": "npm run lint-css && npm run lint-js",
+    "check-types": "tsc --noEmit",
+    "lint": "npm run lint-css && npm run lint-js && npm run check-types",
     "preview": "vite preview"
   },
   "dependencies": {

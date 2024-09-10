@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/server.ts",
   "scripts": {
-    "lint": "eslint src/**/*.ts --fix",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src/**/*.ts --fix && npm run check-types",
     "dev": "tsx watch src/server.ts",
     "vercel-build": "prisma generate"
   },
