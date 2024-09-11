@@ -20,7 +20,7 @@ export default function ProductDetails() {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const { throttledAddToCart, checkout } = useCart();
+  const { throttledAddToCart, checkout, setCartAmount } = useCart();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
@@ -52,6 +52,7 @@ export default function ProductDetails() {
   const handleCartAdd = () => {
     const { id, title, price, thumbnail } = product!;
     throttledAddToCart({ id, title, price, thumbnail });
+    setCartAmount((prevAmount) => prevAmount + 1);
   };
 
   const toggleFavorite = async () => {
