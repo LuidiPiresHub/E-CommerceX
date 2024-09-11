@@ -126,8 +126,14 @@ export default function CartProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const clearCart = async (): Promise<void> => {
+    await api.delete('/cart');
+    setCart([]);
+    setCartAmount(0);
+  };
+
   return (
-    <CartContext.Provider value={{ cart, setCart, checkout, setCartAmount, cartAmount, isLoading, throttledAddToCart }}>
+    <CartContext.Provider value={{ cart, setCart, checkout, setCartAmount, cartAmount, isLoading, throttledAddToCart, clearCart }}>
       {children}
     </CartContext.Provider>
   );

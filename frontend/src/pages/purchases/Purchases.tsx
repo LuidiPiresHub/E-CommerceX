@@ -20,7 +20,7 @@ export default function Purchases() {
   const [pageCount, setPageCount] = useState<number>(1);
   const [showConffeti, setShowConffeti] = useState<boolean>(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const { checkout } = useCart();
+  const { checkout, clearCart } = useCart();
   const page = Number(searchParams.get('page')) || 1;
   const fromPayment = searchParams.get('fromPayment');
   const navigate = useNavigate();
@@ -36,6 +36,7 @@ export default function Purchases() {
         icon: 'success',
         confirmButtonText: 'OK',
       }).then(() => setShowConffeti(false));
+      clearCart();
     }
   }, [location]);
 

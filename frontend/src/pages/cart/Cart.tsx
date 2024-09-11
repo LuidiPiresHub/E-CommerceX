@@ -12,7 +12,7 @@ import { debounce } from 'lodash';
 import { ICart } from '../../interfaces/cart.interface';
 
 export default function Cart() {
-  const { cart, setCart, setCartAmount, checkout, isLoading } = useCart();
+  const { cart, setCart, setCartAmount, checkout, isLoading, clearCart } = useCart();
 
   useEffect(() => {
     document.title = 'E-CommerceX - Carrinho';
@@ -68,7 +68,7 @@ export default function Cart() {
     debouncedUpdateCart(id, product.cart_product_quantity + 1, previousCartState);
   };
 
-  const clearCart = async (): Promise<void> => {
+  const handleClearCart = async (): Promise<void> => {
     if (cart.length) {
       Swal.fire({
         title: 'Tem certeza?',
@@ -84,9 +84,7 @@ export default function Cart() {
         if (isConfirmed) {
           try {
             Swal.fire('Limpo!', 'Seu carrinho foi limpo.', 'success');
-            setCart([]);
-            setCartAmount(0);
-            await api.delete('/cart');
+            clearCart();
           } catch {
             Swal.fire('Erro!', 'Ocorreu um erro ao limpar o carrinho.', 'error');
           }
@@ -118,7 +116,7 @@ export default function Cart() {
           {cart.length ? (
             cart.map((product) => (
               <article key={product.cart_product_id} className={styles.productCard}>
-                <Link to={`/product/${product.id}`} className={styles.productLink}>
+                <Link to={`/product/${product.cart_product_id}`} className={styles.productLink}>
                   <img src={getHightestQuality(product.cart_product_thumbnail)} alt={product.cart_product_title} className={styles.productImage} />
                 </Link>
                 <div className={styles.detailsWrapper}>
@@ -145,7 +143,7 @@ export default function Cart() {
           <span className={styles.checkoutAmount}>{displayText}</span>
           <span className={styles.checkoutPrice}>{formartPrice(calcCartItemsPrice(cart))}</span>
         </div>
-        <button type='button' className={`${styles.checkoutBtn} ${styles.cleanCartBtn}`} disabled={!cart.length} onClick={clearCart}>Limpar Carrinho</button>
+        <button type='button' className={`${styles.checkoutBtn} ${styles.cleanCartBtn}`} disabled={!cart.length} onClick={handleClearCart}>Limpar Carrinho</button>
         <div className={styles.finish}>
           <span className={styles.totalPrice}>{`Total: ${formartPrice(calcCartItemsPrice(cart))}`}</span>
           <LoadingBtn

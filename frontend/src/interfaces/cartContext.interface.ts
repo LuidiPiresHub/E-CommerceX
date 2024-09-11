@@ -10,4 +10,5 @@ export interface CartContextType {
   cartAmount: number;
   isLoading: boolean;
   throttledAddToCart: (product: IProduct) => void;
+  clearCart: () => Promise<void>;
 }
