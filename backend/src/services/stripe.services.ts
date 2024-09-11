@@ -97,7 +97,7 @@ const webhook = async (eventType: string, sessionId: string): Promise<IStripeSer
       return productsService.createProduct(products, userId!) as Promise<IStripeServices>;
     }
     return { type: 'NOT_FOUND', message: `Evento "${eventType}" não é tratado pelo webhook` };
-  } catch (error) {
+  } catch {
     return { type: 'INTERNAL', message: 'Erro interno no sistema' };
   }
 };
