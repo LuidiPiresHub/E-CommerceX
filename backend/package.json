@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/server.ts",
+  "engines": {
+    "node": ">=20.x"
+  },
   "scripts": {
     "check-types": "tsc --noEmit",
     "lint": "eslint src/**/*.ts --fix && npm run check-types",
