@@ -20,13 +20,13 @@ export default function CartProvider({ children }: { children: ReactNode }) {
   const [cartAmount, setCartAmount] = useState<number>(0);
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     if (!isAuthenticated) {
       setCart([]);
       setCartAmount(0);
     }
-    
+
     const fetchCartItems = async () => {
       try {
         const { data: { message } } = await api.get<ICartBackend>('/cart');
@@ -62,7 +62,8 @@ export default function CartProvider({ children }: { children: ReactNode }) {
     const previousCartState = [...cart];
     const previousCartCounter = cartAmount;
 
-    setCartAmount(countCartItems(cartRef.current));
+    setCartAmount(countCartItems(cartRef.current) + 1);
+
     updateCartState({
       cart_product_id: product.id,
       cart_product_title: product.title,
@@ -98,21 +99,45 @@ export default function CartProvider({ children }: { children: ReactNode }) {
     [isAuthenticated]
   );
 
-
   const checkout = async (products: ICart[], redirectUrl?: string): Promise<void> => {
     if (products.length) {
       try {
-        setIsLoading(true);
-        const { data: { message: redirectUrl } } = await api.post<IBackendCheckoutResponse>('/stripe/create-checkout-session', { products });
-        window.location.href = redirectUrl;
+        const { isConfirmed } = await Swal.fire({
+          title: 'Compra Fictícia',
+          html: 'Use o cartão <span class="cardHighlight">4242 4242 4242 4242</span> para simular uma compra bem-sucedida.',
+          icon: 'info',
+          showCancelButton: true,
+          cancelButtonText: 'Cancelar',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Copiar e Continuar',
+          confirmButtonColor: 'rgb(48, 133, 214)',
+          reverseButtons: true,
+        });
+
+        if (isConfirmed) {
+          setIsLoading(true);
+          const { data: { message: checkoutUrl } } = await api.post<IBackendCheckoutResponse>('/stripe/create-checkout-session', { products });
+          await navigator.clipboard.writeText('4242 4242 4242 4242');
+          await Swal.fire({
+            title: 'Cartão Copiado!',
+            text: 'Redirecionando para a página de compras...',
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false,
+          });
+          window.location.href = checkoutUrl;
+        }
+
       } catch (error) {
         if ((error as AxiosError).response?.status === 401) {
           return navigate('/login', { state: { from: { pathname: redirectUrl } } });
         }
+
         const errorMessage = (error as AxiosError).message === 'Network Error'
           ? 'Erro de conexão com o servidor'
-          : (error as IBackendResponseError).response.data.message || 'Ocorreu um erro interno';
-        Swal.fire({
+          : (error as IBackendResponseError)?.response?.data?.message || 'Ocorreu um erro interno';
+
+        await Swal.fire({
           icon: 'error',
           title: 'Oops...',
           text: errorMessage,
