@@ -13,3 +13,10 @@ a {
 body {
   background-color: rgb(235 235 235);
 }
+
+.cardHighlight {
+  background-color: rgb(235 235 235);
+  border-radius: 5px;
+  font-weight: bold;
+  padding-inline: 0.3rem;
+}
