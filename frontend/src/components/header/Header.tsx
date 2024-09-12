@@ -19,8 +19,8 @@ export default function Header() {
     const inputElement = formElement.elements[0] as HTMLInputElement;
     const inputValue = inputElement.value.trim();
     if (!inputValue) return;
-    setSearchParams({ search: inputValue, offset: '0' });
-    navigate(`/?search=${inputValue}&offset=0`);
+    setSearchParams({ search: inputValue });
+    navigate(`/?search=${inputValue}`);
   };
 
   return (
