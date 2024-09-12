@@ -11,6 +11,7 @@ import { IMercadoLivreResponse } from '../../interfaces/mercadoLivre.interfaces'
 import { MagnifyingGlass } from 'react-loader-spinner';
 import Pagination from '../../components/pagination/Pagination';
 import { useCart } from '../../context/CartContext';
+import { shuffle } from 'lodash';
 
 export default function Product() {
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -20,43 +21,82 @@ export default function Product() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { throttledAddToCart } = useCart();
 
-  const limit = 50;
-  const maxOffset = 900;
-  const productKeywords = ['Iphone', 'Notebook', 'Televisão', 'Monitor', 'Pc Gamer', 'Tablet'];
-  const randomProduct = productKeywords[Math.floor(Math.random() * productKeywords.length)];
-  const search = searchParams.get('search') || randomProduct;
+  const search = searchParams.get('search');
   const page = Number(searchParams.get('page')) || 1;
-  const offset = (page * limit) - limit;
+  const maxOffset = 900;
+
+  const mapProducts = (products: IProduct[]): IProduct[] => {
+    return products.map((product) => ({
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      thumbnail: product.thumbnail,
+    }));
+  };
+
+  const fetchInitialProducts = async (limit: number) => {
+    try {
+      setIsLoading(true);
+      const productsToSearch = ['Iphone', 'Notebook', 'Televisão', 'Monitor', 'Pc Gamer', 'Tablet'];
+      const offset = (page * limit) - limit;
+      const totalOffset = Math.min(offset, maxOffset);
+
+      const promises = await Promise.all(productsToSearch.map((product) => {
+        return axios.get<IMercadoLivreResponse>(`${import.meta.env.VITE_ML_SEARCH_URL}?q=${product}&offset=${totalOffset}&limit=${limit}`);
+      }));
+
+      const allProducts = promises.flatMap(({ data }) => data.results);
+      const minPageTotal = Math.min(...promises.map(({ data }) => data.paging.total));
+      const totalProductsPerPage = minPageTotal / limit;
+      const maxPages = maxOffset / limit;
+      const totalPages = Math.ceil(Math.min(totalProductsPerPage, maxPages)) + 1;
+
+      setPageCount(totalPages);
+      setProducts(shuffle(mapProducts(allProducts)));
+    } catch (error) {
+      handleAxiosError(error as AxiosError, setError);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getAllProductsByName = async (product: string, limit: number): Promise<void> => {
+    try {
+      setIsLoading(true);
+      const offset = (page * limit) - limit;
+      const totalOffset = Math.min(offset, maxOffset);
+
+      const API_URL = `${import.meta.env.VITE_ML_SEARCH_URL}?q=${product}&offset=${totalOffset}&limit=${limit}`;
+      const { data: { results, paging: { total } } } = await axios.get<IMercadoLivreResponse>(API_URL);
+
+      if (!results.length) {
+        setError('Nenhum produto encontrado');
+      } else {
+        const totalProductsPerPage = total / limit;
+        const maxPages = maxOffset / limit;
+        const totalPages = Math.ceil(Math.min(totalProductsPerPage, maxPages)) + 1;
+        setError(null);
+        setProducts(mapProducts(results));
+        setPageCount(totalPages);
+      }
+    } catch (error) {
+      handleAxiosError(error as AxiosError, setError);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     document.title = 'E-CommerceX - Produtos';
-    const getAllProductsByName = async (query: string, offset: number, limit: number, maxOffset: number): Promise<void> => {
-      try {
-        setIsLoading(true);
-        const API_URL = `${import.meta.env.VITE_ML_SEARCH_URL}?q=${query}&offset=${offset}&limit=${limit}`;
-        const { data: { results, paging: { total } } } = await axios.get<IMercadoLivreResponse>(API_URL);
 
-        const mappedProducts: IProduct[] = results.map((product: IProduct) => ({
-          id: product.id,
-          title: product.title,
-          price: product.price,
-          thumbnail: product.thumbnail,
-        }));
+    const limit = search ? 50 : 10;
+    const maxPages = Math.ceil(maxOffset / limit) + 1;
 
-        if (!results.length) {
-          setError('Nenhum produto encontrado');
-        } else {
-          setError(null);
-          setProducts(mappedProducts);
-          setPageCount(Math.ceil(Math.min(total / limit, maxOffset / limit)));
-        }
-      } catch (error) {
-        handleAxiosError(error as AxiosError, setError);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    getAllProductsByName(search, offset, limit, maxOffset);
+    if (page > maxPages) {
+      setSearchParams((prevState) => ({ ...Object.fromEntries(prevState), page: String(maxPages) }));
+    } else {
+      search ? getAllProductsByName(search, limit) : fetchInitialProducts(limit);
+    }
   }, [searchParams]);
 
   return (
@@ -103,9 +143,12 @@ export default function Product() {
               ))}
             </section>
             <Pagination
-              forcePage={pageCount === 0 ? -1 : Math.floor(offset / limit)}
+              forcePage={pageCount === 0 ? -1 : page - 1}
               pageCount={pageCount}
-              onPageChange={({ selected }) => setSearchParams({ search: search, page: String(selected + 1) })}
+              onPageChange={({ selected }) => {
+                search ? setSearchParams({ search: search, page: String(selected + 1) })
+                  : setSearchParams({ page: String(selected + 1) });
+              }}
             />
           </>
         )}
