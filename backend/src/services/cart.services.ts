@@ -12,7 +12,6 @@ const prisma = new PrismaClient();
 
 const getCartItems = async (userId: string): Promise<IGetCartItems> => {
   const cartItems = await prisma.cart.findMany({ where: { user_id: userId }, orderBy: { created_at: 'desc' } });
-  if (!cartItems.length) return { type: 'NOT_FOUND', message: 'Cart is empty' };
   return { type: 'OK', message: cartItems };
 };
 

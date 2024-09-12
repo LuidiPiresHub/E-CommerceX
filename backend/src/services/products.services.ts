@@ -109,8 +109,6 @@ const getPurchases = async (userId: string, page: number = 1): Promise<IProductS
     prisma.purchases.count({ where: { users_id: userId } })
   ]);
 
-  if (!purchases.length) return { type: 'NOT_FOUND', message: 'Nenhuma compra encontrada' };
-
   const pageCount = Math.ceil(totalPurchases / limit);
   return { type: 'OK', message: { purchases, pageCount } };
 };
