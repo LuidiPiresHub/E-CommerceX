@@ -1,6 +1,6 @@
 import Header from '../../components/header/Header';
 import { Link, useSearchParams } from 'react-router-dom';
-import { formartPrice } from '../../utils/functions';
+import { formartPrice, getHightestQuality } from '../../utils/functions';
 import { useEffect, useState } from 'react';
 import { IFavoriteBackend, IProductFavorite } from '../../interfaces/favorite.interface';
 import api from '../../axios/api';
@@ -58,7 +58,7 @@ export default function Favorites() {
                   className={styles.product}
                 >
                   <img
-                    src={favorite.favorited_product_thumbnail}
+                    src={getHightestQuality(favorite.favorited_product_thumbnail)}
                     alt={favorite.favorited_product_name}
                     className={styles.image}
                   />
