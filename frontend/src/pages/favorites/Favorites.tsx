@@ -7,6 +7,7 @@ import api from '../../axios/api';
 import { FaHeart } from 'react-icons/fa';
 import styles from './Favorites.module.css';
 import Pagination from '../../components/pagination/Pagination';
+import { ThreeCircles } from 'react-loader-spinner';
 
 export default function Favorites() {
   const [isLoading, setIsLoading] = useState(true);
@@ -44,7 +45,14 @@ export default function Favorites() {
       <Header />
       <main className={styles.main}>
         {isLoading ? (
-          <h1>Carregando...</h1>
+          <div className={styles.spinner}>
+            <ThreeCircles
+              height="100"
+              width="100"
+              color="#0076CE"
+              ariaLabel="three-circles-loading"
+            />
+          </div>
         ) : (
           !isLoading && !favorites.length ? (
             <h1 className={styles.errorMessage}>Nenhum Produto favoritado!</h1>
