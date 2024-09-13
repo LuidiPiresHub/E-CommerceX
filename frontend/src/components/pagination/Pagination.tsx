@@ -3,11 +3,16 @@ import styles from './Pagination.module.css';
 import { IPaginationProps } from '../../interfaces/pagination.interface';
 
 export default function Pagination({ pageCount, forcePage, onPageChange }: IPaginationProps) {
+  const handlePageChange = ({ selected }: { selected : number }) => {
+    onPageChange({ selected });
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+
   return (
     <ReactPaginate
       breakLabel=""
       nextLabel="Next"
-      onPageChange={onPageChange}
+      onPageChange={handlePageChange}
       pageRangeDisplayed={2}
       marginPagesDisplayed={1}
       pageCount={pageCount}
