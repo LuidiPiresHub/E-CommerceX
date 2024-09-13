@@ -19,6 +19,7 @@ export default function Favorites() {
     document.title = 'E-CommerceX - Favoritos';
     const getFavorites = async () => {
       try {
+        setIsLoading(true);
         const { data: { message } } = await api.get<IFavoriteBackend>(`products/favorites?page=${page}`);
         if (typeof message === 'string') throw new Error(message);
         setFavorites(message.products);
