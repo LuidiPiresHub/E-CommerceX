@@ -55,7 +55,7 @@ export default function Favorites() {
           </div>
         ) : (
           !isLoading && !favorites.length ? (
-            <h1 className={styles.errorMessage}>Nenhum Produto favoritado!</h1>
+            <h1 className={styles.errorMessage}>Nenhum produto favoritado!</h1>
           ) : (
             favorites.map((favorite) => (
               <section

@@ -89,30 +89,37 @@ export default function Purchases() {
     </>
   );
 
+  console.log(purchases);
+
+
   return (
     <>
       {showConffeti && <Conffeti />}
       <Header />
-      <main className={styles.main}>{purchases.map((purchase) => (
-        <div key={purchase.id} className={styles.purchaseContainer}>
-          <span className={styles.purchaseDate}>{format(purchase.created_at, 'dd \'de\' MMMM \'de\' yyyy \'as\' HH:mm', { locale: ptBR })}</span>
-          <div className={styles.wrapper}>
-            <img src={getHightestQuality(purchase.purchased_product_thumbnail)} alt={purchase.purchased_product_name} className={styles.purchaseImg} />
-            <div className={styles.detailsContainer}>
-              <h2 className={styles.approved}>Aprovado</h2>
-              <h1 className={styles.purchaseTitle}>{purchase.purchased_product_name}</h1>
-              <div className={styles.detailsWrapper}>
-                <span>{formartPrice(purchase.purchased_product_price / 100)}</span>
-                <span>Quantidade: {purchase.purchased_product_quantity}</span>
+      <main className={styles.main}>{!purchases.length ? (
+        <h1 className={styles.errorMessage}>Nenhuma compra realizada!</h1>
+      ) : (
+        purchases.map((purchase) => (
+          <div key={purchase.id} className={styles.purchaseContainer}>
+            <span className={styles.purchaseDate}>{format(purchase.created_at, 'dd \'de\' MMMM \'de\' yyyy \'as\' HH:mm', { locale: ptBR })}</span>
+            <div className={styles.wrapper}>
+              <img src={getHightestQuality(purchase.purchased_product_thumbnail)} alt={purchase.purchased_product_name} className={styles.purchaseImg} />
+              <div className={styles.detailsContainer}>
+                <h2 className={styles.approved}>Aprovado</h2>
+                <h1 className={styles.purchaseTitle}>{purchase.purchased_product_name}</h1>
+                <div className={styles.detailsWrapper}>
+                  <span>{formartPrice(purchase.purchased_product_price / 100)}</span>
+                  <span>Quantidade: {purchase.purchased_product_quantity}</span>
+                </div>
               </div>
+              <nav className={styles.btnContainer}>
+                <Link to={`/product/${purchase.purchased_product_id}`} className={styles.button}>Ver produto</Link>
+                <button type='button' onClick={() => handleCheckout(purchase)} className={styles.button}>Comprar novamente</button>
+              </nav>
             </div>
-            <nav className={styles.btnContainer}>
-              <Link to={`/product/${purchase.purchased_product_id}`} className={styles.button}>Ver produto</Link>
-              <button type='button' onClick={() => handleCheckout(purchase)} className={styles.button}>Comprar novamente</button>
-            </nav>
           </div>
-        </div>
-      ))}</main>
+        ))
+      )}</main>
       {pageCount > 1 && (
         <footer className={styles.footer}>
           <Pagination
