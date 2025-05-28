@@ -89,14 +89,16 @@ export default function Product() {
   useEffect(() => {
     document.title = 'E-CommerceX - Produtos';
 
-    const limit = search ? 50 : 10;
-    const maxPages = Math.ceil(maxOffset / limit) + 1;
+    // const limit = search ? 50 : 10;
+    // const maxPages = Math.ceil(maxOffset / limit) + 1;
 
-    if (page > maxPages) {
-      setSearchParams((prevState) => ({ ...Object.fromEntries(prevState), page: String(maxPages) }));
-    } else {
-      search ? getAllProductsByName(search, limit) : fetchInitialProducts(limit);
-    }
+    // if (page > maxPages) {
+    //   setSearchParams((prevState) => ({ ...Object.fromEntries(prevState), page: String(maxPages) }));
+    // } else {
+    //   search ? getAllProductsByName(search, limit) : fetchInitialProducts(limit);
+    // }
+
+    setError('🚧 Site em Manutenção 🚧');
   }, [searchParams]);
 
   return (

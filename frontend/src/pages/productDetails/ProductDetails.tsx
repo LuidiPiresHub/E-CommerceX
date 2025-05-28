@@ -95,7 +95,9 @@ export default function ProductDetails() {
   };
 
   useEffect(() => {
-    getProductById(id as string);
+    // getProductById(id as string);
+    setIsLoading(false);
+    setError('🚧 Site em Manutenção 🚧');
   }, [id]);
 
   useEffect(() => {
