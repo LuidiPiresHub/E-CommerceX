@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { IProductDetail } from '../../interfaces/products.interface';
 import styles from './ProductDetails.module.css';
 import { formartPrice } from '../../utils/functions';
@@ -15,7 +15,7 @@ import { useCart } from '../../context/CartContext';
 
 export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
-  const [product, setProduct] = useState<IProductDetail | null>(null);
+  const [product] = useState<IProductDetail | null>(null);
   const [selectedImage, setSelectedImage] = useState<string>('');
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -24,21 +24,21 @@ export default function ProductDetails() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
-  const getProductById = async (productId: string): Promise<void> => {
-    try {
-      setIsLoading(true);
-      const { data: { id, title, price, thumbnail, pictures } } = await axios.get<IProductDetail>(`${import.meta.env.VITE_ML_ITEM_URL}/${productId}`);
-      setProduct({ id, title, price, thumbnail, pictures });
-      setSelectedImage(pictures[0].url);
-      document.title = `E-CommerceX - ${title}`;
-      setError(null);
-    } catch {
-      setProduct(null);
-      setError('Não foi possível carregar o produto :(');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // const getProductById = async (productId: string): Promise<void> => {
+  //   try {
+  //     setIsLoading(true);
+  //     const { data: { id, title, price, thumbnail, pictures } } = await axios.get<IProductDetail>(`${import.meta.env.VITE_ML_ITEM_URL}/${productId}`);
+  //     setProduct({ id, title, price, thumbnail, pictures });
+  //     setSelectedImage(pictures[0].url);
+  //     document.title = `E-CommerceX - ${title}`;
+  //     setError(null);
+  //   } catch {
+  //     setProduct(null);
+  //     setError('Não foi possível carregar o produto :(');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const checkIfFavorite = async (productId: string) => {
     try {

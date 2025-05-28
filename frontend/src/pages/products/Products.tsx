@@ -5,86 +5,86 @@ import { formartPrice, getHightestQuality } from '../../utils/functions';
 import { useEffect, useState } from 'react';
 import Header from '../../components/header/Header';
 import { IProduct } from '../../interfaces/products.interface';
-import axios, { AxiosError } from 'axios';
-import handleAxiosError from '../../axios/handleAxiosError';
-import { IMercadoLivreResponse } from '../../interfaces/mercadoLivre.interfaces';
+// import axios, { AxiosError } from 'axios';
+// import handleAxiosError from '../../axios/handleAxiosError';
+// import { IMercadoLivreResponse } from '../../interfaces/mercadoLivre.interfaces';
 import { MagnifyingGlass } from 'react-loader-spinner';
 import Pagination from '../../components/pagination/Pagination';
 import { useCart } from '../../context/CartContext';
-import { shuffle } from 'lodash';
+// import { shuffle } from 'lodash';
 
 export default function Product() {
-  const [products, setProducts] = useState<IProduct[]>([]);
-  const [pageCount, setPageCount] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const [products] = useState<IProduct[]>([]);
+  const [pageCount] = useState(0);
+  const [isLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const { throttledAddToCart } = useCart();
 
   const search = searchParams.get('search');
   const page = Number(searchParams.get('page')) || 1;
-  const maxOffset = 900;
+  // const maxOffset = 900;
 
-  const mapProducts = (products: IProduct[]): IProduct[] => {
-    return products.map((product) => ({
-      id: product.id,
-      title: product.title,
-      price: product.price,
-      thumbnail: product.thumbnail,
-    }));
-  };
+  // const mapProducts = (products: IProduct[]): IProduct[] => {
+  //   return products.map((product) => ({
+  //     id: product.id,
+  //     title: product.title,
+  //     price: product.price,
+  //     thumbnail: product.thumbnail,
+  //   }));
+  // };
 
-  const fetchInitialProducts = async (limit: number) => {
-    try {
-      setIsLoading(true);
-      const productsToSearch = ['Iphone', 'Notebook', 'Televisão', 'Monitor', 'Pc Gamer', 'Tablet'];
-      const offset = (page * limit) - limit;
-      const totalOffset = Math.min(offset, maxOffset);
+  // const fetchInitialProducts = async (limit: number) => {
+  //   try {
+  //     setIsLoading(true);
+  //     const productsToSearch = ['Iphone', 'Notebook', 'Televisão', 'Monitor', 'Pc Gamer', 'Tablet'];
+  //     const offset = (page * limit) - limit;
+  //     const totalOffset = Math.min(offset, maxOffset);
 
-      const promises = await Promise.all(productsToSearch.map((product) => {
-        return axios.get<IMercadoLivreResponse>(`${import.meta.env.VITE_ML_SEARCH_URL}?q=${product}&offset=${totalOffset}&limit=${limit}`);
-      }));
+  //     const promises = await Promise.all(productsToSearch.map((product) => {
+  //       return axios.get<IMercadoLivreResponse>(`${import.meta.env.VITE_ML_SEARCH_URL}?q=${product}&offset=${totalOffset}&limit=${limit}`);
+  //     }));
 
-      const allProducts = promises.flatMap(({ data }) => data.results);
-      const minPageTotal = Math.min(...promises.map(({ data }) => data.paging.total));
-      const totalProductsPerPage = minPageTotal / limit;
-      const maxPages = maxOffset / limit;
-      const totalPages = Math.ceil(Math.min(totalProductsPerPage, maxPages)) + 1;
+  //     const allProducts = promises.flatMap(({ data }) => data.results);
+  //     const minPageTotal = Math.min(...promises.map(({ data }) => data.paging.total));
+  //     const totalProductsPerPage = minPageTotal / limit;
+  //     const maxPages = maxOffset / limit;
+  //     const totalPages = Math.ceil(Math.min(totalProductsPerPage, maxPages)) + 1;
 
-      setPageCount(totalPages);
-      setProducts(shuffle(mapProducts(allProducts)));
-    } catch (error) {
-      handleAxiosError(error as AxiosError, setError);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     setPageCount(totalPages);
+  //     setProducts(shuffle(mapProducts(allProducts)));
+  //   } catch (error) {
+  //     handleAxiosError(error as AxiosError, setError);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
-  const getAllProductsByName = async (product: string, limit: number): Promise<void> => {
-    try {
-      setIsLoading(true);
-      const offset = (page * limit) - limit;
-      const totalOffset = Math.min(offset, maxOffset);
+  // const getAllProductsByName = async (product: string, limit: number): Promise<void> => {
+  //   try {
+  //     setIsLoading(true);
+  //     const offset = (page * limit) - limit;
+  //     const totalOffset = Math.min(offset, maxOffset);
 
-      const API_URL = `${import.meta.env.VITE_ML_SEARCH_URL}?q=${product}&offset=${totalOffset}&limit=${limit}`;
-      const { data: { results, paging: { total } } } = await axios.get<IMercadoLivreResponse>(API_URL);
+  //     const API_URL = `${import.meta.env.VITE_ML_SEARCH_URL}?q=${product}&offset=${totalOffset}&limit=${limit}`;
+  //     const { data: { results, paging: { total } } } = await axios.get<IMercadoLivreResponse>(API_URL);
 
-      if (!results.length) {
-        setError('Nenhum produto encontrado');
-      } else {
-        const totalProductsPerPage = total / limit;
-        const maxPages = maxOffset / limit;
-        const totalPages = Math.ceil(Math.min(totalProductsPerPage, maxPages)) + 1;
-        setError(null);
-        setProducts(mapProducts(results));
-        setPageCount(totalPages);
-      }
-    } catch (error) {
-      handleAxiosError(error as AxiosError, setError);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     if (!results.length) {
+  //       setError('Nenhum produto encontrado');
+  //     } else {
+  //       const totalProductsPerPage = total / limit;
+  //       const maxPages = maxOffset / limit;
+  //       const totalPages = Math.ceil(Math.min(totalProductsPerPage, maxPages)) + 1;
+  //       setError(null);
+  //       setProducts(mapProducts(results));
+  //       setPageCount(totalPages);
+  //     }
+  //   } catch (error) {
+  //     handleAxiosError(error as AxiosError, setError);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   useEffect(() => {
     document.title = 'E-CommerceX - Produtos';
